@@ -1,4 +1,4 @@
-import { useEffect  } from 'react';
+import { useEffect } from 'react';
 import '../assets/css/LoginSignup.css'
 // import '../assets/threejs/main.js'
 // import * as THREE from 'three';
@@ -6,169 +6,185 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.mod
 import { OrbitControls } from "../assets/threejs/OrbitControls.js";
 
 import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js";
-import { Vector3 } from 'three';
+import { Vector3 } from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 function MoonAnimation() {
 
-    useEffect(() => {
-        const scene = new THREE.Scene();
-        const sceneContainer = document.getElementById('scene-container');
+  useEffect(() => {
+    const scene = new THREE.Scene();
+    const sceneContainer = document.getElementById('scene-container');
 
-        const camera = new THREE.PerspectiveCamera(
-        75,
-        sceneContainer.clientWidth / sceneContainer.clientHeight,
-        0.1,
-        1000
-        );
-        /*const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);*/
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      sceneContainer.clientWidth / sceneContainer.clientHeight,
+      0.1,
+      1000
+    );
+    /*const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);*/
 
-        let animationMixer = [];
-        const clock = new THREE.Clock(); //Agregamos una constante clock para la variable deltaTime
+    let animationMixer = [];
+    const clock = new THREE.Clock(); //Agregamos una constante clock para la variable deltaTime
 
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight); 
-        renderer.setClearColor( 0x000000, 0 );
-        document.getElementById("scene-container").appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    document.getElementById("scene-container").appendChild(renderer.domElement);
 
-        let fbx;
-        let fbxSpaceRocks;
-        rocketFly();
-        spaceRocks();
+    let fbx;
+    let fbxSpaceRocks;
+    rocketFly();
+    spaceRocks();
 
-        const ambientLight = new THREE.AmbientLight(0x3b285c, 0.6); // Color blanco, intensidad 0.5
-        scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0x3b285c, 0.6); // Color blanco, intensidad 0.5
+    scene.add(ambientLight);
 
-        const light = new THREE.DirectionalLight(0xe3e1e8, 1.9);
-        light.position.set(5, 5, 1).normalize();
-        scene.add(light);
+    const light = new THREE.DirectionalLight(0xe3e1e8, 1.9);
+    light.position.set(5, 5, 1).normalize();
+    scene.add(light);
 
 
-        const light2 = new THREE.DirectionalLight(0xc8c0db, 1.4);
-        light2.position.set(1, 5, 1).normalize();
-        scene.add(light2);
+    const light2 = new THREE.DirectionalLight(0xc8c0db, 1.4);
+    light2.position.set(1, 5, 1).normalize();
+    scene.add(light2);
 
-        // Posicionar la cámara
-        camera.position.set(0, 0, 3.5); // Cambiar la posición de la cámara
-        camera.lookAt(new Vector3(0,-0.5,0)); // Enfocar la cámara en la esfera
+    // Posicionar la cámara
+    camera.position.set(0, 0, 3.5); // Cambiar la posición de la cámara
+    camera.lookAt(new Vector3(0, -0.5, 0)); // Enfocar la cámara en la esfera
 
-        // Habilitar los controles del mouse para navegar
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableRotate = true; // Permitir la rotación
-        controls.enablePan = false;
-        controls.enableZoom = false;
+    // Habilitar los controles del mouse para navegar
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableRotate = true; // Permitir la rotación
+    controls.enablePan = false;
+    controls.enableZoom = false;
 
-        // Animación
-        const animate = () => {
+    // Animación
+    const animate = () => {
 
-        const deltaTime = clock.getDelta();
-        controls.update(); // Actualizar los controles del mouse
-        //sphere.rotation.x += 0.01;
+      const deltaTime = clock.getDelta();
+      controls.update(); // Actualizar los controles del mouse
+      //sphere.rotation.x += 0.01;
 
-        if (fbxSpaceRocks)
-          fbxSpaceRocks.rotation.y += 0.001;
+      if (fbxSpaceRocks)
+        fbxSpaceRocks.rotation.y += 0.001;
 
-        //  // Calcular la rotación en radianes para un ángulo de 45 grados
-        // const angle = Math.PI / 4; // 45 grados en radianes
-        // // Rotar el cohete alrededor de la esfera (luna)
-        // if (rocketGroup) {
-        //   rocketGroup.rotation.z += angle * 0.0035; // Ajustar la velocidad de rotación
-        // }
-        // sphere.rotation.y += 0.0035;
-        for (let i = 0; i < animationMixer.length; i++) {
-            animationMixer[i].update(deltaTime);
-        }
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-        };
+      //  // Calcular la rotación en radianes para un ángulo de 45 grados
+      // const angle = Math.PI / 4; // 45 grados en radianes
+      // // Rotar el cohete alrededor de la esfera (luna)
+      // if (rocketGroup) {
+      //   rocketGroup.rotation.z += angle * 0.0035; // Ajustar la velocidad de rotación
+      // }
+      // sphere.rotation.y += 0.0035;
+      for (let i = 0; i < animationMixer.length; i++) {
+        animationMixer[i].update(deltaTime);
+      }
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
 
-        animate();
+    animate();
 
-        function rocketFly() {
-        const loader = new FBXLoader();
-        loader.setPath("src/assets/3dmodels/");
-        loader.load("mMoonRocket.fbx", (loadedfbx) => {
-            fbx = loadedfbx;
-            fbx.scale.setScalar(0.1);
-            fbx.traverse((c) => {
-            c.castShadow = true;
-            });
-            fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
+    function rocketFly() {
+      const loader = new FBXLoader();
+      loader.setPath("src/assets/3dmodels/");
+      loader.load("mMoonRocket.fbx", (loadedfbx) => {
+        fbx = loadedfbx;
+        fbx.scale.setScalar(0.1);
+        fbx.traverse((c) => {
+          c.castShadow = true;
+        });
+        fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
 
-            const animLoader = new FBXLoader();
-            animLoader.setPath("src/assets/3dmodels/");
-            animLoader.load("mMoonRocket.fbx", (anim) => {
-            const mixer = new THREE.AnimationMixer(fbx);
-            animationMixer.push(mixer);
+        
+        const animLoader = new FBXLoader();
+        animLoader.setPath("src/assets/3dmodels/");
+        animLoader.load("mMoonRocket.fbx", (anim) => {
+          const mixer = new THREE.AnimationMixer(fbx);
+          animationMixer.push(mixer);
+
+          if (anim.animations.length > 0) {
+            // Configura y reproduce la animación aquí
             const idleAction = mixer.clipAction(anim.animations[0]);
             idleAction.play();
+          } else {
+            console.error("No se encontraron animaciones en el modelo FBX.");
+          }
 
-            animate();
-            });
-
-            scene.add(fbx);
+          animate();
         });
-        }
 
-        function spaceRocks() {
-        const loader = new FBXLoader();
-        loader.setPath("src/assets/3dmodels/");
-        loader.load("spacerocks.fbx", (loadedfbx2) => {
-            fbxSpaceRocks = loadedfbx2;
-            fbxSpaceRocks.scale.setScalar(0.06);
-            fbxSpaceRocks.traverse((c) => {
-            c.castShadow = true;
-            });
-            fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
+        scene.add(fbx);
+      }, undefined, (error) => {
+        console.error("Error cargando el modelo FBX:", error);
+      });
+    }
 
-            const animLoader = new FBXLoader();
-            animLoader.setPath("src/assets/3dmodels/");
-            animLoader.load("spacerocks.fbx", (anim) => {
-            const mixer = new THREE.AnimationMixer(fbxSpaceRocks);
-            animationMixer.push(mixer);
-            const idleAction = mixer.clipAction(anim.animations[0]);
-            idleAction.play();
-
-            animate();
-            });
-
-            scene.add(fbxSpaceRocks);
+    function spaceRocks() {
+      const loader = new FBXLoader();
+      loader.setPath("src/assets/3dmodels/");
+      loader.load("spacerocks.fbx", (loadedfbx2) => {
+        fbxSpaceRocks = loadedfbx2;
+        fbxSpaceRocks.scale.setScalar(0.06);
+        fbxSpaceRocks.traverse((c) => {
+          c.castShadow = true;
         });
-        }
+        fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
 
-        // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
-        function onWindowResize() {
-            // Obtén el nuevo ancho y alto de la ventana
-            const newWidth = sceneContainer.clientWidth;
-            const newHeight = sceneContainer.clientHeight;
+        // const animLoader = new FBXLoader();
+        // animLoader.setPath("src/assets/3dmodels/");
+        // animLoader.load("spacerocks.fbx", (anim) => {
+        //   const mixer = new THREE.AnimationMixer(fbxSpaceRocks);
+        //   animationMixer.push(mixer);
 
-            // Actualiza el tamaño del lienzo de renderizado
-            renderer.setSize(newWidth, newHeight);
+        //   if (anim.animations.length > 0) {
+        //     // Configura y reproduce la animación aquí
+        //     const idleAction = mixer.clipAction(anim.animations[0]);
+        //     idleAction.play();
+        //   } else {
+        //     console.error("No se encontraron animaciones en el modelo FBX.");
+        //   }
+        //   animate();
+        // });
 
-            // Actualiza la relación de aspecto de la cámara
-            camera.aspect = newWidth / newHeight;
-            camera.updateProjectionMatrix();
-        }
+        scene.add(fbxSpaceRocks);
+      }, undefined, (error) => {
+        console.error("Error cargando el modelo FBX:", error);
+      });
+    }
 
-        // Agrega un evento 'resize' para llamar a la función cuando cambie el tamaño de la ventana
-        window.addEventListener('resize', onWindowResize);
+    // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
+    function onWindowResize() {
+      // Obtén el nuevo ancho y alto de la ventana
+      const newWidth = sceneContainer.clientWidth;
+      const newHeight = sceneContainer.clientHeight;
 
-        // Llama a la función una vez para establecer el tamaño inicial correctamente
-        onWindowResize();
-      }, []);
-    return (
-      <>
-        <div id="scene-container"></div>
-      </>
-    )
-  }
-  
-  export default MoonAnimation
+      // Actualiza el tamaño del lienzo de renderizado
+      renderer.setSize(newWidth, newHeight);
+
+      // Actualiza la relación de aspecto de la cámara
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+    }
+
+    // Agrega un evento 'resize' para llamar a la función cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', onWindowResize);
+
+    // Llama a la función una vez para establecer el tamaño inicial correctamente
+    onWindowResize();
+  }, []);
+  return (
+    <>
+      <div id="scene-container"></div>
+    </>
+  )
+}
+
+export default MoonAnimation
