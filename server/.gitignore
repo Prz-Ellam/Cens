@@ -1,6 +1,11 @@
-dist
-node_modules
-.env
-
 .vscode/
-.idea
+dist/
+node_modules/
+logs/
+uploads/
+
+.tmp/
+coverage/
+
+.env
+.env.test
