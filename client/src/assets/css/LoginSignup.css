@@ -1,4 +1,4 @@
-body{
+body {
     /* margin-right: 25px; */
     padding: 0;
     margin: 0;
@@ -43,17 +43,17 @@ const gradientColor = new THREE.Color(0x07040e); // Color final del gradiente */
     transform: translate(-50%, -50%);
 }
 
-#chk{
+#chk {
     display: none;
 }
 
-.login{
+.login {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-label{
+label {
     color: #fff;
     font-size: 2.3em;
     justify-content: center;
@@ -64,7 +64,7 @@ label{
     transition: .5s ease-in-out;
 }
 
-input{
+input {
     width: 60%;
     height: 20px;
     background: #e0dede;
@@ -77,8 +77,8 @@ input{
     border-radius: 5px;
 }
 
-button{
-    width: 60%;
+button {
+    /* width: 60%; */
     height: 40px;
     margin: 10px auto;
     justify-content: center;
@@ -95,11 +95,15 @@ button{
     cursor: pointer;
 }
 
-button:hover{
+button.loginBtn, button.registerBtn{
+    width: 60%;
+}
+
+button:hover {
     background: #6d44b8;
 }
 
-.signup{
+.signup {
     height: 460px;
     background: #eee;
     border-radius: 60% / 10%;
@@ -107,21 +111,21 @@ button:hover{
     transition: .8s ease-in-out;
 }
 
-.signup label{
+.signup label {
     color: #573b8a;
     transform: scale(.6);
     margin: 60px;
 }
 
-#chk:checked ~ .signup{
+#chk:checked~.signup {
     transform: translateY(-525px);
 }
 
-#chk:checked ~ .signup label{
+#chk:checked~.signup label {
     transform: scale(1);
 }
 
-#chk:checked ~ .login label{
+#chk:checked~.login label {
     transform: scale(.6);
 }
 
@@ -145,6 +149,27 @@ button:hover{
     display: grid;
     grid-template-columns: 66% 33%;
 }
+
+
+.error-message {
+    color: #ff0000;
+    text-align: center;
+    /* display: block; */
+    /* margin-top: 5px; */
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    background-color: #000000bb;
+}
+
+.input-container {
+    position: relative;
+    /* margin-bottom: 20px; */
+    /* Espacio entre cada par de input y span */
+}
+
+
 
 /* Media query para centrar horizontalmente en pantallas más anchas */
 @media screen and (max-width: 1100px) {
