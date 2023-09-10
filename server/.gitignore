@@ -1,6 +1,12 @@
-dist
-node_modules
-.env
-
+database/olds
 .vscode/
-.idea
+dist/
+node_modules/
+logs/
+uploads/
+
+.tmp/
+coverage/
+
+.env
+.env.test
