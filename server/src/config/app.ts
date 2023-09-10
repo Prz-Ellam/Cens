@@ -1,8 +1,9 @@
 import express from 'express';
 import helmet from 'helmet';
+import { env } from '@config/env';
 
 const app = express();
-app.set('port', 3000);
+app.set('port', env.get('server.port'));
 
 app.use(express.json({ limit: '1kb' }));
 app.use(helmet());
