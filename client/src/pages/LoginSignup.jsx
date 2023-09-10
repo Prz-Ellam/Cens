@@ -21,10 +21,10 @@ function LoginSignup() {
         try {
             const response = await axios(config);
             // Manejar la respuesta exitosa aquí
-            console.log(response.data);
+            console.log(response.data.message);
         } catch (error) {
             // Manejar errores aquí
-            console.error(error);
+            console.error(error.response.data.message);
         }
 
 
