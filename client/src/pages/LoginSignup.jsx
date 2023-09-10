@@ -12,8 +12,8 @@ function LoginSignup() {
 
         // Configuración de axios para la solicitud POST
         const config = {
-            method: "GET",
-            url: "https://jsonplaceholder.typicode.com/posts/45", // URL de la API
+            method: "POST",
+            url: "/api/v1/auth", // URL de la API
             headers: { "Content-Type": "application/json" },
             data: JSON.stringify(loginInfo), // En lugar de { loginInfo }
         };
@@ -52,7 +52,7 @@ function LoginSignup() {
                         <label htmlFor="chk" aria-hidden="true">Inicia sesión</label>
                         <input type="email" name="email" placeholder="Email" required onChange={(event) => { setEmail(event.target.value) }}></input>
                         <input type="password" name="password" placeholder="Password" required onChange={(event) => { setPassword(event.target.value) }}></input>
-                        <button onClick={() => { login() }}>Acceder</button> {/*Llamamos a la funcion login*/}
+                        <button type="button" onClick={() => { login() }}>Acceder</button> {/*Llamamos a la funcion login*/}
                     </form>
                 </div>
                 <div className="signup">
