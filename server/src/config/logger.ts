@@ -1,7 +1,7 @@
 import path from 'path';
 import winston from 'winston';
 import 'winston-daily-rotate-file';
-import { env } from '@config/env';
+import { env } from './env';
 
 const { combine, timestamp, printf, colorize } = winston.format;
 

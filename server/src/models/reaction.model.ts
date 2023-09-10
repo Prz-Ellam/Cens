@@ -7,7 +7,6 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     DeleteDateColumn,
-    Unique,
 } from 'typeorm';
 import Poll from './poll.model';
 import User from './user.model';

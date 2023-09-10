@@ -1,5 +1,5 @@
 import type { ValidationStatus } from '@/types/validation-status';
-import { formatErrors } from '@utils/format-error';
+import { formatErrors } from '@/utils/format-error';
 import { z } from 'zod';
 
 const registerValidator = z
