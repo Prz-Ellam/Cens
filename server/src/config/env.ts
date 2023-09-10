@@ -70,4 +70,4 @@ const env = convict({
 
 env.validate();
 
-export { env };
+export default env;

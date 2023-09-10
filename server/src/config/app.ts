@@ -1,5 +1,5 @@
 import express from 'express';
-import { env } from '@config/env';
+import env from '@config/env';
 import authRouter from '@routes/auth.routes';
 import commentRouter from '@routes/comment.routes';
 import conversationRouter from '@routes/conversation.routes';

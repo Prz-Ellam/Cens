@@ -1,10 +1,10 @@
 // import User from '@/models/user.model';
 import jwt from 'jsonwebtoken';
-import { env } from './env';
+import env from '@config/env';
 
 const secret = env.get('jwt.secret');
 
-export const generateToken = (id: string): string => {
+export const generateToken = (id: number): string => {
     return jwt.sign({ id }, secret, {
         expiresIn: '30d',
     });

@@ -8,7 +8,7 @@ import {
     type LogMessage,
 } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { env } from '@config/env';
+import env from '@config/env';
 import { logger } from './logger';
 
 const dialect = env.get('db.connection');

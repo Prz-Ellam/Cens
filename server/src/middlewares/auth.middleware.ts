@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import User from '@/models/user.model';
 import jwt from 'jsonwebtoken';
-import { env } from '@/config/env';
+import env from '@/config/env';
 
 export interface AuthRequest extends Request {
     user: User;
