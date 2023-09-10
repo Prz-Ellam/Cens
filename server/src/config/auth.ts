@@ -1,6 +1,6 @@
 // import User from '@/models/user.model';
 import jwt from 'jsonwebtoken';
-import { env } from './env';
+import { env } from '@config/env';
 
 const secret = env.get('jwt.secret');
 
