@@ -6,9 +6,9 @@ html, body, #root {
   height: 100%;
 }
 
-#root {
+/* #root {
   background: linear-gradient(#bd34fc, #000000);
-}
+} */
 
 /* #root {
   max-width: 1280px;

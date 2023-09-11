@@ -73,8 +73,8 @@ function MoonAnimation() {
       controls.update(); // Actualizar los controles del mouse
       //sphere.rotation.x += 0.01;
 
-      if (fbxSpaceRocks)
-        fbxSpaceRocks.rotation.y += 0.001;
+        if (fbxSpaceRocks)
+          fbxSpaceRocks.rotation.y += 0.0002;
 
       //  // Calcular la rotación en radianes para un ángulo de 45 grados
       // const angle = Math.PI / 4; // 45 grados en radianes
