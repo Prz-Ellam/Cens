@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import '../assets/css/LoginSignup.css'
 // import '../assets/threejs/main.js'
-// import * as THREE from 'three';
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { OrbitControls } from "../assets/threejs/OrbitControls.js";
+import * as THREE from 'three';
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js";
-import { Vector3 } from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+// import { Vector3 } from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
 
 function MoonAnimation() {
 
@@ -20,13 +20,6 @@ function MoonAnimation() {
       0.1,
       1000
     );
-    /*const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);*/
 
     let animationMixer = [];
     const clock = new THREE.Clock(); //Agregamos una constante clock para la variable deltaTime
@@ -37,28 +30,22 @@ function MoonAnimation() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
-    document.getElementById("scene-container").appendChild(renderer.domElement);
+    sceneContainer.appendChild(renderer.domElement);
 
     let fbx;
     let fbxSpaceRocks;
-    rocketFly();
-    spaceRocks();
+    loadModels();
 
-    const ambientLight = new THREE.AmbientLight(0x3b285c, 0.6); // Color blanco, intensidad 0.5
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Color blanco, intensidad 0.5
     scene.add(ambientLight);
 
-    const light = new THREE.DirectionalLight(0xe3e1e8, 1.9);
+    const light = new THREE.DirectionalLight(0xffffff, 1.0);
     light.position.set(5, 5, 1).normalize();
     scene.add(light);
 
-
-    const light2 = new THREE.DirectionalLight(0xc8c0db, 1.4);
-    light2.position.set(1, 5, 1).normalize();
-    scene.add(light2);
-
     // Posicionar la cámara
     camera.position.set(0, 0, 3.5); // Cambiar la posición de la cámara
-    camera.lookAt(new Vector3(0, -0.5, 0)); // Enfocar la cámara en la esfera
+    camera.lookAt(new THREE.Vector3(0, -0.5, 0)); // Enfocar la cámara en la esfera
 
     // Habilitar los controles del mouse para navegar
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -73,8 +60,8 @@ function MoonAnimation() {
       controls.update(); // Actualizar los controles del mouse
       //sphere.rotation.x += 0.01;
 
-        if (fbxSpaceRocks)
-          fbxSpaceRocks.rotation.y += 0.0002;
+      if (fbxSpaceRocks)
+        fbxSpaceRocks.rotation.y += 0.0002;
 
       //  // Calcular la rotación en radianes para un ángulo de 45 grados
       // const angle = Math.PI / 4; // 45 grados en radianes
@@ -92,21 +79,28 @@ function MoonAnimation() {
 
     animate();
 
-    function rocketFly() {
-      const loader = new FBXLoader();
-      loader.setPath("src/assets/3dmodels/");
-      loader.load("mMoonRocket.fbx", (loadedfbx) => {
-        fbx = loadedfbx;
-        fbx.scale.setScalar(0.1);
-        fbx.traverse((c) => {
-          c.castShadow = true;
-        });
-        fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
+    async function loadModels() {
+      const promises = [];
+      promises.push(rocketFly());
+      promises.push(spaceRocks());
 
-        
+      await Promise.all(promises);
+    }
+
+    async function rocketFly() {
+      const loader = new FBXLoader();
+      loader.setPath('src/assets/3dmodels/');
+
+      fbx = await loader.loadAsync('mMoonRocket.fbx');
+      fbx.scale.setScalar(0.1);
+      fbx.traverse((c) => {
+        c.castShadow = true;
+      });
+      fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
+
         const animLoader = new FBXLoader();
-        animLoader.setPath("src/assets/3dmodels/");
-        animLoader.load("mMoonRocket.fbx", (anim) => {
+        animLoader.setPath('src/assets/3dmodels/');
+        animLoader.load('mMoonRocket.fbx', (anim) => {
           const mixer = new THREE.AnimationMixer(fbx);
           animationMixer.push(mixer);
 
@@ -119,7 +113,6 @@ function MoonAnimation() {
           }
 
           animate();
-        });
 
         scene.add(fbx);
       }, undefined, (error) => {
@@ -127,37 +120,17 @@ function MoonAnimation() {
       });
     }
 
-    function spaceRocks() {
+    async function spaceRocks() {
       const loader = new FBXLoader();
-      loader.setPath("src/assets/3dmodels/");
-      loader.load("spacerocks.fbx", (loadedfbx2) => {
-        fbxSpaceRocks = loadedfbx2;
-        fbxSpaceRocks.scale.setScalar(0.06);
-        fbxSpaceRocks.traverse((c) => {
-          c.castShadow = true;
-        });
-        fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
-
-        // const animLoader = new FBXLoader();
-        // animLoader.setPath("src/assets/3dmodels/");
-        // animLoader.load("spacerocks.fbx", (anim) => {
-        //   const mixer = new THREE.AnimationMixer(fbxSpaceRocks);
-        //   animationMixer.push(mixer);
-
-        //   if (anim.animations.length > 0) {
-        //     // Configura y reproduce la animación aquí
-        //     const idleAction = mixer.clipAction(anim.animations[0]);
-        //     idleAction.play();
-        //   } else {
-        //     console.error("No se encontraron animaciones en el modelo FBX.");
-        //   }
-        //   animate();
-        // });
-
-        scene.add(fbxSpaceRocks);
-      }, undefined, (error) => {
-        console.error("Error cargando el modelo FBX:", error);
+      loader.setPath('src/assets/3dmodels/');
+      fbxSpaceRocks = await loader.loadAsync('spacerocks.fbx');
+      fbxSpaceRocks.scale.setScalar(0.06);
+      fbxSpaceRocks.traverse((c) => {
+        c.castShadow = true;
       });
+      fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
+
+      scene.add(fbxSpaceRocks);
     }
 
     // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
