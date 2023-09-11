@@ -1,5 +1,5 @@
 // import app from '@/app';
-// import { logger } from '@/config/logger';
+// import logger from '@/config/logger';
 // import supertest from 'supertest';
 
 // const api = supertest(app);

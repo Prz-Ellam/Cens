@@ -6,7 +6,7 @@ import User from '@/models/user.model';
 import { validateRegister } from '@/validators/register.validator';
 import { validateLogin } from '@/validators/login.validator';
 import { validateUpdateUser } from '@/validators/update-user.validator';
-import { logger } from '@/config/logger';
+import logger from '@/config/logger';
 import { validateId } from '@/validators/id.validator';
 import Follower from '@/models/follower.model';
 import UserService from '@/services/user.service';
@@ -23,22 +23,14 @@ class UserController {
      * Creates an user.
      */
     async register(req: Request, res: Response): Promise<Response> {
-        /**
-         * {
-         *      "email": "email",
-         *      "username": "^[a-zA-Z0-9_]{2,16}$",
-         *      "password": "password",
-         *      "confirmPassword": "confirmPassword"
-         * }
-         */
-        const contentType = req.get('content-type');
-        if (!contentType!.includes('application/json')) {
-            return res.status(415).json({
-                message: 'Tipo de contenido invalido',
-            });
-        }
-
         try {
+            const contentType = req.get('content-type');
+            if (!contentType!.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const validationResult = await validateRegister(req.body);
             if (!validationResult.status) {
                 const { errors } = validationResult;
@@ -56,14 +48,14 @@ class UserController {
             }
 
             const user = serviceResult.user;
-            const token = generateToken(user!.id.toString());
+            const token = generateToken(user!.id);
 
             return res.status(201).json({
                 message: 'Usuario agregado con éxito',
                 token,
             });
-        } catch (exception) {
-            logger.error(`${exception as string}`);
+        } catch (error) {
+            logger.error(`${error as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
@@ -72,10 +64,17 @@ class UserController {
 
     async login(req: Request, res: Response): Promise<Response> {
         try {
-            const result = validateLogin(req.body);
-            if (!result.status) {
+            const contentType = req.get('content-type');
+            if (!contentType!.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
+            const validationResult = validateLogin(req.body);
+            if (!validationResult.status) {
                 return res.status(422).json({
-                    message: result.errors,
+                    message: validationResult.errors,
                 });
             }
 
@@ -97,14 +96,14 @@ class UserController {
                 });
             }
 
-            const token = generateToken(requestedUser.id.toString());
+            const token = generateToken(requestedUser.id);
             return res.json({
-                message: 'Autentificacion completa',
+                message: 'Inicio de sesión éxitoso',
                 token,
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
-                Error durante un inicio de sesión: ${exception as string}
+                Error durante un inicio de sesión: ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -229,10 +228,10 @@ class UserController {
             return res.json({
                 message: 'Actualizado con éxito',
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
                 Error durante una actualización de contraseña: 
-                ${exception as string}
+                ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -340,10 +339,10 @@ class UserController {
             return res.json({
                 message: 'La cuenta fue eliminada éxitosamente',
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
                 Error durante una suspensión de cuenta: 
-                ${exception as string}
+                ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -379,10 +378,10 @@ class UserController {
             return res.json({
                 user,
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
                 Error buscando un usuario: 
-                ${exception as string}
+                ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -431,10 +430,10 @@ class UserController {
             return res.status(201).json({
                 message: 'Ahora sigues a este usuario',
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
                 Error al seguir un usuario: 
-                ${exception as string}
+                ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -478,10 +477,10 @@ class UserController {
             return res.json({
                 message: 'Se ha dejado de seguir el usuario',
             });
-        } catch (exception) {
+        } catch (error) {
             logger.error(`
                 Error al dejar de seguir a un usuario: 
-                ${exception as string}
+                ${error as string}
             `);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',

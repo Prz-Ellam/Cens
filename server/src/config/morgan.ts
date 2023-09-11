@@ -1,5 +1,5 @@
 import morgan from 'morgan';
-import { logger } from '@config/logger';
+import logger from '@config/logger';
 
 const morganMiddleware = morgan((tokens, req, res) => {
     const status = res.statusCode;

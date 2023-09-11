@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Backend",
+  "description": "Backend for Cens Application",
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,9 @@
     "transpile": "tsc && tsc-alias",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   },
-  "keywords": [],
+  "keywords": [
+    "Cens"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {

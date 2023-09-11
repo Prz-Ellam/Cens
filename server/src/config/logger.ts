@@ -1,7 +1,7 @@
 import path from 'path';
 import winston from 'winston';
 import 'winston-daily-rotate-file';
-import { env } from './env';
+import env from './env';
 
 const { combine, timestamp, printf, colorize } = winston.format;
 
@@ -56,4 +56,4 @@ const logger = winston.createLogger({
     exceptionHandlers: [consoleTransport],
 });
 
-export { logger };
+export default logger;
