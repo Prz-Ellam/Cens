@@ -101,20 +101,24 @@ function LoginSignup() {
           <div className="login">
             <form>
               <label htmlFor="chk" aria-hidden="true">Inicia sesión</label>
-              <input 
-                type="email" 
-                name="email" 
-                placeholder="Corre electrónico" 
-                onChange={(event) => { setEmail(event.target.value) }}
-              />
-              {errors.email && <span className="error-message">{errors.email}</span>}            
-              <input 
-                type="password" 
-                name="password" 
-                placeholder="Contraseña"
-                onChange={(event) => { setPassword(event.target.value) }}
-              />
-              {errors.password && <span className="error-message">{errors.password}</span>}            
+              <div className="input-container">
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="Corre electrónico" 
+                  onChange={(event) => { setEmail(event.target.value) }}
+                />
+                {errors.email && <span className="error-message">{errors.email}</span>}
+              </div>
+              <div className="input-container">
+                <input 
+                  type="password" 
+                  name="password" 
+                  placeholder="Contraseña"
+                  onChange={(event) => { setPassword(event.target.value) }}
+                />
+                {errors.password && <span className="error-message">{errors.password}</span>}
+              </div>            
               <button type="button" className="loginBtn" onClick={() => { login() }}>
                 Acceder
               </button> {/*Llamamos a la funcion login*/}
