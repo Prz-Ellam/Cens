@@ -6,7 +6,7 @@ import User from '@/models/user.model';
 import { validateRegister } from '@/validators/register.validator';
 import { validateLogin } from '@/validators/login.validator';
 import { validateUpdateUser } from '@/validators/update-user.validator';
-import { logger } from '@/config/logger';
+import logger from '@/config/logger';
 import { validateId } from '@/validators/id.validator';
 import Follower from '@/models/follower.model';
 import UserService from '@/services/user.service';

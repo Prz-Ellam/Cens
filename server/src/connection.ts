@@ -1,5 +1,5 @@
 import { connection } from '@config/database';
-import { logger } from '@config/logger';
+import logger from '@config/logger';
 import type { DataSource } from 'typeorm';
 
 export async function databaseConnection(): Promise<DataSource | null> {

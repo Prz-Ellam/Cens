@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import env from '@config/env';
-import { logger } from './logger';
+import logger from './logger';
 
 const dialect = env.get('db.connection');
 let type: DatabaseType = 'mysql';

@@ -1,4 +1,4 @@
-import { logger } from '@/config/logger';
+import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Comment from '@/models/comment.model';
 import Poll from '@/models/poll.model';

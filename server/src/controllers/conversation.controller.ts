@@ -1,5 +1,5 @@
 import { connection } from '@/config/database';
-import { logger } from '@/config/logger';
+import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Conversation from '@/models/conversation.model';
 import Participant from '@/models/participant.model';

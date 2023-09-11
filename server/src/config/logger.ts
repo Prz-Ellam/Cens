@@ -56,4 +56,4 @@ const logger = winston.createLogger({
     exceptionHandlers: [consoleTransport],
 });
 
-export { logger };
+export default logger;

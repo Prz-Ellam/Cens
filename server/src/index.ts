@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import app from '@config/app';
-import { logger } from '@config/logger';
+import logger from '@config/logger';
 import { databaseConnection } from './connection';
 
 app.listen(app.get('port'), async () => {
