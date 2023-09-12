@@ -4,6 +4,7 @@ import MoonAnimation from '../components/MoonAnimation.jsx'
 import axios from 'axios'
 import { z } from "zod"
 import Swal from 'sweetalert2'
+import { Link } from 'react-router-dom';
 
 function LoginSignup() {
   const [email, setEmail] = useState("");    //para login
@@ -44,6 +45,7 @@ function LoginSignup() {
       // console.error(validationResult.error);
       return;
     }
+
     // Restablece los errores si la validación es exitosa
     setErrors({});
 
