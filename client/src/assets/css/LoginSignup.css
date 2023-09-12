@@ -1,4 +1,4 @@
-body {
+.mybody-loginsignup {
     /* margin-right: 25px; */
     padding: 0;
     margin: 0;
@@ -10,6 +10,7 @@ body {
     background: linear-gradient(to bottom, #5e38a5, #07040e);
     /* background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); */
     /* background: #000; */
+    /* overflow: hidden; */
 }
 
 /* scene.background = new THREE.Color(0x5e38a5); // Color de inicio del gradiente
@@ -66,7 +67,7 @@ label {
 
 input {
     width: 60%;
-    height: 20px;
+    /* height: 20px; */
     background: #e0dede;
     justify-content: center;
     display: flex;
@@ -95,7 +96,8 @@ button {
     cursor: pointer;
 }
 
-button.loginBtn, button.registerBtn{
+button.loginBtn,
+button.registerBtn {
     width: 60%;
 }
 
@@ -169,6 +171,33 @@ button:hover {
     /* Espacio entre cada par de input y span */
 }
 
+
+.btnBack {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    background-color: #A94639;
+    padding: 5px 10px;
+    color: white;
+    border: none;
+    margin: 10px 10px 0 0;
+    border-radius: 50%;
+    height: 32px;
+}
+
+.link-style {
+    color: white;
+    /* Color blanco */
+    text-decoration: none;
+    /* Elimina el subrayado predeterminado */
+    /* Otros estilos, si es necesario */
+}
+
+.btnBack:hover {
+    background-color: darkred;
+    /* Cambiamos el color al pasar el mouse sobre el botón */
+}
 
 
 /* Media query para centrar horizontalmente en pantallas más anchas */

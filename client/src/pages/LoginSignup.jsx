@@ -4,6 +4,7 @@ import MoonAnimation from '../components/MoonAnimation.jsx'
 import axios from 'axios'
 import { z } from "zod"
 import Swal from 'sweetalert2'
+import { Link } from 'react-router-dom';
 
 function LoginSignup() {
     const [email, setEmail] = useState("");    //para login
@@ -94,32 +95,35 @@ function LoginSignup() {
     }
     return (
         <>
-            <MoonAnimation />
-            <div className="main col-4">
-                <input type="checkbox" id="chk" aria-hidden="true"></input>
-                <div className="login">
-                    <form>
-                        <label htmlFor="chk" aria-hidden="true">Inicia sesión</label>
-                        <div className="input-container">
-                            <input type="email" name="email" placeholder="Email" required onChange={(event) => { setEmail(event.target.value) }}></input>
-                            {errors.email && <span className="error-message">{errors.email}</span>}
-                        </div>
-                        <div className="input-container">
-                            <input type="password" name="password" placeholder="Password" required onChange={(event) => { setPassword(event.target.value) }}></input>
-                            {errors.password && <span className="error-message">{errors.password}</span>}
-                        </div>
-                        <button type="button" className="loginBtn" onClick={() => { login() }}>Acceder</button> {/*Llamamos a la funcion login*/}
-                    </form>
-                </div>
-                <div className="signup">
-                    <form>
-                        <label htmlFor="chk" aria-hidden="true">Regístrate</label>
-                        <input type="text" id="newUsername" name="newUsername" placeholder="Username" required></input>
-                        <input type="email" id="newEmail" name="newEmail" placeholder="Email" required></input>
-                        <input type="password" id="newPassword" name="newPassword" placeholder="Password" required></input>
-                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required></input>
-                        <button type="button" className="registerBtn">Hecho</button>
-                    </form>
+            <div className='row mybody-loginsignup'>
+                <MoonAnimation />
+                <div className="main col-4">
+                    <button className="btnBack" type="button"><Link to="/" className='link-style'>X</Link></button>
+                    <input type="checkbox" id="chk" aria-hidden="true"></input>
+                    <div className="login">
+                        <form>
+                            <label htmlFor="chk" aria-hidden="true">Inicia sesión</label>
+                            <div className="input-container">
+                                <input type="email" name="email" placeholder="Email" required onChange={(event) => { setEmail(event.target.value) }}></input>
+                                {errors.email && <span className="error-message">{errors.email}</span>}
+                            </div>
+                            <div className="input-container">
+                                <input type="password" name="password" placeholder="Password" required onChange={(event) => { setPassword(event.target.value) }}></input>
+                                {errors.password && <span className="error-message">{errors.password}</span>}
+                            </div>
+                            <button type="button" className="loginBtn" onClick={() => { login() }}>Acceder</button> {/*Llamamos a la funcion login*/}
+                        </form>
+                    </div>
+                    <div className="signup">
+                        <form>
+                            <label htmlFor="chk" aria-hidden="true">Regístrate</label>
+                            <input type="text" id="newUsername" name="newUsername" placeholder="Username" required></input>
+                            <input type="email" id="newEmail" name="newEmail" placeholder="Email" required></input>
+                            <input type="password" id="newPassword" name="newPassword" placeholder="Password" required></input>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required></input>
+                            <button type="button" className="registerBtn">Hecho</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

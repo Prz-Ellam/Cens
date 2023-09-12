@@ -73,8 +73,8 @@ function MoonAnimation() {
       controls.update(); // Actualizar los controles del mouse
       //sphere.rotation.x += 0.01;
 
-        if (fbxSpaceRocks)
-          fbxSpaceRocks.rotation.y += 0.0002;
+      if (fbxSpaceRocks)
+        fbxSpaceRocks.rotation.y += 0.0002;
 
       //  // Calcular la rotación en radianes para un ángulo de 45 grados
       // const angle = Math.PI / 4; // 45 grados en radianes
@@ -103,7 +103,7 @@ function MoonAnimation() {
         });
         fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
 
-        
+
         const animLoader = new FBXLoader();
         animLoader.setPath("src/assets/3dmodels/");
         animLoader.load("mMoonRocket.fbx", (anim) => {
@@ -179,10 +179,23 @@ function MoonAnimation() {
 
     // Llama a la función una vez para establecer el tamaño inicial correctamente
     onWindowResize();
+
+
+    // // Agrega un contenedor div para limitar el ancho al 66% y centrar el contenido
+    // const contentContainer = document.createElement('div');
+    // contentContainer.style.width = '66%'; // Establece el ancho al 66%
+    // contentContainer.style.margin = '0'; // Centra horizontalmente
+    // contentContainer.style.display = 'flex'; // Usa flexbox para centrar verticalmente
+    // contentContainer.style.justifyContent = 'center'; // Centra verticalmente
+    // contentContainer.style.alignItems = 'center'; // Centra verticalmente
+    // contentContainer.appendChild(renderer.domElement);
+
+    // document.getElementById("scene-container").appendChild(contentContainer);
+
   }, []);
   return (
     <>
-      <div id="scene-container"></div>
+        <div id="scene-container"></div>
     </>
   )
 }
