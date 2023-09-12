@@ -1,47 +1,25 @@
-.mybody-loginsignup {
-    /* margin-right: 25px; */
+body {
     padding: 0;
     margin: 0;
-    /* display: flex; */
     justify-content: center;
     align-items: center;
-    /* min-height: 100vh; */
     font-family: 'Jost', sans-serif;
     background: linear-gradient(to bottom, #5e38a5, #07040e);
-    /* background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); */
-    /* background: #000; */
-    /* overflow: hidden; */
 }
 
-/* scene.background = new THREE.Color(0x5e38a5); // Color de inicio del gradiente
-const gradientColor = new THREE.Color(0x07040e); // Color final del gradiente */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-/* .main{
-    width: 350px;
-    height: 500px;
-    flex: 0.7;
-    background: red;
-    overflow: hidden;
-    background: url("../img/moon7.jpg") no-repeat center / cover;
-    border-radius: 10px;
-    box-shadow: 5px 20px 50px #000;
-} */
-
-.main {
+.login-register {
     width: 400px;
     height: 500px;
-    flex: 0.7;
-    /* background: red; */
     overflow: hidden;
     background: url("../img/moon7.jpg") no-repeat center / cover;
     border-radius: 10px;
-    box-shadow: 5px 20px 50px #000;
-
-    /* Centrar horizontalmente y verticalmente en pantallas más pequeñas */
-    position: absolute;
-    top: 50%;
-    left: 82%;
-    transform: translate(-50%, -50%);
+    box-shadow: 5px 20px 50px #000; 
 }
 
 #chk {
@@ -79,7 +57,6 @@ input {
 }
 
 button {
-    /* width: 60%; */
     height: 40px;
     margin: 10px auto;
     justify-content: center;
@@ -98,7 +75,7 @@ button {
 
 button.loginBtn,
 button.registerBtn {
-    width: 60%;
+    width: 65%;
 }
 
 button:hover {
@@ -106,17 +83,18 @@ button:hover {
 }
 
 .signup {
-    height: 460px;
+    height: 450px;
     background: #eee;
     border-radius: 60% / 10%;
-    transform: translateY(-180px);
+    transform: translateY(-190px);
     transition: .8s ease-in-out;
 }
 
 .signup label {
     color: #573b8a;
     transform: scale(.6);
-    margin: 60px;
+    margin-bottom: 30px;
+    padding-top: 13px;
 }
 
 #chk:checked~.signup {
@@ -137,21 +115,10 @@ button:hover {
     overflow: hidden;
 }
 
-/* #login-container {
-    background: linear-gradient(to top, #07040e, #5e38a5); /* Fondo de gradiente
-    flex: 0.75;
-    padding: 3px 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative; /* Agregar posición relativa para alinear la línea y el enlace
-} */
-
 .row {
     display: grid;
     grid-template-columns: 66% 33%;
 }
-
 
 .error-message {
     color: #ff0000;
@@ -170,7 +137,6 @@ button:hover {
     /* margin-bottom: 20px; */
     /* Espacio entre cada par de input y span */
 }
-
 
 .btnBack {
     position: fixed;
@@ -199,7 +165,6 @@ button:hover {
     /* Cambiamos el color al pasar el mouse sobre el botón */
 }
 
-
 /* Media query para centrar horizontalmente en pantallas más anchas */
 @media screen and (max-width: 1100px) {
     .main {
@@ -209,5 +174,10 @@ button:hover {
 
     #scene-container {
         display: none;
+    }
+
+    .row {
+        display: grid;
+        grid-template-columns: 100%;
     }
 }

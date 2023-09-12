@@ -4,7 +4,6 @@ import LandingPage from './pages/LandingPage.jsx';
 import LoginSignup from './pages/LoginSignup.jsx';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-
 function App() {
   // Aplica el estilo 'overflow-hidden' solo cuando la ruta es '/login'
   const location = useLocation();
@@ -18,12 +17,8 @@ function App() {
     }
   }, [location]);
 
-
-
   return (
     <>
-      {/* <LoginSignup /> */}
-      {/* <LandingPage /> */}
       <Routes>
         <Route path='/' element={<LandingPage />} />
         <Route path='/login' element={<LoginSignup />} />
