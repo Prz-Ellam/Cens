@@ -2,17 +2,22 @@
 
 ## Crear Comentario
 
-Endpoint: `/api/v1/comments`
+Endpoint: `/api/v1/polls/:pollId/comments`
 
-Método: POST
+Method: POST
 
 ### Parámetros de la Solicitud
-
-Formato: application/json
 
 | Nombre   | Tipo   | Requerido | Descripción                          |
 | -------- | ------ | --------- | ------------------------------------ |
 | pollId   | Integer | True      | ID de la encuesta a la que se desea agregar el comentario |
+
+### Cuerpo de la solicitud
+
+Formato: application/json
+
+| Nombre   | Tipo   | Requerido | Descripción                          |
+| -------- | ------ | --------- | ------------------------------------ |                          
 | text     | String | True      | Texto del comentario                 |
 
 ### Respuesta
@@ -30,7 +35,7 @@ Devuelve un mensaje exitoso si el comentario se creó con éxito.
 
 Endpoint: `/api/v1/comments/:commentId`
 
-Método: PUT
+Method: PUT
 
 ### Parámetros de la Solicitud
 
@@ -38,7 +43,7 @@ Método: PUT
 | ---------- | ------ | --------- | ----------------------------------------- |
 | commentId  | Integer | True      | Identificador del comentario a actualizar |
 
-### Parámetros del Cuerpo de la Solicitud
+### Cuerpo de la Solicitud
 
 Formato: application/json
 
@@ -62,7 +67,7 @@ Devuelve un mensaje exitoso si el comentario se actualizó con éxito.
 
 Endpoint: `/api/v1/comments/:commentId`
 
-Método: DELETE
+Method: DELETE
 
 ### Parámetros de la Solicitud
 
@@ -84,9 +89,9 @@ Devuelve un mensaje exitoso si el comentario se eliminó con éxito.
 
 ## Encontrar Todos los Comentarios por Encuesta
 
-Endpoint: `/api/v1/comments/poll/:pollId`
+Endpoint: `/api/v1/poll/:pollId/comments`
 
-Método: GET
+Method: GET
 
 ### Parámetros de la Solicitud
 

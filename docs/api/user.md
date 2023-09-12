@@ -2,7 +2,7 @@
 
 ## Registrar usuario
 
-Endpoint: /api/v1/users
+Endpoint: `/api/v1/users`
 
 Method: POST
 
@@ -32,7 +32,7 @@ Retorna un token de acceso del usuario registrado
 
 ## Iniciar sesión
 
-Endpoint: /api/v1/auth
+Endpoint: `/api/v1/auth`
 
 Method: POST
 
@@ -59,7 +59,7 @@ Retorna un token de acceso del usuario que inicio sesión
 
 ## Actualizar usuario
 
-Endpoint: /api/v1/users/:id
+Endpoint: `/api/v1/users/:id`
 
 Method: PUT
 
@@ -99,7 +99,7 @@ Retorna mensaje exitoso si el usuario fue actualizado
 
 ## Actualizar contraseña
 
-Endpoint: /api/v1/users/:id/password
+Endpoint: `/api/v1/users/:id/password`
 
 Method: PUT
 
@@ -134,7 +134,7 @@ Retorna mensaje exitoso si la contraseña del usuario fue actualizada
 
 ## Actualizar avatar
 
-Endpoint: /api/v1/users/:id/avatar
+Endpoint: `/api/v1/users/:id/avatar`
 
 Method: PUT
 
@@ -166,7 +166,7 @@ Retorna mensaje exitoso si el avatar fue actualizado
 
 ## Eliminar usuario
 
-Endpoint: /api/v1/users/:id
+Endpoint: `/api/v1/users/:id`
 
 Method: DELETE
 
@@ -190,7 +190,7 @@ Retorna mensaje exitoso si el usuario fue eliminado
 
 ## Seguir usuario
 
-Endpoint: /api/v1/users/:id/followers
+Endpoint: `/api/v1/users/:id/followers`
 
 Method: POST
 
@@ -214,7 +214,7 @@ Retorna mensaje exitoso si el usuario empezó a ser seguido
 
 ## Dejar de seguir usuario
 
-Endpoint: /api/v1/users/:id/followers
+Endpoint: `/api/v1/users/:id/followers`
 
 Method: DELETE
 

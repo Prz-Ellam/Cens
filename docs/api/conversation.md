@@ -4,7 +4,7 @@
 
 Endpoint: `/api/v1/conversations`
 
-Método: POST
+Method: POST
 
 ### Parámetros de la Solicitud
 
@@ -31,7 +31,7 @@ Devuelve un mensaje exitoso si la conversación se creó con éxito.
 
 Endpoint: `/api/v1/conversations/user/:userId`
 
-Método: GET
+Method: GET
 
 ### Parámetros de la Solicitud
 

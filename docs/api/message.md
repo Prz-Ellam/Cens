@@ -4,7 +4,7 @@
 
 Endpoint: `/api/v1/messages/:conversationId`
 
-Método: POST
+Method: POST
 
 ### Parámetros de la Solicitud
 
@@ -31,7 +31,7 @@ Devuelve un mensaje exitoso si el mensaje se creó con éxito.
 
 Endpoint: `/api/v1/messages/:messageId`
 
-Método: PUT
+Method: PUT
 
 ### Parámetros de la Solicitud
 
@@ -54,7 +54,7 @@ Devuelve un mensaje exitoso si el mensaje se actualizó con éxito.
 
 Endpoint: `/api/v1/messages/:messageId`
 
-Método: DELETE
+Method: DELETE
 
 ### Parámetros de la Solicitud
 
@@ -77,7 +77,7 @@ Devuelve un mensaje exitoso si el mensaje se eliminó con éxito.
 
 Endpoint: `/api/v1/messages/conversation/:conversationId`
 
-Método: GET
+Method: GET
 
 ### Parámetros de la Solicitud
 

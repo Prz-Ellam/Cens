@@ -4,7 +4,7 @@
 
 Endpoint: `/api/v1/polls`
 
-Método: POST
+Method: POST
 
 ### Parámetros de la Solicitud
 
@@ -30,7 +30,7 @@ Devuelve un mensaje exitoso si la encuesta se creó con éxito.
 
 Endpoint: `/api/v1/polls/:pollId`
 
-Método: PUT
+Method: PUT
 
 ### Parámetros de la Solicitud
 
@@ -50,7 +50,7 @@ Devuelve un mensaje que indica que las encuestas no pueden ser modificadas para 
 
 Endpoint: `/api/v1/polls/:pollId`
 
-Método: DELETE
+Method: DELETE
 
 ### Parámetros de la Solicitud
 
@@ -74,7 +74,7 @@ Devuelve un mensaje exitoso si la encuesta se eliminó con éxito.
 
 Endpoint: `/api/v1/polls/:id`
 
-Método: GET
+Method: GET
 
 ### Parámetros de la Solicitud
 
