@@ -4,7 +4,6 @@ import MoonAnimation from '../components/MoonAnimation.jsx'
 import axios from 'axios'
 import { z } from "zod"
 import Swal from 'sweetalert2'
-import { Link } from 'react-router-dom';
 
 function LoginSignup() {
   const [email, setEmail] = useState("");    //para login
@@ -62,7 +61,7 @@ function LoginSignup() {
       // Manejar la respuesta exitosa aquí
       // console.log(response.data.message);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "success",
         title: response.data.message,
         confirmButtonText: 'Continuar',
@@ -72,7 +71,7 @@ function LoginSignup() {
       // Manejar errores aquí
       // console.error(error.response.data.message);
 
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: error.response.data.message,
         confirmButtonText: 'Aceptar',

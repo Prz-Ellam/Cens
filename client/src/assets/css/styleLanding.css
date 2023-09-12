@@ -1,6 +1,7 @@
 
 .mybody-landingPage {
     min-height:100vh;
+    width: 100vw;
     overflow-x: hidden;
     background: linear-gradient(#190932, #8aa2d5);
 }
