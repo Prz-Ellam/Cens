@@ -25,7 +25,7 @@ class UserController {
     async register(req: Request, res: Response): Promise<Response> {
         try {
             const contentType = req.get('content-type');
-            if (!contentType!.includes('application/json')) {
+            if (!contentType?.includes('application/json')) {
                 return res.status(415).json({
                     message: 'Tipo de contenido invalido',
                 });
@@ -65,7 +65,7 @@ class UserController {
     async login(req: Request, res: Response): Promise<Response> {
         try {
             const contentType = req.get('content-type');
-            if (!contentType!.includes('application/json')) {
+            if (!contentType?.includes('application/json')) {
                 return res.status(415).json({
                     message: 'Tipo de contenido invalido',
                 });
@@ -117,6 +117,13 @@ class UserController {
 
     async update(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const userId = Number.parseInt(req.params.id) || -1;
             const idResult = validateId(userId);
             if (!idResult.status) {
@@ -179,6 +186,13 @@ class UserController {
 
     async updatePassword(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const userId = Number.parseInt(req.params.id) || -1;
             const idResult = validateId(userId);
             if (!idResult.status) {
