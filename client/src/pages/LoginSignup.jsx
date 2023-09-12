@@ -4,12 +4,15 @@ import MoonAnimation from '../components/MoonAnimation.jsx'
 import axios from 'axios'
 import { z } from "zod"
 import Swal from 'sweetalert2'
+import { Link, useNavigate } from 'react-router-dom';
+
 
 function LoginSignup() {
   const [email, setEmail] = useState("");    //para login
   const [password, setPassword] = useState("");   //para login
   const [errors, setErrors] = useState({});
-
+  
+  const navigate = useNavigate();
 
   const loginValidator = z.object({
     email: z
@@ -62,22 +65,26 @@ function LoginSignup() {
       // console.log(response.data.message);
 
       await Swal.fire({
-        icon: "success",
+        icon: 'success',
         title: response.data.message,
         confirmButtonText: 'Continuar',
-      })
+      });
+
+      // TODO: Go to Homepage later
+      // if (result.isConfirmed) {
+        navigate('/');
+      // }
 
     } catch (error) {
       // Manejar errores aquí
       // console.error(error.response.data.message);
 
       await Swal.fire({
-        icon: "error",
+        icon: 'error',
         title: error.response.data.message,
         confirmButtonText: 'Aceptar',
-      })
+      });
     }
-
 
     //CON METODO FETCH
 
@@ -94,10 +101,11 @@ function LoginSignup() {
     // const response = await fetch ("http://localhost:5173/login", config);
   }
   return (
-    <>
+    <div className='row mybody-loginsignup'>
       <MoonAnimation />
       <div className='main-container'>
         <div className="login-register">
+        <button className="btnBack" type="button"><Link to="/" className='link-style'>X</Link></button>
           <input type="checkbox" id="chk" aria-hidden="true"></input>
           <div className="login">
             <form>
@@ -157,7 +165,7 @@ function LoginSignup() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

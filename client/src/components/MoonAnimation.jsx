@@ -180,7 +180,6 @@ function MoonAnimation() {
     // Llama a la función una vez para establecer el tamaño inicial correctamente
     onWindowResize();
 
-
     // // Agrega un contenedor div para limitar el ancho al 66% y centrar el contenido
     // const contentContainer = document.createElement('div');
     // contentContainer.style.width = '66%'; // Establece el ancho al 66%
