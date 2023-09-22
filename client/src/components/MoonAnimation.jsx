@@ -1,19 +1,18 @@
 import { useEffect } from 'react';
 import '../assets/css/LoginSignup.css'
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
 export default function MoonAnimation() {
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    const sceneContainer = document.getElementById('scene-container');
+    const $sceneContainer = document.getElementById('scene-container');
 
     const camera = new THREE.PerspectiveCamera(
       75,
-      sceneContainer.clientWidth / sceneContainer.clientHeight,
+      $sceneContainer.clientWidth / $sceneContainer.clientHeight,
       0.1,
       1000
     );
@@ -160,8 +159,8 @@ export default function MoonAnimation() {
     // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
     function onWindowResize() {
       // Obtén el nuevo ancho y alto de la ventana
-      const newWidth = sceneContainer.clientWidth;
-      const newHeight = sceneContainer.clientHeight;
+      const newWidth = $sceneContainer.clientWidth;
+      const newHeight = $sceneContainer.clientHeight;
 
       // Actualiza el tamaño del lienzo de renderizado
       renderer.setSize(newWidth, newHeight);
@@ -190,8 +189,6 @@ export default function MoonAnimation() {
 
   }, []);
   return (
-    <>
-        <div id="scene-container"></div>
-    </>
+    <div id="scene-container"></div>
   )
 }
