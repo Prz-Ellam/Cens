@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import "./App.css";
 import LandingPage from "./pages/LandingPage.jsx";
 import LoginSignup from "./pages/LoginSignup.jsx";
 import { Route, Routes, useLocation } from "react-router-dom";
