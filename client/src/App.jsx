@@ -4,6 +4,7 @@ import LoginSignup from "./pages/LoginSignup.jsx";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Chat from "./pages/Chat";
 import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/Home.jsx";
 
 function App() {
   // Aplica el estilo 'overflow-hidden' solo cuando la ruta es '/login'
@@ -31,6 +32,7 @@ function App() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/chat" element={<Chat />} />
+        <Route path="/home" element={<Home />} />
       </Route>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginSignup />} />
