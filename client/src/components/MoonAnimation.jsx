@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 import '../assets/css/LoginSignup.css'
-// import '../assets/threejs/main.js'
-// import * as THREE from 'three';
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { OrbitControls } from "../assets/threejs/OrbitControls.js";
 
-import { FBXLoader } from "https://cdn.jsdelivr.net/npm/three@0.118.1/examples/jsm/loaders/FBXLoader.js";
-import { Vector3 } from 'https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
-function MoonAnimation() {
+export default function MoonAnimation() {
 
   useEffect(() => {
     const scene = new THREE.Scene();
@@ -58,7 +55,7 @@ function MoonAnimation() {
 
     // Posicionar la cámara
     camera.position.set(0, 0, 3.5); // Cambiar la posición de la cámara
-    camera.lookAt(new Vector3(0, -0.5, 0)); // Enfocar la cámara en la esfera
+    camera.lookAt(new THREE.Vector3(0, -0.5, 0)); // Enfocar la cámara en la esfera
 
     // Habilitar los controles del mouse para navegar
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -198,5 +195,3 @@ function MoonAnimation() {
     </>
   )
 }
-
-export default MoonAnimation

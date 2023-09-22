@@ -3,7 +3,7 @@ import ChatContact from "./ChatContact";
 export default function ChatList() {
   return (
     <section className="h-full flex items-center">
-      <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-95 shadow-lg">
+      <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-[95%] shadow-lg">
         <h2 className="text-center text-4xl font-bold text-gray-300 my-2 mx-auto">
           Contactos
         </h2>

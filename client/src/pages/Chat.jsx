@@ -18,7 +18,7 @@ export default function Chat() {
 
           <div className={`w-full`}>
             <div className="h-full flex md:flex-row items-center px-3 md:px-0 md:pe-3 overflow-hidden">
-              <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-95 shadow-lg">
+              <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-[95%] shadow-lg">
                 <div className="flex justify-between items-center my-2 ">
                   <div className="flex items-center">
                     <button className="btn border-0 px-1 md:px-2 md:hidden block">
@@ -40,21 +40,17 @@ export default function Chat() {
                   className="overflow-auto px-4 py-2 h-full chat"
                   id="message-box"
                 >
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
-                  <ChatMessage />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Adios" own={false} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={false} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={false} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={true} />
+                  <ChatMessage avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" message="Hola" own={false} />
+
                 </div>
 
                 <hr className="my-3" />

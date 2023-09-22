@@ -13,11 +13,6 @@ export default {
         accent: '#2E2E2E',
         purple: '#4E3878',
         transparentGray: '#4D4E55' // Define your custom secondary color
-      },
-      customUtilities: {
-        'min-w-48': {
-          'min-width': '12rem'
-        }
       }
     },
   },

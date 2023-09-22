@@ -7,7 +7,7 @@ export default function ChatContact({ avatar, username, lastMessage, date, pendi
         <img
           src={avatar}
           alt="Profile Picture"
-          className="w-10 h-10 rounded-full me-3 min-w-10"
+          className="w-10 h-10 rounded-full me-3 min-w-[2.5rem]"
         />
         <div className="truncate">
           <p className="text-base text-gray-300 truncate">{username}</p>

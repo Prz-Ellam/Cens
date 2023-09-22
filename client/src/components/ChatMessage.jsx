@@ -1,13 +1,12 @@
-function ChatMessage() {
-  const message = "Hola Mundo";
-  const own = true;
+import PropTypes from 'prop-types';
 
+export default function ChatMessage({ avatar, message, own }) {
   return (
     <div className={`flex my-4 ${own ? "justify-end" : "justify-start"}`}>
       {!own && (
         <img
           className="rounded-full me-2 w-8 h-8"
-          src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
+          src={avatar}
           alt="Avatar"
         />
       )}
@@ -22,4 +21,9 @@ function ChatMessage() {
   );
 }
 
-export default ChatMessage;
+ChatMessage.propTypes = {
+  avatar: PropTypes.string.isRequired,
+  message: PropTypes.string.isRequired,
+  own: PropTypes.bool.isRequired,
+};
+
