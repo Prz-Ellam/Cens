@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../assets/css/LoginSignup.css'
+// import '../assets/css/LoginSignup.css'
 import MoonAnimation from '../components/MoonAnimation.jsx'
 import axios from 'axios'
 import { z } from "zod"
@@ -105,16 +105,17 @@ function LoginSignup() {
       <MoonAnimation />
       <div className='main-container'>
         <div className="login-register">
-        <button className="btnBack" type="button"><Link to="/" className='link-style'>X</Link></button>
+       <Link to="/" className='btnBack link-style'>X</Link>
           <input type="checkbox" id="chk" aria-hidden="true"></input>
           <div className="login">
             <form>
-              <label htmlFor="chk" aria-hidden="true">Inicia sesión</label>
+              <label htmlFor="chk" aria-hidden="true" className='login-label inicio'>Inicia sesión</label>
               <div className="input-container">
                 <input 
                   type="email" 
                   name="email" 
                   placeholder="Corre electrónico" 
+                  className='login-input'
                   onChange={(event) => { setEmail(event.target.value) }}
                 />
                 {errors.email && <span className="error-message">{errors.email}</span>}
@@ -124,6 +125,7 @@ function LoginSignup() {
                   type="password" 
                   name="password" 
                   placeholder="Contraseña"
+                  className='login-input'
                   onChange={(event) => { setPassword(event.target.value) }}
                 />
                 {errors.password && <span className="error-message">{errors.password}</span>}
@@ -135,30 +137,34 @@ function LoginSignup() {
           </div>
           <div className="signup">
             <form>
-              <label htmlFor="chk" aria-hidden="true">Regístrate</label>
+              <label htmlFor="chk" aria-hidden="true" className='login-label'>Regístrate</label>
               <input 
                 type="text" 
                 id="newUsername" 
                 name="newUsername" 
                 placeholder="Nombre de usuario"
+                className='login-input'
               />
               <input 
                 type="email" 
                 id="newEmail" 
                 name="newEmail" 
                 placeholder="Correo electrónico"
+                className='login-input'
               />
               <input 
                 type="password" 
                 id="newPassword" 
                 name="newPassword" 
                 placeholder="Contraseña"
+                className='login-input'
               />
               <input 
                 type="password" 
                 id="confirmPassword" 
                 name="confirmPassword" 
                 placeholder="Confirma tu contraseña" 
+                className='login-input'
               />
               <button type="button" className="registerBtn">Hecho</button>
             </form>

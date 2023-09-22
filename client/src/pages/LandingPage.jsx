@@ -48,7 +48,7 @@ function LandingPage() {
             <li><Link to="/login" className="active">Iniciar Sesión</Link></li>
           </ul>
         </header>
-        <section>
+        <section className='landing-section'>
           <img src="../src/assets/img/stars1.png" id="stars" alt="Estrellas" />
           <img src="../src/assets/img/moon.png" id="moon" alt="Luna" />
           <img src="../src/assets/img/sea1.png" id="sea" alt="Mar" />
