@@ -11,7 +11,7 @@ export default {
         secondary: '#0E0C1D',
         dark: '#242424',
         accent: '#2E2E2E',
-        purple: '#4E3878',
+        purple: '#573b8a',
         transparentGray: '#4D4E55' // Define your custom secondary color
       }
     },

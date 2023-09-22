@@ -79,8 +79,8 @@ export default function Home({ className }) {
 
   return (
     <section className={className}>
-      <div className="flex over">
-        <div className="md:w-2/3 w-screen p-3">
+      <div className="flex">
+        <div className="md:w-2/3 w-full p-3">
           <div className="rounded-lg bg-dark text-white mb-5">
             <div className="flex flex-row items-center p-4">
               <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">

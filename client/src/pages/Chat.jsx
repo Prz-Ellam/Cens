@@ -16,7 +16,7 @@ export default function Chat() {
       <div className={`w-full`}>
         <div className="h-full flex md:flex-row items-center px-3 md:px-0  overflow-hidden">
           <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-full shadow-lg">
-            <div className="flex justify-between items-center my-2 ">
+            <div className="flex justify-between items-center mb-1 py-2 ">
               <div className="flex items-center">
                 <button className="btn border-0 px-1 md:px-2 md:hidden block">
                   <i className="bi fa-solid fa-chevron-left"></i>

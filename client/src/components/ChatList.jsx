@@ -4,7 +4,7 @@ export default function ChatList() {
   return (
     <section className="h-full flex items-center">
       <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-full shadow-lg">
-        <h2 className="text-center text-4xl font-bold text-gray-300 my-2 mx-auto">
+        <h2 className="text-center text-4xl font-bold text-gray-300 mb-1 py-2 mx-auto">
           Contactos
         </h2>
         <hr className="mb-2" />

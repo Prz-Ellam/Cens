@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 export default function SurveyForm({ id, title, description, options }) {
   return (
-    <div className="h-full mb-4 p-3 rounded-lg bg-accent text-white">
+    <div className="h-full mb-4 p-3 rounded-lg bg-accent text-white shadow-lg">
       <div className="flex flex-row items-center mb-3">
         <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
           <img
@@ -15,11 +15,11 @@ export default function SurveyForm({ id, title, description, options }) {
           <div className="flex items-center">
             <div className="text-sm font-medium">Nombre apellido</div>
           </div>
-          <p className='font-bold'>{title}</p>
+          <p className="font-bold">{title}</p>
         </div>
       </div>
       <p>{description}</p>
-      { options.map((option, index) => (
+      {options.map((option, index) => (
         <div className="flex py-2" key={index}>
           <div className="flex items-center min-h-[1.5rem] pl-[1.5rem] mr-2">
             <input
@@ -29,13 +29,18 @@ export default function SurveyForm({ id, title, description, options }) {
             />
           </div>
           <div className="grow">
-            <div className="relative w-full rounded-lg h-8 outline outline-gray-600" style={{ outlineWidth: '2px' }}>
-              <div 
-                className={`bg-purple h-8 ${ (option.percentage !== 100 ? 'rounded-l-lg' : 'rounded-lg') }`}
-                style={{ width: `${option.percentage}%` }}>
-              </div>
+            <div
+              className="relative w-full rounded-lg h-8 outline outline-gray-600"
+              style={{ outlineWidth: '2px' }}
+            >
+              <div
+                className={`bg-purple h-8 ${
+                  option.percentage !== 100 ? 'rounded-l-lg' : 'rounded-lg'
+                }`}
+                style={{ width: `${option.percentage}%` }}
+              ></div>
               <label className="absolute left-0 top-1/2 transform -translate-y-1/2 ml-3 cursor-pointer">
-                { option.name }
+                {option.name}
               </label>
               <span className="absolute right-0 top-1/2 transform -translate-y-1/2 mr-3 text-gray-300">
                 {option.percentage}%
@@ -44,21 +49,24 @@ export default function SurveyForm({ id, title, description, options }) {
           </div>
         </div>
       ))}
-      <p className='flex gap-3 mt-3'>
+      <p className="flex gap-3 mt-3">
         <span className="flex content-center me-2">
-          <box-icon type='solid' name='like' color='#BDBDBD'></box-icon>
-          <span className='ms-1'>221</span>
+          <box-icon type="solid" name="like" color="#BDBDBD"></box-icon>
+          <span className="ms-1">221</span>
         </span>
         <span className="flex content-center me-2">
-          <box-icon name='dislike' type='solid' color='#BDBDBD'></box-icon>
-          <span className='ms-1'>4</span>
+          <box-icon name="dislike" type="solid" color="#BDBDBD"></box-icon>
+          <span className="ms-1">4</span>
         </span>
         <span className="flex content-center me-2">
-          <box-icon name='message-rounded' type='solid' color='#BDBDBD'></box-icon>
-          <span className='ms-1'>34 comentarios</span>
+          <box-icon
+            name="message-rounded"
+            type="solid"
+            color="#BDBDBD"
+          ></box-icon>
+          <span className="ms-1">34 comentarios</span>
         </span>
       </p>
-      
     </div>
   );
 }
@@ -68,4 +76,4 @@ SurveyForm.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired
-}
+};
