@@ -3,7 +3,7 @@
     margin: 0;
     justify-content: center;
     align-items: center;
-    font-family: 'Jost', sans-serif;
+    font-family: 'Lato', sans-serif;
     background: linear-gradient(to bottom, #5e38a5, #07040e);
 }
 
@@ -64,7 +64,7 @@ button {
     justify-content: center;
     display: block;
     color: #fff;
-    background: #573b8a;
+    background: #573b8a !important;
     font-size: 1em;
     font-weight: bold;
     margin-top: 20px;

@@ -11,16 +11,18 @@ export default function ChatContact({ avatar, username, lastMessage, date, pendi
         />
         <div className="truncate">
           <p className="text-base text-gray-300 truncate">{username}</p>
-          <p className="text-sm text-gray-400 truncate">{lastMessage}</p>
+          <p className={`text-sm truncate ${pending > 0 ? 'font-bold text-gray-200' : 'text-gray-400'}`}>
+            {lastMessage}
+          </p>
         </div>
       </div>
       <div>
         <p className="text-sm text-gray-400 text-right whitespace-nowrap mb-1">
           {date}
         </p>
-        <span className="bg-red-500 text-gray-300 text-xs font-bold float-right rounded-full py-0.5 px-1.5">
+        {pending > 0 && <span className="bg-red-500 text-gray-300 text-xs font-bold float-right rounded-full py-0.5 px-1.5">
           {pending}
-        </span>
+        </span>}
       </div>
     </article>
   );

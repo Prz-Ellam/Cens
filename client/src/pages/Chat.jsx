@@ -2,10 +2,10 @@ import ChatList from "../components/ChatList";
 import ChatMessage from "../components/ChatMessage";
 
 // eslint-disable-next-line react/prop-types
-export default function Chat({ className }) {
+export default function Chat() {
   const isChatDrawerFocus = true;
   return (
-    <section className={className}>
+    <section className="h-full">
       <div className="h-full container mx-auto">
         <div className="flex h-full gap-3">
           <div

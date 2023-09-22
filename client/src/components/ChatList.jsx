@@ -14,7 +14,7 @@ export default function ChatList() {
             username="Username"
             lastMessage="Last Message"
             date="23/03/2023 14:15"
-            pending={1}
+            pending={0}
           />
           <ChatContact
             avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
