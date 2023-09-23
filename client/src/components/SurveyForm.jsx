@@ -49,24 +49,20 @@ export default function SurveyForm({ id, title, description, options }) {
           </div>
         </div>
       ))}
-      <p className="flex gap-3 mt-3">
-        <span className="flex content-center me-2 cursor-pointer">
-          <box-icon type="solid" name="like" color="#BDBDBD"></box-icon>
-          <span className="ms-1">221</span>
-        </span>
-        <span className="flex content-center me-2 cursor-pointer">
-          <box-icon name="dislike" type="solid" color="#BDBDBD"></box-icon>
-          <span className="ms-1">4</span>
-        </span>
-        <span className="flex content-center me-2 cursor-pointer">
-          <box-icon
-            name="message-rounded"
-            type="solid"
-            color="#BDBDBD"
-          ></box-icon>
-          <span className="ms-1">34 comentarios</span>
-        </span>
-      </p>
+      <div className="flex gap-5 mt-3">
+        <p className="flex content-center gap-1 cursor-pointer hover:text-green-400 transition duration-150 ease-out hover:ease-in">
+          <i className="bx-sm bx bxs-like"></i>
+          <span>221</span>
+        </p>
+        <p className="flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in">
+          <i className="bx-sm bx bxs-dislike"></i>
+          <span>4</span>
+        </p>
+        <p className="flex content-center gap-1 cursor-pointer hover:text-blue-400 transition duration-150 ease-out hover:ease-in">
+          <i className="bx-sm bx bxs-message-rounded"></i>
+          <span>34 comentarios</span>
+        </p>
+      </div>
     </article>
   );
 }

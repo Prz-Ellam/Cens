@@ -4,7 +4,7 @@ const dateTimeRegex = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/;
 
 export default function ChatContact({ avatar, username, lastMessage, date, pending }) {
   return (
-    <article className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
+    <article className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer transition duration-150 ease-out hover:ease-in">
       <div className="flex items-center gap-3 overflow-hidden">
         <img
           src={avatar}
