@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 
+const dateTimeRegex = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/;
+
 export default function ChatContact({ avatar, username, lastMessage, date, pending }) {
   return (
-    <article className="flex justify-between hover:bg-gray-500 rounded-lg p-2 cursor-pointer">
-      <div className="flex items-center overflow-hidden">
+    <article className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
+      <div className="flex items-center gap-3 overflow-hidden">
         <img
           src={avatar}
           alt="Profile Picture"
-          className="w-10 h-10 rounded-full me-3 min-w-[2.5rem]"
+          className="w-10 h-10 rounded-full min-w-[2.5rem]"
         />
         <div className="truncate">
           <p className="text-base text-gray-300 truncate">{username}</p>
@@ -32,6 +34,12 @@ ChatContact.propTypes = {
   avatar: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   lastMessage: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  date: (props, propName, componentName) => {
+    if (!dateTimeRegex.test(props[propName])) {
+      return new Error(
+        `Invalid prop '${propName}' supplied to '${componentName}'. It should be in the format 'DD/MM/YYYY HH:MM'.`
+      );
+    }
+  },
   pending: PropTypes.number.isRequired,
 };

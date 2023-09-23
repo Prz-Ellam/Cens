@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 export default function SurveyForm({ id, title, description, options }) {
   return (
-    <div className="h-full mb-4 p-3 rounded-lg bg-accent text-white shadow-lg">
+    <article className="h-full mb-4 p-3 rounded-lg bg-accent text-gray-300 shadow-lg">
       <div className="flex flex-row items-center mb-3">
         <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
           <img
@@ -50,15 +50,15 @@ export default function SurveyForm({ id, title, description, options }) {
         </div>
       ))}
       <p className="flex gap-3 mt-3">
-        <span className="flex content-center me-2">
+        <span className="flex content-center me-2 cursor-pointer">
           <box-icon type="solid" name="like" color="#BDBDBD"></box-icon>
           <span className="ms-1">221</span>
         </span>
-        <span className="flex content-center me-2">
+        <span className="flex content-center me-2 cursor-pointer">
           <box-icon name="dislike" type="solid" color="#BDBDBD"></box-icon>
           <span className="ms-1">4</span>
         </span>
-        <span className="flex content-center me-2">
+        <span className="flex content-center me-2 cursor-pointer">
           <box-icon
             name="message-rounded"
             type="solid"
@@ -67,7 +67,7 @@ export default function SurveyForm({ id, title, description, options }) {
           <span className="ms-1">34 comentarios</span>
         </span>
       </p>
-    </div>
+    </article>
   );
 }
 
