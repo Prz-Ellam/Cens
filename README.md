@@ -1,6 +1,6 @@
 # Cens
 
-<h3>Colaboradores: <br></h3>
+### Colaboradores:
 Eliam Rodríguez Pérez (<a href="https://github.com/Prz-Ellam">@Prz-Ellam</a>) - <b>Back-End</b> <br>
 Jan Anthony Ochoa Retta (<a href="https://github.com/JanOchoa10">@JanOchoa10</a>) - <b>Front-End</b> <br>
 Ian Brandon Palacios (<a href="https://github.com/IanPalace">@IanPalace</a>) - <b>DBA</b> <br>
@@ -11,6 +11,58 @@ Gerardo Octavio Arias Hernández (<a href="https://github.com/geohwnd">@geohwnd<
 
 Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la aplicación podrán crear encuestas, votar en encuestas y dar su opinión de las mismas.<br>
 
+### Tecnologías
+
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+  width="64"
+  alt="React"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Vitejs-logo.svg"
+  width="64"
+  alt="Vite"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+  width="64"
+  alt="NodeJS"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg"
+  width="64"
+  alt="Express"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"
+  width="64"
+  alt="Visual Studio Code"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/npm/npm-original-wordmark.svg"
+  width="64"
+  alt="npm"
+  style="margin-right: 4px"
+/>
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg"
+  width="64"
+  alt="THREE"
+  style="margin-right: 4px"
+/>
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+  width="64"
+  alt="MySQL"
+  style="margin-right: 4px"
+/>
+          
+        
 ### Carpetas
 
 - `client`: Esta carpeta la aplicación frontend utilizando React + Vite
