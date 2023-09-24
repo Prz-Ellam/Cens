@@ -12,6 +12,7 @@ import {
 import User from './user.model';
 import Option from './option.model';
 import { Exclude, instanceToPlain } from 'class-transformer';
+import Comment from './comment.model';
 
 @Entity({ name: 'polls' })
 export default class Poll extends BaseEntity {
@@ -29,6 +30,9 @@ export default class Poll extends BaseEntity {
 
     @OneToMany(() => Option, (option) => option.poll)
     options: Option[];
+
+    @OneToMany(() => Comment, (comment) => comment.poll)
+    comments: Comment[];
 
     @CreateDateColumn()
     createdAt: Date;

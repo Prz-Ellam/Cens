@@ -8,6 +8,7 @@ import ReactionController from '@/controllers/reaction.controller';
 const pollRouter = Router();
 
 // Obtener todas las encuestas de un usuario
+pollRouter.get('/', authMiddleware, PollController.findMany);
 pollRouter.get('/:id', authMiddleware, PollController.findOne);
 pollRouter.post('/', authMiddleware, PollController.create);
 pollRouter.put('/:pollId', authMiddleware, PollController.update);
