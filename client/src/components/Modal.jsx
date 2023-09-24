@@ -7,14 +7,14 @@ export default function Modal({ title, close, setClose, children }) {
       }`}
     >
       <div className="relative w-screen max-w-2xl max-h-full">
-        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 max-w-screen-lg">
-          <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="relative rounded-lg shadow bg-dark max-w-screen-lg">
+          <div className="flex items-start justify-between p-4 rounded-t dark:border-gray-600">
+            <h3 className="text-xl font-semibold text-gray-300">
               {title}
             </h3>
             <button
               type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              className="text-gray-400 bg-transparent rounded-full hover:bg-gray-200 hover:text-gray-900 text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
               data-modal-hide="defaultModal"
               onClick={() => setClose(true)}
             >
@@ -37,7 +37,7 @@ export default function Modal({ title, close, setClose, children }) {
             </button>
           </div>
           <div className="p-6 space-y-6">{children}</div>
-          <div className="justify-end flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+          <div className="justify-end flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600">
             <button
               data-modal-hide="defaultModal"
               type="button"
