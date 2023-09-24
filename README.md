@@ -95,3 +95,6 @@ Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la apli
   - `tests`: Se encuentra el código fuente de los tests
     - `feature`: Se encuentran tests de tipo feature
     - `unit`: Se encuentran tests de tipo unit
+
+
+npx ts-node  -r tsconfig-paths/register database/seeder/countries.ts

@@ -1,87 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import SurveyForm from '../components/SurveyForm';
+import axios from 'axios';
 
 // eslint-disable-next-line react/prop-types
 export default function Home({ className }) {
   const [close, setClose] = useState(true);
 
-  const polls = [
-    {
-      id: 1,
-      title: 'Poll 1',
-      description: 'Poll description 1',
-      options: [
-        {
-          name: 'Opcion 1',
-          percentage: 50
-        },
-        {
-          name: 'Opcion 2',
-          percentage: 50
-        }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Poll 2',
-      description: 'Poll description 2',
-      options: [
-        {
-          name: 'Opcion 1',
-          percentage: 33
-        },
-        {
-          name: 'Opcion 2',
-          percentage: 33
-        },
-        {
-          name: 'Opcion 3',
-          percentage: 33
-        }
-      ]
-    },
-    {
-      id: 3,
-      title: 'Poll 3',
-      description: 'Poll description 3',
-      options: [
-        {
-          name: 'Opcion 1',
-          percentage: 25
-        },
-        {
-          name: 'Opcion 2',
-          percentage: 25
-        },
-        {
-          name: 'Opcion 3',
-          percentage: 25
-        },
-        {
-          name: 'Opcion 4',
-          percentage: 25
-        }
-      ]
-    },
-    {
-      id: 4,
-      title: 'Poll 4',
-      description: 'Poll description 4',
-      options: [
-        {
-          name: 'Ejemplo',
-          percentage: 100
-        }
-      ]
-    }
-  ];
+  let [polls, setPolls] = useState([]);
+  const [options] = useState([]);
+
+  useEffect(() => {
+    axios('/api/v1/polls', {
+      headers: {
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjk1NDk5MjY5LCJleHAiOjE2OTgwOTEyNjl9.A7yURrk3ot3dJbpgn8DZBRidp6G_J6hJbrFPxq0JN40`
+      }
+    }).then((response) => {
+      setPolls(response.data);
+    });
+  }, []);
 
   return (
     <section className={className}>
       <div className="flex">
         <div className="md:w-2/3 w-full p-3">
-          <div className="rounded-lg bg-dark text-white mb-5">
+          <div className="rounded-lg bg-accent shadow-lg text-white mb-5">
             <div className="flex flex-row items-center p-4">
               <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
                 <img
@@ -100,30 +43,31 @@ export default function Home({ className }) {
             <hr className="mx-3 text-gray-600" />
             <button
               type="button"
-              className="ml-3 my-1 text-blue-700 hover:text-white  border-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="ml-3 my-1 text-white hover:bg-gray-500 font-medium rounded-lg px-5 py-2.5 text-center"
               onClick={() => setClose(false)}
             >
               Encuesta
             </button>
           </div>
 
-          <div className="rounded-lg bg-dark text-white p-4">
+          <section className="flex flex-col gap-4 rounded-lg">
             {polls.map((poll, index) => (
               <SurveyForm
                 key={index}
                 id={poll.id}
-                title={poll.title}
+                question={poll.question}
                 description={poll.description}
                 options={poll.options}
+                name={poll.user.username}
               />
             ))}
-          </div>
+          </section>
         </div>
         <div className="md:w-1/3 md:block hidden p-3">
-          <div className="h-screen rounded-lg bg-dark text-white mb-5 p-4">
-            <h2 className="font-bold">Buscar encuestas</h2>
+          <div className="h-screen rounded-lg bg-accent text-white mb-5 p-4">
+            <h2 className="text-lg font-bold">Buscar encuestas</h2>
 
-            <div className="flex flex-row items-center py-3">
+            <div className="flex flex-row items-center py-3 hover:bg-gray-500">
               <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
                 <img
                   src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
@@ -173,19 +117,44 @@ export default function Home({ className }) {
           </div>
         </div>
       </div>
-      <Modal title="Crear encuesta" close={close} setClose={setClose}>
-        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-          With less than a month to go before the European Union enacts new
-          consumer privacy laws for its citizens, companies around the world are
-          updating their terms of service agreements to comply.
-        </p>
-        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-          The European Union’s General Data Protection Regulation (G.D.P.R.)
-          goes into effect on May 25 and is meant to ensure a common set of data
-          rights in the European Union. It requires organizations to notify
-          users as soon as possible of high-risk data breaches that could
-          personally affect them.
-        </p>
+      <Modal question="Crear encuesta" close={close} setClose={setClose}>
+        <div className="mb-4">
+          <label
+            className="block text-gray-300 text-sm font-bold mb-2"
+            htmlFor="username"
+          >
+            Pregunta
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full mb-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="username"
+            type="text"
+            placeholder="Pregunta"
+          />
+
+
+          <label
+            className="block text-gray-300 text-sm font-bold mb-2"
+            htmlFor="username"
+          >
+            Descripción
+          </label>
+          <textarea
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="username"
+            type="text"
+            placeholder="Descripción"
+          ></textarea>
+
+          {options?.map((option, index) => (
+            <h1 key={index}>
+              A
+            </h1>
+          ))}
+
+          <button>Añadir opción</button>
+
+        </div>
       </Modal>
     </section>
   );
