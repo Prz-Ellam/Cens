@@ -1,9 +1,7 @@
 import PropTypes from 'prop-types';
 
-export default function SurveyForm({ id, question, description, options, name }) {
-  const likeCount = 221;
-  const dislikeCount = 4;
-  const commentCount = 34;
+// eslint-disable-next-line react/prop-types
+export default function SurveyForm({ id, question, description, options, name, commentCount, likeCount, dislikeCount }) {
   return (
     <article className="bg-accent text-gray-300 p-4 rounded-lg shadow-lg">
       <div className="flex gap-3 items-center mb-3">

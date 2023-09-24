@@ -13,6 +13,7 @@ import User from './user.model';
 import Option from './option.model';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import Comment from './comment.model';
+import Reaction from './reaction.model';
 
 @Entity({ name: 'polls' })
 export default class Poll extends BaseEntity {
@@ -33,6 +34,9 @@ export default class Poll extends BaseEntity {
 
     @OneToMany(() => Comment, (comment) => comment.poll)
     comments: Comment[];
+
+    @OneToMany(() => Reaction, (reactions) => reactions.poll)
+    reactions: Reaction[];
 
     @CreateDateColumn()
     createdAt: Date;
