@@ -138,6 +138,17 @@ class PollController {
             });
         }
     }
+
+    async findMany(_req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            const polls = await PollService.findMany();
+            return res.json(polls);
+        } catch (exception) {
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
 }
 
 export default new PollController();
