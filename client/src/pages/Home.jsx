@@ -59,6 +59,9 @@ export default function Home({ className }) {
                 description={poll.description}
                 options={poll.options}
                 name={poll.user.username}
+                commentCount={poll.comments.length}
+                likeCount={poll.reactions.filter(reaction => reaction.isLike === true).length}
+                dislikeCount={poll.reactions.filter(reaction => reaction.isLike === false).length}
               />
             ))}
           </section>
