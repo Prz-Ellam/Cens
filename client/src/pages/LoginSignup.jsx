@@ -5,6 +5,7 @@ import axios from 'axios';
 import { z } from 'zod';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
+import { setToken } from '../utils/auth.js';
 
 function LoginSignup() {
   const [email, setEmail] = useState(''); //para login
@@ -122,8 +123,7 @@ function LoginSignup() {
         confirmButtonText: 'Continuar'
       });
 
-      // TODO: Go to Homepage later
-      // if (result.isConfirmed) {
+      setToken(response.data.token);
       navigate('/home');
       // }
     } catch (error) {

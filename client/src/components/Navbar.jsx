@@ -1,14 +1,16 @@
+import { Link } from 'react-router-dom';
+
 export default function Navbar() {
   return (
     <nav className="border-gray-200 bg-gradient-to-r from-secondary to-primary h-14 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
-        <a href="/" className="flex float-left ">
+        <Link to="/" className="flex float-left ">
           <img
             src="https://raw.githubusercontent.com/Prz-Ellam/Cens/main/client/src/assets/img/Cens_Logo2.png"
             className="h-14 mr-3"
             alt="Flowbite Logo"
           />
-        </a>
+        </Link>
         <button
           data-collapse-toggle="navbar-default"
           type="button"

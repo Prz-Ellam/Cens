@@ -32,6 +32,7 @@ export default class PollService {
                 'options',
                 'poll.id = options.poll_id',
             )
+            .orderBy('poll.created_at', 'DESC')
             .getMany();
     }
 }

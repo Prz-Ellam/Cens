@@ -1,7 +1,23 @@
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import { getToken } from '../utils/auth'
+import { useEffect } from 'react';
 
 // eslint-disable-next-line react/prop-types
 export default function SurveyForm({ id, question, description, options, name, commentCount, likeCount, dislikeCount }) {
+
+  const selectOption = async (pollId, optionId) => {
+    await axios.post(`/api/v1/polls/${pollId}/votes`, { optionId }, {
+      headers: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    })
+  }
+
+  useEffect(() => {
+    console.log(options);
+  })
+
   return (
     <article className="bg-accent text-gray-300 p-4 rounded-lg shadow-lg">
       <div className="flex gap-3 items-center mb-3">
@@ -24,7 +40,7 @@ export default function SurveyForm({ id, question, description, options, name, c
               type="radio"
               name={`radioDefault-${id}`}
               id={`radioDefault-${id}-${index}`}
-              onClick={() => console.log('Hola')}
+              onClick={() => selectOption(id, option.id)}
             />
           </div>
           <div className="grow">
