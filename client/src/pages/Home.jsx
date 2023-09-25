@@ -2,13 +2,58 @@ import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import SurveyForm from '../components/SurveyForm';
 import axios from 'axios';
+import { getToken } from '../utils/auth';
 
 // eslint-disable-next-line react/prop-types
 export default function Home({ className }) {
+  const initialItems = [];
+
+  // Create a state variable to store the input values
+  const [options, setOptions] = useState(initialItems);
+  const [question, setQuestion] = useState('');
+  const [description, setDescription] = useState('');
+
+  // Function to handle changes in input values
+  const handleInputChange = (index, event) => {
+    const newValues = [...options];
+    newValues[index] = event.target.value;
+    setOptions(newValues);
+  };
+
+  const handleAddInput = () => {
+    if (options.length < 5) {
+      setOptions([...options, '']);
+    }
+  };
+
+  const handleDelete = (indexToDelete) => {
+    // Create a new array without the item to be deleted
+    const updatedItems = options.filter((option, index) => index !== indexToDelete);
+    
+    // Update the state with the new array
+    setOptions(updatedItems);
+  };
+
+  const createPoll = async () => {
+    const poll = {
+      question,
+      description,
+      options
+    };
+
+    console.log(getToken());
+
+    await axios.post('/api/v1/polls', poll, {
+      headers: {
+        Authorization:
+          `Bearer ${getToken()}`
+      }
+    });
+  };
+
   const [close, setClose] = useState(true);
 
   let [polls, setPolls] = useState([]);
-  const [options] = useState([]);
 
   useEffect(() => {
     axios('/api/v1/polls', {
@@ -60,8 +105,14 @@ export default function Home({ className }) {
                 options={poll.options}
                 name={poll.user.username}
                 commentCount={poll.comments.length}
-                likeCount={poll.reactions.filter(reaction => reaction.isLike === true).length}
-                dislikeCount={poll.reactions.filter(reaction => reaction.isLike === false).length}
+                likeCount={
+                  poll.reactions.filter((reaction) => reaction.isLike === true)
+                    .length
+                }
+                dislikeCount={
+                  poll.reactions.filter((reaction) => reaction.isLike === false)
+                    .length
+                }
               />
             ))}
           </section>
@@ -121,43 +172,79 @@ export default function Home({ className }) {
         </div>
       </div>
       <Modal question="Crear encuesta" close={close} setClose={setClose}>
-        <div className="mb-4">
+        <form className="mb-4">
           <label
-            className="block text-gray-300 text-sm font-bold mb-2"
-            htmlFor="username"
+            className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer"
+            htmlFor="question"
           >
             Pregunta
           </label>
           <input
             className="shadow appearance-none border rounded w-full mb-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="question"
             type="text"
             placeholder="Pregunta"
+            onChange={(event) => setQuestion(event.target.value)}
           />
 
-
           <label
-            className="block text-gray-300 text-sm font-bold mb-2"
-            htmlFor="username"
+            className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer"
+            htmlFor="description"
           >
             Descripción
           </label>
           <textarea
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="username"
+            id="description"
             type="text"
+            cols="30"
+            rows="3"
             placeholder="Descripción"
+            onChange={(event) => setDescription(event.target.value)}
           ></textarea>
 
-          {options?.map((option, index) => (
-            <h1 key={index}>
-              A
-            </h1>
-          ))}
+          <label className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer">
+            Opciones
+          </label>
+          <div>
+            {options.map((value, index) => (
+              <div
+                className="relative mb-4 flex flex-wrap items-stretch"
+                key={index}
+              >
+                <input
+                  type="text"
+                  className="shadow appearance-none border rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-700 outline-none transition duration-200 ease-in-out focus:z-[3]"
+                  placeholder="Recipient's username"
+                  value={value}
+                  onChange={(event) => handleInputChange(index, event)}
+                />
+                <button
+                  type="button"
+                  className="bg-red-500 text-gray-300 flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-red-500 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6]"
+                  onClick={() => {handleDelete(index)}}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              onClick={handleAddInput}
+            >
+              Añadir opción
+            </button>
+          </div>
 
-          <button>Añadir opción</button>
-
-        </div>
+          <button
+            type="button"
+            onClick={createPoll}
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Create
+          </button>
+        </form>
       </Modal>
     </section>
   );

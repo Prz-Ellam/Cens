@@ -10,7 +10,7 @@ import { ViewEntity, ViewColumn } from 'typeorm';
       options.created_at,
       options.updated_at,
       options.deleted_at, 
-      IFNULL(CAST(100 * COUNT(votes.id) / SUM(COUNT(votes.id)) OVER() AS FLOAT), 0) as percentage
+      IFNULL(CAST(100 * COUNT(votes.id) / SUM(COUNT(votes.id)) OVER(PARTITION BY options.poll_id) AS FLOAT), 0) as percentage
     FROM options
     LEFT JOIN votes ON options.id = votes.option_id
     GROUP BY options.id

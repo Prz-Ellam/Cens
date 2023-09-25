@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 export default function Comment() {
+  const [open, setOpen] = useState(false);
+
   return (
     <article className="p-6 text-baserounded-lg bg-accent">
       <footer className="flex justify-between items-center mb-2">
@@ -17,11 +21,13 @@ export default function Comment() {
             </time>
           </p>
         </div>
+        <div className="relative">
         <button
           id="dropdownComment1Button"
           data-dropdown-toggle="dropdownComment1"
           className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           type="button"
+          onClick={() => setOpen(!open) }
         >
           <svg
             className="w-4 h-4"
@@ -34,10 +40,10 @@ export default function Comment() {
           </svg>
           <span className="sr-only">Comment settings</span>
         </button>
-        {/* Dropdown menu */}
         <div
           id="dropdownComment1"
-          className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
+          className={`z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 right-0
+          ${ open ? 'absolute' : 'hidden' }`}
         >
           <ul
             className="py-1 text-sm text-gray-700 dark:text-gray-200"
@@ -48,7 +54,7 @@ export default function Comment() {
                 href="#"
                 className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
-                Edit
+                Editar
               </a>
             </li>
             <li>
@@ -56,21 +62,14 @@ export default function Comment() {
                 href="#"
                 className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
               >
-                Remove
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Report
+                Eliminar
               </a>
             </li>
           </ul>
         </div>
+        </div>
       </footer>
-      <p className="text-gray-500 dark:text-gray-400">
+      <p className="text-gray-300">
         Very straight-to-point article. Really worth time reading. Thank you!
         But tools are just the instruments for the UX designers. The knowledge
         of the design tools are as important as the creation of the design
