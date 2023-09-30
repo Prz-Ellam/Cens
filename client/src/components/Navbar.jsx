@@ -1,14 +1,25 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getUserData } from '../utils/auth';
 
 export default function Navbar() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+
+    const userData = getUserData();
+    setUser(userData);
+
+  }, [])
+
   return (
     <nav className="border-gray-200 bg-gradient-to-r from-secondary to-primary h-14 shadow-md">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
+      <div className="w-full flex items-center justify-between px-8">
         <Link to="/" className="flex float-left ">
           <img
             src="https://raw.githubusercontent.com/Prz-Ellam/Cens/main/client/src/assets/img/Cens_Logo2.png"
             className="h-14 mr-3"
-            alt="Flowbite Logo"
+            alt="Avatar"
           />
         </Link>
         <button
@@ -35,6 +46,7 @@ export default function Navbar() {
             />
           </svg>
         </button>
+        <input type="text" id="search-navbar" className="block w-[50%] p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." />
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
             <li>
@@ -67,7 +79,7 @@ export default function Navbar() {
                 href="#"
                 className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
-                Pricing
+                {user?.username}
               </a>
             </li>
             <li>

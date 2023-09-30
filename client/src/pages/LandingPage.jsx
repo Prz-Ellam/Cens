@@ -37,7 +37,7 @@ function LandingPage() {
 
   return (
     <div className="mybody-landingPage">
-      <header>
+      <header className='landing-header'>
         <a href="#" className="logo">
           <img
             src="../src/assets/img/Cens_Logo2.png"

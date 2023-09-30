@@ -9,6 +9,8 @@ export default class PollService {
         return await repository
             .createQueryBuilder('poll')
             .leftJoinAndSelect('poll.user', 'user')
+            .leftJoinAndSelect('poll.comments', 'comments')
+            .leftJoinAndSelect('poll.reactions', 'reactions')
             .leftJoinAndMapMany(
                 'poll.options',
                 OptionWithPercentage,

@@ -29,7 +29,6 @@ export default function Chat() {
                 <span className="text-xl md:text-lg ms-3 text-gray-300 font-bold">
                   Jan Ochoa
                 </span>
-                <i className="bx bxs-send"></i>
               </div>
             </div>
             <hr className="mx-3" />
@@ -150,7 +149,7 @@ export default function Chat() {
                 aria-describedby="basic-addon2"
               />
               <button className="flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-neutral-300 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6] text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200">
-                Enviar
+              <i className="bx bxs-send"></i>
               </button>
             </div>
           </div>
