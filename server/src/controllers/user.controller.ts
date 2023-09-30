@@ -15,6 +15,7 @@ import { validateUpdatePassword } from '@/validators/update-password.validator';
 
 import fs from 'fs';
 import { promisify } from 'util';
+import path from 'path';
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -99,6 +100,7 @@ class UserController {
             const token = generateToken(requestedUser.id);
             return res.json({
                 message: 'Inicio de sesión éxitoso',
+                user: requestedUser,
                 token,
             });
         } catch (error) {
@@ -289,7 +291,9 @@ class UserController {
             const oldAvatar = user.avatar;
             user.avatar = req.file.path;
 
-            await unlinkAsync(oldAvatar);
+            if (oldAvatar) {
+                await unlinkAsync(oldAvatar);
+            }
 
             await user.save();
 
@@ -297,6 +301,7 @@ class UserController {
                 message: 'El avatar fue añadido',
             });
         } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
@@ -304,24 +309,27 @@ class UserController {
     }
 
     async getAvatar(req: AuthRequest, res: Response): Promise<void> {
-        const userId = Number.parseInt(req.params.id) || -1;
-        const idResult = validateId(userId);
-        if (!idResult.status) {
-            res.status(422).json({
-                message: 'El identificador seleccionado no es válido',
-            });
-            return;
-        }
+        try {
+            const userId = Number.parseInt(req.params.id) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+                return;
+            }
 
-        const user = await User.findOneBy({ id: userId });
-        if (!user) {
-            res.status(404).json({
-                message: 'El usuario solicitado no fue encontrado',
-            });
-            return;
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+                return;
+            }
+            res.sendFile(user.avatar);
+        } catch (error) {
+            res.sendFile(path.join(__dirname, 'default-profile-picture.png'));
         }
-
-        res.sendFile(user.avatar);
     }
 
     async delete(req: AuthRequest, res: Response): Promise<Response> {

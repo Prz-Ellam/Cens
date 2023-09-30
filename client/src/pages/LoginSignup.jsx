@@ -1,11 +1,10 @@
 import { useState } from 'react';
-// import '../assets/css/LoginSignup.css'
 import MoonAnimation from '../components/MoonAnimation.jsx';
 import axios from 'axios';
 import { z } from 'zod';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
-import { setToken } from '../utils/auth.js';
+import { setToken, setUserData } from '../utils/auth.js';
 
 function LoginSignup() {
   const [email, setEmail] = useState(''); //para login
@@ -36,8 +35,8 @@ function LoginSignup() {
       })
   });
 
-  async function register(event) {
-    event.preventDefault;
+  async function handleRegister(event) {
+    event.preventDefault();
 
     const register = {
       username: registerUsername,
@@ -71,7 +70,6 @@ function LoginSignup() {
     } catch (error) {
       // Manejar errores aquí
       // console.error(error.response.data.message);
-
       await Swal.fire({
         icon: 'error',
         title: error.response.data.message,
@@ -80,15 +78,19 @@ function LoginSignup() {
     }
   }
 
-  async function login() {
-    //funcion para el login
-    const loginInfo = { email: email, password: password };
+  /**
+   * 
+   * @param {Event} event 
+   * @returns 
+   */
+  async function login(event) {
+    event.preventDefault();
 
-    // Validar los datos utilizando Zod
-    const validationResult = loginValidator.safeParse(loginInfo);
+    const loginData = { email, password };
+
+    const validationResult = loginValidator.safeParse(loginData);
 
     if (!validationResult.success) {
-      // Manejar errores de validación aquí
       const validationErrors = {};
 
       validationResult.error.issues.forEach((issue) => {
@@ -109,7 +111,7 @@ function LoginSignup() {
       method: 'POST',
       url: '/api/v1/auth', // URL de la API
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify(loginInfo) // En lugar de { loginInfo }
+      data: JSON.stringify(loginData) // En lugar de { loginInfo }
     };
 
     try {
@@ -124,6 +126,7 @@ function LoginSignup() {
       });
 
       setToken(response.data.token);
+      setUserData(response.data.user);
       navigate('/home');
       // }
     } catch (error) {
@@ -161,7 +164,7 @@ function LoginSignup() {
           </Link>
           <input type="checkbox" id="chk" aria-hidden="true"></input>
           <div className="login">
-            <form>
+            <form onSubmit={login}>
               <label
                 htmlFor="chk"
                 aria-hidden="true"
@@ -198,19 +201,15 @@ function LoginSignup() {
                 )}
               </div>
               <button
-                type="button"
+                type="submit"
                 className="loginBtn"
-                onClick={() => {
-                  login();
-                }}
               >
                 Acceder
               </button>{' '}
-              {/*Llamamos a la funcion login*/}
             </form>
           </div>
           <div className="signup">
-            <form>
+            <form onSubmit={handleRegister}>
               <label htmlFor="chk" aria-hidden="true" className="login-label">
                 Regístrate
               </label>
@@ -254,8 +253,8 @@ function LoginSignup() {
                   setRegisterConfirmPassword(event.target.value);
                 }}
               />
-              <button type="button" className="registerBtn" onClick={register}>
-                Hecho
+              <button type="submit" className="registerBtn">
+                Registrarse
               </button>
             </form>
           </div>

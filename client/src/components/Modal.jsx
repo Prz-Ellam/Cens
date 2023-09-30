@@ -1,17 +1,20 @@
+
 // eslint-disable-next-line react/prop-types
-export default function Modal({ title, close, setClose, children }) {
+export default function Modal({ title, close, setClose, bodySlot }) {
   return (
     <div
       className={`fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-50 w-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 ${
         close ? 'hidden' : ''
       }`}
     >
+      <div
+        className="modal-overlay absolute inset-0 bg-black opacity-50"
+        onClick={() => setClose(true)}
+      ></div>
       <div className="relative w-screen max-w-2xl max-h-full">
-        <div className="relative rounded-lg shadow bg-dark max-w-screen-lg">
-          <div className="flex items-start justify-between p-4 rounded-t dark:border-gray-600">
-            <h3 className="text-xl font-semibold text-gray-300">
-              {title}
-            </h3>
+        <div className="relative rounded-lg shadow bg-dark max-w-screen-lg modal-overlay">
+          <div className="flex items-center justify-between p-4 rounded-t dark:border-gray-600">
+            <h2 className="text-xl font-semibold text-gray-300">{title}</h2>
             <button
               type="button"
               className="text-gray-400 bg-transparent rounded-full hover:bg-gray-200 hover:text-gray-900 text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -36,7 +39,7 @@ export default function Modal({ title, close, setClose, children }) {
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <div className="p-6 space-y-6">{children}</div>
+          <div className="p-6 space-y-6">{bodySlot}</div>
           <div className="justify-end flex items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600">
             <button
               data-modal-hide="defaultModal"

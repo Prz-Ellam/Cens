@@ -5,7 +5,7 @@
     background: linear-gradient(#190932, #8aa2d5);
 }
 
-header {
+.landing-header {
     position: absolute;
     top: 0;
     Left: 0;
@@ -17,7 +17,7 @@ header {
     z-index: 1000;
 }
 
-header .logo {
+.landing-header .logo {
     color: #fff;
     font-weight: 700;
     text-decoration: none;
@@ -26,26 +26,26 @@ header .logo {
     Letter-spacing: 2px;
 }
 
-header ul {
+.landing-header ul {
     display:flex;
     justify-content: center;
     align-items: center;
 }
 
-header ul li {
+.landing-header ul li {
     list-style: none;
     margin-left: 20px;
 }
 
-header ul li a {
+.landing-header ul li a {
     text-decoration: none;
     padding: 6px 15px;
     color: #fff;
     border-radius: 20px;
 }
 
-header ul li a:hover,
-header ul li a.active {
+.landing-header ul li a:hover,
+.landing-header ul li a.active {
     background: #fff;
     color: #2b1055;
 }

@@ -26,8 +26,8 @@ export default function App() {
       <Route element={<MainLayout />}>
         <Route path="/chat" element={<Chat />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/survey" element={<Survey />} />
+        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/survey/:pollId" element={<Survey />} />
       </Route>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginSignup />} />

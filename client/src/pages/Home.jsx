@@ -2,54 +2,20 @@ import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import SurveyForm from '../components/SurveyForm';
 import axios from 'axios';
-import { getToken } from '../utils/auth';
+import { getToken, getUserData } from '../utils/auth';
+import CreatePoll from '../components/CreatePoll';
 
 // eslint-disable-next-line react/prop-types
 export default function Home({ className }) {
-  const initialItems = [];
+  const [user, setUser] = useState(null);
 
-  // Create a state variable to store the input values
-  const [options, setOptions] = useState(initialItems);
-  const [question, setQuestion] = useState('');
-  const [description, setDescription] = useState('');
+  useEffect(() => {
 
-  // Function to handle changes in input values
-  const handleInputChange = (index, event) => {
-    const newValues = [...options];
-    newValues[index] = event.target.value;
-    setOptions(newValues);
-  };
+    const userData = getUserData();
+    setUser(userData);
 
-  const handleAddInput = () => {
-    if (options.length < 5) {
-      setOptions([...options, '']);
-    }
-  };
+  }, [])
 
-  const handleDelete = (indexToDelete) => {
-    // Create a new array without the item to be deleted
-    const updatedItems = options.filter((option, index) => index !== indexToDelete);
-    
-    // Update the state with the new array
-    setOptions(updatedItems);
-  };
-
-  const createPoll = async () => {
-    const poll = {
-      question,
-      description,
-      options
-    };
-
-    console.log(getToken());
-
-    await axios.post('/api/v1/polls', poll, {
-      headers: {
-        Authorization:
-          `Bearer ${getToken()}`
-      }
-    });
-  };
 
   const [close, setClose] = useState(true);
 
@@ -58,7 +24,7 @@ export default function Home({ className }) {
   useEffect(() => {
     axios('/api/v1/polls', {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjk1NDk5MjY5LCJleHAiOjE2OTgwOTEyNjl9.A7yURrk3ot3dJbpgn8DZBRidp6G_J6hJbrFPxq0JN40`
+        Authorization: `Bearer ${getToken()}`
       }
     }).then((response) => {
       setPolls(response.data);
@@ -73,14 +39,14 @@ export default function Home({ className }) {
             <div className="flex flex-row items-center p-4">
               <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
                 <img
-                  src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
+                  src={user?.id ? `/api/v1/users/${user?.id}/avatar` : '/default-profile-picture.png'}
                   alt="Your Image"
                   className="h-12 w-12 rounded-full"
                 />
               </div>
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
-                  <div className="font-bold">Nombre apellido</div>
+                  <div className="font-bold">{user?.username}</div>
                 </div>
                 <p className="text-gray-300">¿Qué deseas compartir?</p>
               </div>
@@ -121,14 +87,12 @@ export default function Home({ className }) {
           <div className="h-screen rounded-lg bg-accent text-white mb-5 p-4">
             <h2 className="text-lg font-bold">Buscar encuestas</h2>
 
-            <div className="flex flex-row items-center py-3 hover:bg-gray-500">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
-                <img
-                  src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                  alt="Your Image"
-                  className="h-12 w-12 rounded-full"
-                />
-              </div>
+            <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
+              <img
+                src="/default-profile-picture.png"
+                alt="Avatar"
+                className="h-12 w-12 rounded-full"
+              />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
                   <div className="text-sm font-medium">Nombre apellido</div>
@@ -137,14 +101,12 @@ export default function Home({ className }) {
               </div>
             </div>
 
-            <div className="flex flex-row items-center py-3">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
-                <img
-                  src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                  alt="Your Image"
-                  className="h-12 w-12 rounded-full"
-                />
-              </div>
+            <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
+              <img
+                src="/default-profile-picture.png"
+                alt="Avatar"
+                className="h-12 w-12 rounded-full"
+              />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
                   <div className="text-sm font-medium">Nombre apellido</div>
@@ -153,14 +115,12 @@ export default function Home({ className }) {
               </div>
             </div>
 
-            <div className="flex flex-row items-center py-3">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
-                <img
-                  src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                  alt="Your Image"
-                  className="h-12 w-12 rounded-full"
-                />
-              </div>
+            <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
+              <img
+                src="/default-profile-picture.png"
+                alt="Avatar"
+                className="h-12 w-12 rounded-full"
+              />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
                   <div className="text-sm font-medium">Nombre apellido</div>
@@ -168,83 +128,18 @@ export default function Home({ className }) {
                 <p className="font-bold">Título de la encuesta</p>
               </div>
             </div>
+
+            
           </div>
         </div>
       </div>
-      <Modal question="Crear encuesta" close={close} setClose={setClose}>
-        <form className="mb-4">
-          <label
-            className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer"
-            htmlFor="question"
-          >
-            Pregunta
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full mb-3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="question"
-            type="text"
-            placeholder="Pregunta"
-            onChange={(event) => setQuestion(event.target.value)}
-          />
-
-          <label
-            className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer"
-            htmlFor="description"
-          >
-            Descripción
-          </label>
-          <textarea
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="description"
-            type="text"
-            cols="30"
-            rows="3"
-            placeholder="Descripción"
-            onChange={(event) => setDescription(event.target.value)}
-          ></textarea>
-
-          <label className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer">
-            Opciones
-          </label>
-          <div>
-            {options.map((value, index) => (
-              <div
-                className="relative mb-4 flex flex-wrap items-stretch"
-                key={index}
-              >
-                <input
-                  type="text"
-                  className="shadow appearance-none border rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-700 outline-none transition duration-200 ease-in-out focus:z-[3]"
-                  placeholder="Recipient's username"
-                  value={value}
-                  onChange={(event) => handleInputChange(index, event)}
-                />
-                <button
-                  type="button"
-                  className="bg-red-500 text-gray-300 flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-red-500 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6]"
-                  onClick={() => {handleDelete(index)}}
-                >
-                  &times;
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={handleAddInput}
-            >
-              Añadir opción
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={createPoll}
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Create
-          </button>
-        </form>
+      <Modal 
+      question="Crear encuesta" 
+      close={close} 
+      setClose={setClose} 
+      title={"Crear encuesta"} 
+      bodySlot={<CreatePoll />}
+      >
       </Modal>
     </section>
   );
