@@ -124,7 +124,8 @@ class PollController {
                 });
             }
 
-            const poll = await PollService.findOneById(pollId);
+            const user = req.user;
+            const poll = await PollService.findOneById(pollId, user.id);
             if (!poll) {
                 return res.status(404).json({
                     message: 'No se encontró la encuesta solicitada',
@@ -139,9 +140,10 @@ class PollController {
         }
     }
 
-    async findMany(_req: AuthRequest, res: Response): Promise<Response> {
+    async findMany(req: AuthRequest, res: Response): Promise<Response> {
         try {
-            const polls = await PollService.findMany();
+            const user = req.user;
+            const polls = await PollService.findMany(user.id);
             return res.json(polls);
         } catch (exception) {
             return res.status(500).json({

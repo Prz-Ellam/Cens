@@ -12,7 +12,9 @@ export default function SurveyForm({
   name,
   commentCount,
   likeCount,
-  dislikeCount
+  dislikeCount,
+  hasLiked,
+  hasDisliked
 }) {
   const [open, setOpen] = useState(false);
 
@@ -32,8 +34,8 @@ export default function SurveyForm({
 
   useEffect(() => {
     /**
-     * 
-     * @param {Event} event 
+     *
+     * @param {Event} event
      */
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -80,7 +82,10 @@ export default function SurveyForm({
             className="h-12 w-12 rounded-full"
           />
           <div className="truncate">
-            <Link to={`/profile/${1}`} className="font-bold hover:underline truncate">
+            <Link
+              to={`/profile/${1}`}
+              className="font-bold hover:underline truncate"
+            >
               {name}
             </Link>
             <p className="font-md truncate">{question}</p>
@@ -131,7 +136,9 @@ export default function SurveyForm({
                 className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full flex justify-between truncate px-3 cursor-pointer"
               >
                 <p className="truncate">{option.text}</p>
-                <p className=" text-gray-300">{option.percentage}%</p>
+                <p className=" text-gray-300">
+                  {option.percentage.toFixed(2)}%
+                </p>
               </label>
             </div>
           </div>
@@ -139,14 +146,18 @@ export default function SurveyForm({
       ))}
       <footer className="flex gap-5 mt-3">
         <button
-          className="flex content-center gap-1 cursor-pointer hover:text-green-400 transition duration-150 ease-out hover:ease-in"
+          className={`flex content-center gap-1 cursor-pointer hover:text-green-400 transition duration-150 ease-out hover:ease-in ${
+            hasLiked ? 'text-green-400' : ''
+          }`}
           onClick={() => handleSubmitReaction(id, true)}
         >
           <i className="bx-sm bx bxs-like"></i>
           <span>{likeCount}</span>
         </button>
         <button
-          className="flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in"
+          className={`flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in ${
+            hasDisliked ? 'text-red-400' : ''
+          }`}
           onClick={() => handleSubmitReaction(id, false)}
         >
           <i className="bx-sm bx bxs-dislike"></i>
@@ -172,5 +183,7 @@ SurveyForm.propTypes = {
   name: PropTypes.string.isRequired,
   commentCount: PropTypes.number.isRequired,
   likeCount: PropTypes.number.isRequired,
-  dislikeCount: PropTypes.number.isRequired
+  dislikeCount: PropTypes.number.isRequired,
+  hasLiked: PropTypes.number.isRequired,
+  hasDisliked: PropTypes.number.isRequired
 };
