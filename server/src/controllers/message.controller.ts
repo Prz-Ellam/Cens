@@ -1,4 +1,5 @@
 import { connection } from '@/config/database';
+import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Conversation from '@/models/conversation.model';
 import Message from '@/models/message.model';
@@ -156,6 +157,7 @@ class MessageController {
                 where: {
                     conversation: { id: conversationId },
                 },
+                relations: ['sender'],
                 order: {
                     createdAt: 'ASC', // Optional: Order messages by creation date
                 },
@@ -163,6 +165,7 @@ class MessageController {
 
             return res.json(messages);
         } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });

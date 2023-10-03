@@ -1,139 +1,48 @@
+import PropTypes from 'prop-types';
 import ChatContact from './ChatContact';
+import { formatDate } from '../utils/format-date';
 
-export default function ChatList() {
+/**
+ *
+ * @param {object} params
+ * @param {object[]} params.contacts - Lista de contactos del usuario
+ * @param {function} params.onSelect - Lista de contactos del usuario
+ * @returns
+ */
+function ChatList({ contacts, onSelect }) {
   return (
     <section className="flex flex-col h-full p-3 bg-accent rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mx-5">
-        <h2 className="text-center text-4xl font-bold text-gray-300 mb-1 py-2">
+      <div className="flex justify-between items-center mx-5 mb-1 py-2">
+        <h2 className="text-center text-4xl font-bold text-gray-300">
           Contactos
         </h2>
-        <button className="">
-          <i className="bx-sm bx bxs-edit text-gray-300"></i>
+        <button>
+          <i className="bx-sm bx bxs-edit text-gray-300 hover:text-violet-300"></i>
         </button>
       </div>
 
       <hr className="mb-2 bg-gray-300" />
       <div className="overflow-auto">
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={0}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={0}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
-        <ChatContact
-          avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-          username="Username"
-          lastMessage="Last Message"
-          date="23/03/2023 14:15"
-          pending={1}
-        />
+        {contacts && contacts.map((contact, index) => (
+          <ChatContact
+            key={index}
+            chatId={contact.conversationId}
+            avatar={`/api/v1/users/${contact.userId}/avatar`}
+            username={contact.username}
+            lastMessage={contact.lastMessage}
+            date={formatDate(contact.lastMessageCreatedAt)}
+            pending={0}
+            onSelect={(contact) => onSelect(contact)}
+          />
+        ))}
       </div>
     </section>
   );
 }
+
+ChatList.propTypes = {
+  contacts: PropTypes.array,
+  onSelect: PropTypes.func
+};
+
+export default ChatList;
