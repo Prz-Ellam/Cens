@@ -31,7 +31,7 @@ export default function Comment({
   useEffect(() => {
     setUpdateText(text);
   }, [text]);
-
+  
   // Menu
   useEffect(() => {
     const handleClickOutside = (event) => {

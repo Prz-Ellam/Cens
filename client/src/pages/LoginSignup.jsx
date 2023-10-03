@@ -13,7 +13,6 @@ function LoginSignup() {
   const [errors, setErrors] = useState({});
 
   const { setUser } = useAuth();
-
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
@@ -90,7 +89,6 @@ function LoginSignup() {
     event.preventDefault();
 
     const loginData = { email, password };
-
     const validationResult = loginValidator.safeParse(loginData);
 
     if (!validationResult.success) {
@@ -131,7 +129,6 @@ function LoginSignup() {
       setToken(response.data.token);
       setUserData(response.data.user);
       setUser(response.data);
-      
       navigate('/home');
       // }
     } catch (error) {
