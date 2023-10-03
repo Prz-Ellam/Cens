@@ -40,7 +40,7 @@ pollRouter.get(
 pollRouter.post(
     '/:pollId/reactions',
     authMiddleware,
-    ReactionController.createReaction,
+    ReactionController.create,
 );
 pollRouter.put('/:pollId/reactions', authMiddleware, ReactionController.update);
 pollRouter.delete(

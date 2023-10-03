@@ -5,12 +5,14 @@ import { z } from 'zod';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
 import { setToken, setUserData } from '../utils/auth.js';
+import { useAuth } from '../context/AuthContext.jsx';
 
 function LoginSignup() {
   const [email, setEmail] = useState(''); //para login
   const [password, setPassword] = useState(''); //para login
   const [errors, setErrors] = useState({});
 
+  const { setUser } = useAuth();
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
@@ -87,7 +89,6 @@ function LoginSignup() {
     event.preventDefault();
 
     const loginData = { email, password };
-
     const validationResult = loginValidator.safeParse(loginData);
 
     if (!validationResult.success) {
@@ -127,6 +128,7 @@ function LoginSignup() {
 
       setToken(response.data.token);
       setUserData(response.data.user);
+      setUser(response.data);
       navigate('/home');
       // }
     } catch (error) {
