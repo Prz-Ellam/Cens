@@ -1,28 +1,35 @@
 import PropTypes from 'prop-types';
 import className from 'classnames';
 
-const dateTimeRegex = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/;
+// const dateTimeRegex = /^\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}$/;
 
 /**
  * Componente que representa un contacto en el chat.
  *
  * @param {object} props - Las propiedades del componente.
+ * @param {number} props.chatId - Identificador de la conversación.
  * @param {string} props.avatar - La URL de la imagen del avatar.
  * @param {string} props.username - El nombre de usuario del contacto.
  * @param {string} props.lastMessage - El último mensaje del contacto.
  * @param {string} props.date - La fecha del último mensaje.
  * @param {number} props.pending - El número de mensajes pendientes.
+ * @param {function} props.onSelect - Evento si se da click al contacto
  * @returns {JSX.Element} - El elemento JSX del contacto.
  */
 export default function ChatContact({
+  chatId,
   avatar,
   username,
   lastMessage,
   date,
-  pending
+  pending,
+  onSelect
 }) {
   return (
-    <article className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer transition duration-150 ease-out hover:ease-in">
+    <article
+      className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer transition duration-150 ease-out hover:ease-in"
+      onClick={() => onSelect({ chatId, avatar, username, lastMessage, date, pending })}
+    >
       <div className="flex items-center gap-3 overflow-hidden">
         <img
           src={avatar}
@@ -55,15 +62,11 @@ export default function ChatContact({
 }
 
 ChatContact.propTypes = {
+  chatId: PropTypes.number.isRequired,
   avatar: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
-  lastMessage: PropTypes.string.isRequired,
-  date: (props, propName, componentName) => {
-    if (!dateTimeRegex.test(props[propName])) {
-      return new Error(
-        `Invalid prop '${propName}' supplied to '${componentName}'. It should be in the format 'DD/MM/YYYY HH:MM'.`
-      );
-    }
-  },
-  pending: PropTypes.number.isRequired
+  lastMessage: PropTypes.string,
+  date: PropTypes.string,
+  pending: PropTypes.number,
+  onSelect: PropTypes.func
 };

@@ -1,7 +1,85 @@
+import { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import ChatList from '../components/ChatList';
 import ChatMessage from '../components/ChatMessage';
+import axios from 'axios';
+import { getToken } from '../utils/auth';
+import { ToastTopEnd } from '../utils/toast';
 
 export default function Chat() {
+  const { user } = useAuth();
+  const [contacts, setContacts] = useState([]);
+  const [messages, setMessages] = useState([]);
+
+  const [message, setMessage] = useState('');
+
+  const [selectedContact, setSelectedContact] = useState(null);
+
+  const fetchMessages = async (chatId) => {
+    try {
+      const response = await axios.get(
+        `/api/v1/conversations/${chatId}/messages`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      // console.log(response.data);
+      setMessages(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchContacts = async () => {
+    try {
+      const response = await axios.get(
+        `/api/v1/users/${user.id}/conversations`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      setContacts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleMessage = async (chatId) => {
+    if (!message) {
+      await ToastTopEnd.fire('hubo un error');
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `/api/v1/conversations/${chatId}/messages`,
+        {
+          text: message
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchContacts();
+    }
+  }, [user]);
+
   const isChatDrawerFocus = true;
   return (
     <section className="h-full flex justify-between gap-3 p-4">
@@ -10,7 +88,13 @@ export default function Chat() {
           isChatDrawerFocus ? 'block' : 'hidden'
         }`}
       >
-        <ChatList />
+        <ChatList
+          contacts={contacts}
+          onSelect={(contact) => {
+            fetchMessages(contact.chatId);
+            setSelectedContact(contact);
+          }}
+        />
       </div>
 
       <div className={`w-full`}>
@@ -22,12 +106,18 @@ export default function Chat() {
                   <i className="bi fa-solid fa-chevron-left"></i>
                 </button>
                 <img
-                  className="h-10 w-10 img-fluid rounded-full ms-3"
-                  src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
+                  className={`min-h-[2.5rem] h-10 w-10 img-fluid rounded-full ms-3 ${
+                    !selectedContact?.username ? 'invisible' : ''
+                  }`}
+                  src={selectedContact?.avatar}
                   alt="Perfil"
                 />
-                <span className="text-xl md:text-lg ms-3 text-gray-300 font-bold">
-                  Jan Ochoa
+                <span
+                  className={`text-xl md:text-lg ms-3 text-gray-300 font-bold ${
+                    !selectedContact?.username ? 'invisible' : ''
+                  }`}
+                >
+                  {selectedContact?.username || 'Secret message'}
                 </span>
               </div>
             </div>
@@ -36,106 +126,14 @@ export default function Chat() {
               className="overflow-auto px-4 py-2 h-full chat"
               id="message-box"
             >
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Adios"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
-                            <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Adios"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={true}
-              />
-              <ChatMessage
-                avatar="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                message="Hola"
-                own={false}
-              />
+              {messages.map((message, index) => (
+                <ChatMessage
+                  key={index}
+                  avatar={`/api/v1/users/${message.sender.id}/avatar`}
+                  message={message.text}
+                  own={user.id === message.sender.id}
+                />
+              ))}
             </div>
 
             <hr className="my-3" />
@@ -145,11 +143,17 @@ export default function Chat() {
                 type="text"
                 className="relative m-0 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
                 placeholder="Recipient's username"
-                aria-label="Recipient's username"
-                aria-describedby="basic-addon2"
+                onChange={(event) => setMessage(event.target.value)}
               />
-              <button className="flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-neutral-300 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6] text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200">
-              <i className="bx bxs-send"></i>
+              <button
+                onClick={() =>
+                  selectedContact?.chatId
+                    ? handleMessage(selectedContact?.chatId)
+                    : ''
+                }
+                className="flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-neutral-300 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6] text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"
+              >
+                <i className="bx bxs-send"></i>
               </button>
             </div>
           </div>

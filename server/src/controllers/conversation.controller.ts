@@ -2,6 +2,7 @@ import { connection } from '@/config/database';
 import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Conversation from '@/models/conversation.model';
+import Message from '@/models/message.model';
 import Participant from '@/models/participant.model';
 import User from '@/models/user.model';
 import { validateId } from '@/validators/id.validator';
@@ -100,25 +101,65 @@ class ConversationController {
                 });
             }
 
-            const subQuery = connection
-                .getRepository(Conversation)
-                .createQueryBuilder('conversation')
-                .innerJoin('conversation.participants', 'participant')
-                .innerJoin('participant.user', 'user')
-                .select('conversation.id')
-                .where('user.id = :userId', { userId });
+            // const subQuery = connection
+            //     .getRepository(Conversation)
+            //     .createQueryBuilder('conversation')
+            //     .innerJoin('conversation.participants', 'participant')
+            //     .innerJoin('participant.user', 'user')
+            //     .select('conversation.id')
+            //     .where('user.id = :userId', { userId });
+
+            // const conversations = await connection
+            //     .getRepository(Conversation)
+            //     .createQueryBuilder('conversation')
+            //     .innerJoinAndSelect('conversation.participants', 'participant')
+            //     .innerJoinAndSelect('participant.user', 'user')
+            //     .where(`conversation.id IN (${subQuery.getQuery()})`)
+            //     .setParameters(subQuery.getParameters())
+            //     .getMany();
+
+            const queryBuilder = connection
+                .createQueryBuilder()
+                .select('participants.conversation_id')
+                .from('participants', 'participants')
+                .where('participants.user_id = :userId', { userId });
+
+            const messageSubquery = connection
+                .getRepository(Message)
+                .createQueryBuilder('message')
+                .select('message.text')
+                .where('message.conversation.id = conversation.id')
+                .orderBy('message.createdAt', 'DESC')
+                .limit(1);
+
+            const messageCreationSubquery = connection
+                .getRepository(Message)
+                .createQueryBuilder('message')
+                .select('message.createdAt')
+                .where('message.conversation.id = conversation.id')
+                .orderBy('message.createdAt', 'DESC')
+                .limit(1);
 
             const conversations = await connection
                 .getRepository(Conversation)
                 .createQueryBuilder('conversation')
-                .innerJoinAndSelect('conversation.participants', 'participant')
-                .innerJoinAndSelect('participant.user', 'user')
-                .where(`conversation.id IN (${subQuery.getQuery()})`)
-                .setParameters(subQuery.getParameters())
-                .getMany();
+                .select('conversation.id', 'conversationId')
+                .innerJoin('conversation.participants', 'participant')
+                .innerJoin('participant.user', 'user')
+                .addSelect('user.id', 'userId')
+                .addSelect('user.username', 'username')
+                .addSelect([`(${messageSubquery.getQuery()}) AS lastMessage`])
+                .addSelect([
+                    `(${messageCreationSubquery.getQuery()}) AS lastMessageCreatedAt`,
+                ])
+                .where(`conversation.id IN (${queryBuilder.getQuery()})`)
+                .andWhere('user.id != :userId', { userId })
+                .setParameters(queryBuilder.getParameters())
+                .getRawMany();
 
             return res.json(conversations);
         } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
