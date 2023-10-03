@@ -8,12 +8,9 @@ import CreatePoll from '../components/CreatePoll';
 // eslint-disable-next-line react/prop-types
 export default function Home({ className }) {
   const [user, setUser] = useState(null);
-
   useEffect(() => {
-
     const userData = getUserData();
     setUser(userData);
-
   }, [])
 
 
@@ -69,12 +66,34 @@ export default function Home({ className }) {
                 question={poll.question}
                 description={poll.description}
                 options={poll.options}
+                user={poll.user}
                 name={poll.user.username}
                 commentCount={poll.comments}
                 likeCount={poll.reactions.likes}
                 dislikeCount={poll.reactions.dislikes}
                 hasLiked={poll.hasLiked}
                 hasDisliked={poll.hasDisliked}
+                vote={poll.vote}
+                voteCount={poll.voteCount}
+                reaction={poll.reaction}
+                onUpdate={async (pollId) => {
+                  try {
+                    const response = await axios.get(`/api/v1/polls/${pollId}`, {
+                      headers: {
+                        'Authorization': `Bearer ${getToken()}`
+                      }
+                    });
+
+                    // console.log(response.data);
+                    const newPoll = response.data;
+                    const newPolls = polls.map(poll => (poll.id === pollId ? newPoll : poll));
+                    setPolls(newPolls);
+                    console.log(newPolls);
+                  }
+                  catch (error) {
+                    console.log('error');
+                  }
+                }}
               />
             ))}
           </section>

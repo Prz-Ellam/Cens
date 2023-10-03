@@ -3,9 +3,15 @@ import ChatContact from './ChatContact';
 export default function ChatList() {
   return (
     <section className="flex flex-col h-full p-3 bg-accent rounded-lg shadow-lg">
-      <h2 className="text-center text-4xl font-bold text-gray-300 mb-1 py-2">
-        Contactos
-      </h2>
+      <div className="flex justify-between items-center mx-5">
+        <h2 className="text-center text-4xl font-bold text-gray-300 mb-1 py-2">
+          Contactos
+        </h2>
+        <button className="">
+          <i className="bx-sm bx bxs-edit text-gray-300"></i>
+        </button>
+      </div>
+
       <hr className="mb-2 bg-gray-300" />
       <div className="overflow-auto">
         <ChatContact

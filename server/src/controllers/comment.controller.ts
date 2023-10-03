@@ -185,7 +185,7 @@ class CommentController {
                 skip: (page - 1) * limit,
                 take: limit,
                 order: {
-                    updatedAt: 'DESC',
+                    createdAt: 'DESC',
                 },
             });
 

@@ -4,9 +4,11 @@ import { OptionWithPercentage } from '@/models/options-with-percentage.model';
 import Poll from '@/models/poll.model';
 import Reaction from '@/models/reaction.model';
 import User from '@/models/user.model';
+import Vote from '@/models/vote.model';
 
 export default class PollService {
     static async findOneById(id: number, userId: number): Promise<unknown> {
+        console.time('A');
         const repository = connection.getRepository(Poll);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const poll: any = await repository
@@ -70,12 +72,36 @@ export default class PollService {
             isLike: true,
         });
 
+        const vote = await Vote.findOne({
+            where: {
+                user: {
+                    id: userId,
+                },
+                poll: {
+                    id: poll.id,
+                },
+            },
+            relations: ['option'],
+        });
+
+        const voteCount = await Vote.countBy({
+            poll: {
+                id: poll.id,
+            },
+        });
+
+        const reaction = await Reaction.findOneBy({ user: { id: userId } });
+
         poll.reactions = reactions;
         poll.comments = comments;
         poll.options = options;
         poll.hasLiked = hasLiked;
         poll.hasDisliked = hasDisliked;
+        poll.vote = vote;
+        poll.reaction = reaction;
+        poll.voteCount = voteCount;
 
+        console.timeEnd('A');
         return poll;
     }
 
@@ -144,11 +170,37 @@ export default class PollService {
                 isLike: true,
             });
 
+            const vote = await Vote.findOne({
+                where: {
+                    user: {
+                        id: userId,
+                    },
+                    poll: {
+                        id: polls[i].id,
+                    },
+                },
+                relations: ['option'],
+            });
+
+            const voteCount = await Vote.countBy({
+                poll: {
+                    id: polls[i].id,
+                },
+            });
+
+            const reaction = await Reaction.findOneBy({
+                user: { id: userId },
+                poll: { id: polls[i].id },
+            });
+
             polls[i].reactions = reactions;
             polls[i].comments = comments;
             polls[i].options = options;
             polls[i].hasLiked = hasLiked;
             polls[i].hasDisliked = hasDisliked;
+            polls[i].vote = vote;
+            polls[i].reaction = reaction;
+            polls[i].voteCount = voteCount;
         }
 
         return polls;

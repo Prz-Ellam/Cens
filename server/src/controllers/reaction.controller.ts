@@ -10,7 +10,7 @@ class ReactionController {
     /**
      * Create a new reaction for a specific poll.
      */
-    async createReaction(req: AuthRequest, res: Response): Promise<Response> {
+    async create(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const pollId = Number.parseInt(req.params.pollId) || -1;
             const idResult = validateId(pollId);
@@ -112,7 +112,9 @@ class ReactionController {
 
             await reaction.save();
 
-            return res.json({});
+            return res.json({
+                message: 'Reacción actualizada éxitosamente',
+            });
         } catch (exception) {
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -153,7 +155,9 @@ class ReactionController {
 
             await reaction.softRemove();
 
-            return res.json({});
+            return res.json({
+                message: 'Reacción eliminada éxitosamente',
+            });
         } catch (exception) {
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',

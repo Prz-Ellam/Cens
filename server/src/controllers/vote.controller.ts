@@ -33,7 +33,7 @@ class VoteController {
 
             const authUser = req.user;
             if (poll.user.id === authUser.id) {
-                return res.json({
+                return res.status(400).json({
                     message: 'No puedes votar en tus propias encuestas',
                 });
             }
