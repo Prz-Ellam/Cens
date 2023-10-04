@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { getToken, getUserData } from '../utils/auth';
+import { getToken } from '../utils/auth';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
 
-export default function SurveyForm({
+function SurveyForm({
   id,
   question,
   description,
@@ -102,6 +102,7 @@ export default function SurveyForm({
 
   const updateReaction = async (reactionId, isLike) => {
     try {
+      console.log('Update', reactionId);
       const response = await axios.put(
         `/api/v1/reactions/${reactionId}`,
         { isLike },
@@ -121,7 +122,7 @@ export default function SurveyForm({
 
   const deleteReaction = async (reactionId) => {
     try {
-      console.log('Delete');
+      console.log('Delete', reactionId);
       await axios.delete(
         `/api/v1/reactions/${reactionId}`,
         {
@@ -244,7 +245,7 @@ export default function SurveyForm({
             hasDisliked ? 'text-red-400' : ''
           }`}
           onClick={async () => {
-            console.log(reaction.id);
+            console.log(reaction?.id);
             if (!hasLiked && !hasDisliked) {
               createReaction(id, false);
             } else if (!hasLiked && hasDisliked) {
@@ -259,7 +260,7 @@ export default function SurveyForm({
         </button>
         <Link
           to={`/survey/${id}`}
-          className="flex content-center gap-1 cursor-pointer hover:text-blue-400 transition duration-150 ease-out hover:ease-in"
+          className="flex content-center gap-1 cursor-pointer hover:text-violet-400 transition duration-150 ease-out hover:ease-in"
         >
           <i className="bx-sm bx bxs-message-rounded"></i>
           <span>{commentCount}</span>
@@ -286,3 +287,5 @@ SurveyForm.propTypes = {
   //   PropTypes.oneOf([null]).isRequired,
   // ]).isRequired,
 };
+
+export default SurveyForm;

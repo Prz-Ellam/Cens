@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
+ * Componente que representa un mensaje en la caja de conversación
  * 
  * @param {object} props 
  * @param {string} props.avatar - La URL de la imagen del avatar.
@@ -9,7 +10,7 @@ import classNames from 'classnames';
  * @param {boolean} props.own - El usuario actual es dueño del mensaje
  * @returns {JSX.Element} - El elemento JSX del mensaje.
  */
-export default function ChatMessage({ avatar, message, own }) {
+function ChatMessage({ avatar, message, own }) {
   return (
     <article className={classNames('flex', 'gap-2', 'my-4', { 'justify-end': own, 'justify-start': !own })}>
       {!own && (
@@ -38,3 +39,4 @@ ChatMessage.propTypes = {
   own: PropTypes.bool.isRequired,
 };
 
+export default ChatMessage;

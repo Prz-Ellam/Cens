@@ -2,30 +2,34 @@ import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import SurveyForm from '../components/SurveyForm';
 import axios from 'axios';
-import { getToken, getUserData } from '../utils/auth';
+import { getToken } from '../utils/auth';
 import CreatePoll from '../components/CreatePoll';
+import { useAuth } from '../context/AuthContext';
 
 // eslint-disable-next-line react/prop-types
-export default function Home({ className }) {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const userData = getUserData();
-    setUser(userData);
-  }, [])
-
+function Home({ className }) {
+  const { user } = useAuth();
 
   const [close, setClose] = useState(true);
 
   let [polls, setPolls] = useState([]);
 
-  useEffect(() => {
-    axios('/api/v1/polls', {
-      headers: {
-        Authorization: `Bearer ${getToken()}`
-      }
-    }).then((response) => {
+  const fetchPolls = async () => {
+    try {
+      const response = await axios('/api/v1/polls', {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
       setPolls(response.data);
-    });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPolls();
   }, []);
 
   return (
@@ -36,9 +40,13 @@ export default function Home({ className }) {
             <div className="flex flex-row items-center p-4">
               <div className="flex items-center justify-center h-12 w-12 rounded-full font-bold flex-shrink-0">
                 <img
-                  src={user?.id ? `/api/v1/users/${user?.id}/avatar` : '/default-profile-picture.png'}
-                  alt="Your Image"
-                  className="h-12 w-12 rounded-full"
+                  src={
+                    user?.id
+                      ? `/api/v1/users/${user?.id}/avatar`
+                      : '/default-profile-picture.png'
+                  }
+                  alt="Avatar"
+                  className="h-12 w-12 rounded-full object-cover"
                 />
               </div>
               <div className="flex flex-col flex-grow ml-3 truncate">
@@ -78,19 +86,24 @@ export default function Home({ className }) {
                 reaction={poll.reaction}
                 onUpdate={async (pollId) => {
                   try {
-                    const response = await axios.get(`/api/v1/polls/${pollId}`, {
-                      headers: {
-                        'Authorization': `Bearer ${getToken()}`
+                    const response = await axios.get(
+                      `/api/v1/polls/${pollId}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${getToken()}`
+                        }
                       }
-                    });
+                    );
 
                     // console.log(response.data);
                     const newPoll = response.data;
-                    const newPolls = polls.map(poll => (poll.id === pollId ? newPoll : poll));
+                    console.log(newPoll);
+                    const newPolls = polls.map((poll) =>
+                      poll.id === pollId ? newPoll : poll
+                    );
                     setPolls(newPolls);
                     console.log(newPolls);
-                  }
-                  catch (error) {
+                  } catch (error) {
                     console.log('error');
                   }
                 }}
@@ -143,19 +156,18 @@ export default function Home({ className }) {
                 <p className="font-bold">Título de la encuesta</p>
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>
-      <Modal 
-      question="Crear encuesta" 
-      close={close} 
-      setClose={setClose} 
-      title={"Crear encuesta"} 
-      bodySlot={<CreatePoll />}
-      >
-      </Modal>
+      <Modal
+        question="Crear encuesta"
+        close={close}
+        setClose={setClose}
+        title={'Crear encuesta'}
+        bodySlot={<CreatePoll />}
+      ></Modal>
     </section>
   );
 }
+
+export default Home;

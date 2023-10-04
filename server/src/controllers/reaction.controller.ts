@@ -4,6 +4,7 @@ import Poll from '@/models/poll.model';
 import Reaction from '@/models/reaction.model';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
+import { IsNull, Not } from 'typeorm';
 import { z } from 'zod';
 
 class ReactionController {
@@ -54,6 +55,31 @@ class ReactionController {
             if (existingReaction) {
                 return res.status(409).json({
                     message: 'Ya has votado en esta encuesta',
+                });
+            }
+
+            const existingReactionDeleted = await Reaction.findOne({
+                where: {
+                    user: { id: user.id },
+                    poll: { id: poll.id },
+                },
+                withDeleted: true,
+            });
+
+            // RAZON: Es mejor que no se cree uno nuevo, mucha data a la BD
+            if (existingReactionDeleted) {
+                await connection
+                    .createQueryBuilder()
+                    .update(Reaction)
+                    .set({ isLike, deletedAt: null })
+                    .where({
+                        id: existingReactionDeleted.id,
+                        deletedAt: Not(IsNull()),
+                    })
+                    .execute();
+
+                return res.status(201).json({
+                    message: 'Votacion creada éxitosamente',
                 });
             }
 
