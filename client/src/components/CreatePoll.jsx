@@ -185,7 +185,7 @@ export default function CreatePoll() {
           Pregunta
         </label>
         <input
-          className="bg-accent shadow appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+          className="bg-accent shadow hover:shadow-md appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
           id="question"
           type="text"
           name="question"
@@ -203,7 +203,7 @@ export default function CreatePoll() {
           Descripción
         </label>
         <textarea
-          className="bg-accent shadow appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+          className="bg-accent shadow hover:shadow-md appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
           id="description"
           type="text"
           cols="30"
@@ -226,7 +226,7 @@ export default function CreatePoll() {
           >
             <input
               type="text"
-              className="bg-accent shadow appearance-none rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-300 outline-none transition duration-200 ease-in-out focus:z-[3]"
+              className="bg-accent shadow hover:shadow-md appearance-none rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-300 outline-none transition duration-200 ease-in-out focus:z-[3]"
               placeholder={`Opción ${index + 1}`}
               value={value}
               name={`options.${index}`}

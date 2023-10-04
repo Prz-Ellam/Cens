@@ -90,7 +90,10 @@ export default class PollService {
             },
         });
 
-        const reaction = await Reaction.findOneBy({ user: { id: userId } });
+        const reaction = await Reaction.findOneBy({
+            user: { id: userId },
+            poll: { id: poll.id },
+        });
 
         poll.reactions = reactions;
         poll.comments = comments;

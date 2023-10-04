@@ -16,7 +16,7 @@ import className from 'classnames';
  * @param {function} props.onSelect - Evento si se da click al contacto
  * @returns {JSX.Element} - El elemento JSX del contacto.
  */
-export default function ChatContact({
+function ChatContact({
   chatId,
   avatar,
   username,
@@ -70,3 +70,5 @@ ChatContact.propTypes = {
   pending: PropTypes.number,
   onSelect: PropTypes.func
 };
+
+export default ChatContact;
