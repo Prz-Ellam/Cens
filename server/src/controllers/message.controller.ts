@@ -13,10 +13,9 @@ class MessageController {
      */
     async create(req: AuthRequest, res: Response): Promise<Response> {
         try {
-            const conversationId =
-                Number.parseInt(req.params.conversationId) || -1;
+            const chatId = Number.parseInt(req.params.conversationId) || -1;
             const conversation = await Conversation.findOneBy({
-                id: conversationId,
+                id: chatId,
             });
             if (!conversation) {
                 return res.status(404).json({
@@ -29,7 +28,7 @@ class MessageController {
             const participant = await participantRepository.findOne({
                 where: {
                     user: { id: authUser.id },
-                    conversation: { id: conversationId },
+                    conversation: { id: chatId },
                 },
             });
 
@@ -119,9 +118,8 @@ class MessageController {
         res: Response,
     ): Promise<Response> {
         try {
-            const conversationId =
-                Number.parseInt(req.params.conversationId) || -1;
-            const idResult = validateId(conversationId);
+            const chatId = Number.parseInt(req.params.conversationId) || -1;
+            const idResult = validateId(chatId);
             if (!idResult.status) {
                 return res.status(422).json({
                     message: idResult.errors,
@@ -129,7 +127,7 @@ class MessageController {
             }
 
             const conversation = await Conversation.findOneBy({
-                id: conversationId,
+                id: chatId,
             });
             if (!conversation) {
                 return res.status(404).json({
@@ -142,7 +140,7 @@ class MessageController {
             const participant = await participantRepository.findOne({
                 where: {
                     user: { id: authUser.id },
-                    conversation: { id: conversationId },
+                    conversation: { id: chatId },
                 },
             });
 
@@ -155,11 +153,11 @@ class MessageController {
 
             const messages = await Message.find({
                 where: {
-                    conversation: { id: conversationId },
+                    conversation: { id: chatId },
                 },
                 relations: ['sender'],
                 order: {
-                    createdAt: 'ASC', // Optional: Order messages by creation date
+                    createdAt: 'ASC',
                 },
             });
 

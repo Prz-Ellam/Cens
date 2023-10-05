@@ -1,5 +1,6 @@
 import { connection } from '@/config/database';
 import Comment from '@/models/comment.model';
+import Follower from '@/models/follower.model';
 import { OptionWithPercentage } from '@/models/options-with-percentage.model';
 import Poll from '@/models/poll.model';
 import Reaction from '@/models/reaction.model';
@@ -8,7 +9,6 @@ import Vote from '@/models/vote.model';
 
 export default class PollService {
     static async findOneById(id: number, userId: number): Promise<unknown> {
-        console.time('A');
         const repository = connection.getRepository(Poll);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const poll: any = await repository
@@ -114,6 +114,124 @@ export default class PollService {
         const polls: any = await repository
             .createQueryBuilder('poll')
             .leftJoinAndSelect('poll.user', 'user')
+            .orderBy('poll.created_at', 'DESC')
+            .getMany();
+
+        for (let i = 0; i < polls.length; i++) {
+            const reactionsResult = await connection
+                .getRepository(Reaction)
+                .createQueryBuilder('reaction')
+                .select('reaction.poll_id', 'pollId')
+                .addSelect('SUM(reaction.is_like = 1)', 'likes')
+                .addSelect('SUM(reaction.is_like = 0)', 'dislikes')
+                .where('reaction.poll_id = :pollId', { pollId: polls[i].id })
+                .groupBy('reaction.poll_id')
+                .getRawOne();
+
+            let reactions: { likes: number; dislikes: number } = {
+                likes: 0,
+                dislikes: 0,
+            };
+            if (reactionsResult) {
+                reactions = {
+                    likes: Number.parseInt(reactionsResult.likes),
+                    dislikes: Number.parseInt(reactionsResult.dislikes),
+                };
+            }
+
+            const comments = await Comment.count({
+                where: {
+                    poll: { id: polls[i].id },
+                },
+            });
+
+            const options = await connection
+                .getRepository(OptionWithPercentage)
+                .find({
+                    where: {
+                        poll_id: polls[i].id,
+                    },
+                });
+
+            const hasDisliked = await Reaction.countBy({
+                user: {
+                    id: userId,
+                },
+                poll: {
+                    id: polls[i].id,
+                },
+                isLike: false,
+            });
+
+            const hasLiked = await Reaction.countBy({
+                user: {
+                    id: userId,
+                },
+                poll: {
+                    id: polls[i].id,
+                },
+                isLike: true,
+            });
+
+            const vote = await Vote.findOne({
+                where: {
+                    user: {
+                        id: userId,
+                    },
+                    poll: {
+                        id: polls[i].id,
+                    },
+                },
+                relations: ['option'],
+            });
+
+            const voteCount = await Vote.countBy({
+                poll: {
+                    id: polls[i].id,
+                },
+            });
+
+            const reaction = await Reaction.findOneBy({
+                user: { id: userId },
+                poll: { id: polls[i].id },
+            });
+
+            polls[i].reactions = reactions;
+            polls[i].comments = comments;
+            polls[i].options = options;
+            polls[i].hasLiked = hasLiked;
+            polls[i].hasDisliked = hasDisliked;
+            polls[i].vote = vote;
+            polls[i].reaction = reaction;
+            polls[i].voteCount = voteCount;
+        }
+
+        return polls;
+    }
+
+    static async findByFollowed(userId: number): Promise<unknown[]> {
+        const userIds = connection
+            .getRepository(User)
+            .createQueryBuilder('user')
+            .select('user.id')
+            .innerJoin(
+                Follower,
+                'follower',
+                'user.id = follower.followed_user_id',
+            )
+            .where('follower.follower_user_id = :userId', {
+                userId,
+            });
+
+        console.log(userIds.getQuery());
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const polls: any = await connection
+            .getRepository(Poll)
+            .createQueryBuilder('poll')
+            .leftJoinAndSelect('poll.user', 'user')
+            .where(`poll.user_id IN (${userIds.getQuery()})`)
+            .setParameters(userIds.getParameters())
             .orderBy('poll.created_at', 'DESC')
             .getMany();
 

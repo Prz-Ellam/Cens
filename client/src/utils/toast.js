@@ -34,10 +34,6 @@ export const ToastTopEnd = Swal.mixin({
     showConfirmButton: false,
     showCloseButton: true,
     timer: 3000,
-    iconColor: 'white',
-    customClass: {
-        popup: 'colored-toast'
-    },
     didOpen: toast => {
         toast.addEventListener('mouseenter', Swal.stopTimer)
         toast.addEventListener('mouseleave', Swal.resumeTimer)

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
+import { ToastTopEnd } from '../utils/toast';
 
 function SurveyForm({
   id,
@@ -44,13 +45,62 @@ function SurveyForm({
         }
       );
 
-      await Swal.fire({
-        title: 'Todo bien',
-        icon: 'success',
-        text: response.data.message
-      });
+      await onUpdate(id);
+      // ToastTopEnd.fire({
+      //   icon: 'success',
+      //   title: response.data.message
+      // });
     } catch (error) {
       await Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: error.response.data.message
+      });
+    }
+  };
+
+  const submitUpdateVote = async (voteId, optionId) => {
+    try {
+      const response = await axios.put(
+        `/api/v1/votes/${voteId}`,
+        { optionId },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      await onUpdate(id);
+      // ToastTopEnd.fire({
+      //   icon: 'success',
+      //   title: response.data.message
+      // });
+    } catch (error) {
+      // TODO: Validar que es de axios
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: error.response.data.message
+      });
+    }
+  };
+
+  const submitDeleteVote = async (voteId) => {
+    try {
+      const response = await axios.delete(
+        `/api/v1/votes/${voteId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      await onUpdate(id);
+    } catch (error) {
+      // TODO: Validar que es de axios
+      Swal.fire({
         title: 'Error',
         icon: 'error',
         text: error.response.data.message
@@ -118,24 +168,21 @@ function SurveyForm({
     } catch (error) {
       console.log(error.response.data);
     }
-  }
+  };
 
   const deleteReaction = async (reactionId) => {
     try {
       console.log('Delete', reactionId);
-      await axios.delete(
-        `/api/v1/reactions/${reactionId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
+      await axios.delete(`/api/v1/reactions/${reactionId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
         }
-      );
+      });
       onUpdate(id);
     } catch (error) {
       console.log(error.response.data);
     }
-  }
+  };
 
   // TODO: Link to profile
   return (
@@ -153,7 +200,7 @@ function SurveyForm({
           />
           <div className="truncate">
             <Link
-              to={`/profile/${1}`}
+              to={`/profile/${user.id}`}
               className="font-bold hover:underline truncate"
             >
               {name}
@@ -198,7 +245,14 @@ function SurveyForm({
               disabled={user.id === authUser.id}
               // eslint-disable-next-line react/prop-types
               defaultChecked={vote?.option.id === option.id}
-              onClick={() => submitCreateVote(id, option.id)}
+              onClick={() => {
+                vote
+                  ? vote?.option.id === option.id ? submitDeleteVote(vote.id) : submitUpdateVote(vote.id, option.id)
+                  : submitCreateVote(id, option.id);
+
+                if (vote?.option.id === option.id)
+                document.getElementById(`radio-${id}-${index}`).checked = false;
+              }}
             />
           </div>
           <div className="grow">
