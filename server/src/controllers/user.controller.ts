@@ -411,6 +411,7 @@ class UserController {
         }
     }
 
+    // TODO: El usuario se puede seguir a si mismo
     async followUser(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const userId = Number.parseInt(req.params.userId) || -1;
@@ -499,6 +500,89 @@ class UserController {
             return res.json({
                 message: 'Se ha dejado de seguir el usuario',
             });
+        } catch (error) {
+            logger.error(`
+                Error al dejar de seguir a un usuario: 
+                ${error as string}
+            `);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
+    // TODO: Validar
+    async getFollowersByUser(
+        req: AuthRequest,
+        res: Response,
+    ): Promise<Response> {
+        try {
+            const userId = Number.parseInt(req.params.userId) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+            }
+
+            // const authUser = req.user;
+
+            const followers = await Follower.find({
+                where: {
+                    followedUser: { id: userId },
+                },
+                relations: ['followerUser'],
+            });
+
+            return res.json(followers);
+        } catch (error) {
+            logger.error(`
+                Error al dejar de seguir a un usuario: 
+                ${error as string}
+            `);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
+    async getFollowedByUser(
+        req: AuthRequest,
+        res: Response,
+    ): Promise<Response> {
+        try {
+            const userId = Number.parseInt(req.params.userId) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+            }
+
+            // const authUser = req.user;
+
+            const followers = await Follower.find({
+                where: {
+                    followerUser: { id: userId },
+                },
+                relations: ['followerUser', 'followedUser'],
+            });
+
+            return res.json(followers);
         } catch (error) {
             logger.error(`
                 Error al dejar de seguir a un usuario: 

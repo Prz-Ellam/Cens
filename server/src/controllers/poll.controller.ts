@@ -6,6 +6,7 @@ import { connection } from '@/config/database';
 import PollService from '@/services/poll.service';
 import { validateCreatePoll } from '@/validators/create-poll.validator';
 import { validateId } from '@/validators/id.validator';
+import logger from '@/config/logger';
 
 class PollController {
     /**
@@ -146,6 +147,23 @@ class PollController {
             const polls = await PollService.findMany(user.id);
             return res.json(polls);
         } catch (exception) {
+            logger.error(`${exception as string}`);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
+    async findByFollowingUser(
+        req: AuthRequest,
+        res: Response,
+    ): Promise<Response> {
+        try {
+            const user = req.user;
+            const polls = await PollService.findByFollowed(user.id);
+            return res.json(polls);
+        } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });

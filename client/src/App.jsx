@@ -24,20 +24,20 @@ export default function App() {
 
   const isEmpty = (item) => {
     return Object.keys(item).length === 0;
-  }
+  };
 
   if (user === null) {
-    return <></>
+    return <></>;
   }
 
   return (
     <BrowserRouter>
       <Routes>
-        { isEmpty(user) && <Route path="/" element={<LandingPage />} /> }
+        {isEmpty(user) && <Route path="/" element={<LandingPage />} />}
         <Route path="/login" element={<LoginSignup />} />
         <Route element={<MainLayout />}>
           <Route path="/chat" element={<Chat />} />
-          { !isEmpty(user) && <Route path="/" element={<Home />} /> }
+          {!isEmpty(user) && <Route path="/" element={<Home />} />}
           <Route path="/home" element={<Home />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/survey/:pollId" element={<CommentsPage />} />

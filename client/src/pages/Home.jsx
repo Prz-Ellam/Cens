@@ -16,7 +16,7 @@ function Home({ className }) {
 
   const fetchPolls = async () => {
     try {
-      const response = await axios('/api/v1/polls', {
+      const response = await axios(`/api/v1/users/${user.id}/polls/following`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -29,7 +29,9 @@ function Home({ className }) {
   };
 
   useEffect(() => {
-    fetchPolls();
+    if (user) {
+      fetchPolls();
+    }
   }, []);
 
   return (
@@ -113,13 +115,13 @@ function Home({ className }) {
         </div>
         <div className="md:w-1/3 md:block hidden p-3">
           <div className="h-screen rounded-lg bg-accent text-white mb-5 p-4">
-            <h2 className="text-lg font-bold">Buscar encuestas</h2>
+            <h2 className="text-lg font-bold mb-2">Buscar encuestas</h2>
 
             <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
               <img
                 src="/default-profile-picture.png"
                 alt="Avatar"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full object-cover"
               />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
@@ -133,7 +135,7 @@ function Home({ className }) {
               <img
                 src="/default-profile-picture.png"
                 alt="Avatar"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full object-cover"
               />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
@@ -147,7 +149,7 @@ function Home({ className }) {
               <img
                 src="/default-profile-picture.png"
                 alt="Avatar"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full object-cover"
               />
               <div className="flex flex-col flex-grow ml-3 truncate">
                 <div className="flex items-center">
@@ -156,6 +158,7 @@ function Home({ className }) {
                 <p className="font-bold">Título de la encuesta</p>
               </div>
             </div>
+
           </div>
         </div>
       </div>

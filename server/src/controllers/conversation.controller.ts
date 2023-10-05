@@ -29,16 +29,15 @@ class ConversationController {
             const userTwo = req.user;
 
             // Validar que los dos no tengan ya un chat
-            const conversationRepository =
-                connection.getRepository(Conversation);
-            const requestedConversation = await conversationRepository
-                .createQueryBuilder('c')
-                .innerJoin('c.participants', 'p')
+            const chatRepository = connection.getRepository(Conversation);
+            const requestedConversation = await chatRepository
+                .createQueryBuilder('chat')
+                .innerJoin('chat.participants', 'p')
                 .where('p.user_id = :userOneId OR p.user_id = :userTwoId', {
                     userOneId: userOne.id,
                     userTwoId: userTwo.id,
                 })
-                .groupBy('c.id')
+                .groupBy('chat.id')
                 .having('COUNT(p.user_id) >= 2')
                 .limit(1)
                 .getOne();
@@ -62,7 +61,7 @@ class ConversationController {
 
             await queryRunner.commitTransaction();
 
-            return res.json({
+            return res.status(201).json({
                 message: 'Conversación creada',
             });
         } catch (exception) {
@@ -100,23 +99,6 @@ class ConversationController {
                     message: 'No autorizado',
                 });
             }
-
-            // const subQuery = connection
-            //     .getRepository(Conversation)
-            //     .createQueryBuilder('conversation')
-            //     .innerJoin('conversation.participants', 'participant')
-            //     .innerJoin('participant.user', 'user')
-            //     .select('conversation.id')
-            //     .where('user.id = :userId', { userId });
-
-            // const conversations = await connection
-            //     .getRepository(Conversation)
-            //     .createQueryBuilder('conversation')
-            //     .innerJoinAndSelect('conversation.participants', 'participant')
-            //     .innerJoinAndSelect('participant.user', 'user')
-            //     .where(`conversation.id IN (${subQuery.getQuery()})`)
-            //     .setParameters(subQuery.getParameters())
-            //     .getMany();
 
             const queryBuilder = connection
                 .createQueryBuilder()

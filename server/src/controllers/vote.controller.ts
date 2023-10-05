@@ -6,6 +6,7 @@ import Poll from '@/models/poll.model';
 import Vote from '@/models/vote.model';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
+import { IsNull, Not } from 'typeorm';
 
 class VoteController {
     /**
@@ -41,8 +42,8 @@ class VoteController {
             // Si el usuario ya voto
             const existingVote = await Vote.findOne({
                 where: {
-                    poll: { id: poll.id },
                     user: { id: authUser.id },
+                    poll: { id: poll.id },
                 },
             });
             if (existingVote) {
@@ -69,6 +70,31 @@ class VoteController {
             if (option.poll.id !== poll.id) {
                 return res.status(400).json({
                     message: 'La opción no pertenece a esta encuesta',
+                });
+            }
+
+            const existingVoteDeleted = await Vote.findOne({
+                where: {
+                    user: { id: authUser.id },
+                    poll: { id: poll.id },
+                },
+                withDeleted: true,
+            });
+
+            // RAZON: Es mejor que no se cree uno nuevo, mucha data a la BD
+            if (existingVoteDeleted) {
+                await connection
+                    .createQueryBuilder()
+                    .update(Vote)
+                    .set({ option, poll, user: authUser, deletedAt: null })
+                    .where({
+                        id: existingVoteDeleted.id,
+                        deletedAt: Not(IsNull()),
+                    })
+                    .execute();
+
+                return res.status(201).json({
+                    message: 'La encuesta fue votada exitosamente',
                 });
             }
 

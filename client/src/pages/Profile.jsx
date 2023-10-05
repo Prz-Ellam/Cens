@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import SurveyForm from '../components/SurveyForm';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { getToken } from '../utils/auth';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -8,8 +10,69 @@ const TABS = Object.freeze({
   FOLLOWING: 'FOLLOWING'
 });
 
-// eslint-disable-next-line react/prop-types
-export default function Profile() {
+function Profile() {
+  const { userId } = useParams();
+  const [user, setUser] = useState(null);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(`/api/v1/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      console.log(response.data);
+      setUser(response.data.user);
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
+
+  const fetchFollowers = async () => {
+    try {
+      const response = await axios.get(`/api/v1/users/${userId}/followers`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      console.log(response.data);
+      setFollowers(response.data);
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
+
+  const fetchFollowing = async () => {
+    try {
+      const response = await axios.get(`/api/v1/users/${userId}/following`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      console.log(response.data);
+      setFollowing(response.data);
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    fetchFollowers();
+  }, []);
+
+  useEffect(() => {
+    fetchFollowing();
+  }, []);
+
   const [selectedTab, setSelectedTab] = useState(sessionStorage.getItem('tab'));
 
   useEffect(() => {
@@ -87,19 +150,25 @@ export default function Profile() {
     }
   ];
 
+  if (!user) {
+    return <></>;
+  }
+
   return (
     <section className="h-full overflow-auto">
       <div className="w-4/5 mx-auto my-4">
         <header className="p-4 flex md:flex-row flex-col gap-5 items-center">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Gnome_2.20.png"
-            className="w-48 min-w-[12rem] h-48 rounded-full"
+            src={`/api/v1/users/${user?.id}/avatar`}
+            className="w-48 min-w-[12rem] h-48 rounded-full object-cover"
             alt="Avatar"
           />
           <div className="md:w-5/6 sm:w-7/12 md:text-start text-center">
-            <h3 className="text-gray-300 font-bold text-3xl">Eliam Pérez</h3>
-            <h6 className="text-gray-300 text-xl">eliam@gmail.com</h6>
-            <h6 className="text-gray-300">01/06/2023</h6>
+            <h3 className="text-gray-300 font-bold text-3xl">
+              {user?.username}
+            </h3>
+            <h6 className="text-gray-300 text-xl">{user?.email}</h6>
+            <h6 className="text-gray-300">{user?.birthDate}</h6>
             <div className="flex md:flex-row flex-col gap-4 my-3">
               <Link
                 to="/"
@@ -155,40 +224,44 @@ export default function Profile() {
                 dislikeCount={3}
               />
             ))}
-          {selectedTab === TABS.FOLLOWERS && (
-            <div className="flex flex-row items-center p-4 bg-accent rounded-lg">
-              <img
-                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
-                alt="Your Image"
-                className="h-12 w-12 rounded-full"
-              />
-              <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                <p className="text-md font-medium">Nombre apellido</p>
-                <p className="text-sm font-medium">eliam@correo.com</p>
+          {selectedTab === TABS.FOLLOWERS &&
+            followers.map((follower, index) => (
+              <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
+                <img
+                  src={`/api/v1/users/${follower.followerUser.id}/avatar`}
+                  alt="Avatar"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+                <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                  <p className="text-md font-medium">{follower.followerUser.username}</p>
+                  <p className="text-sm font-medium">{follower.followerUser.email}</p>
+                </div>
+                <button className="bg-gray-500 text-gray-300 rounded-lg px-3 py-1">
+                  Dejar de seguir
+                </button>
               </div>
-              <button className="bg-gray-500 text-gray-300 rounded-lg px-3 py-1">
-                Dejar de seguir
-              </button>
-            </div>
-          )}
-          {selectedTab === TABS.FOLLOWING && (
-            <div className="flex flex-row items-center p-4 bg-accent rounded-lg">
+            ))}
+          {selectedTab === TABS.FOLLOWING && 
+            following.map((follow, index) => (
+            <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
               <img
-                src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg"
+                src={`/api/v1/users/${follow.followedUser.id}/avatar`}
                 alt="Your Image"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full object-cover"
               />
               <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                <p className="text-md font-medium">Nombre apellido</p>
-                <p className="text-sm font-medium">eliam@correo.com</p>
+                <p className="text-md font-bold">{follow.followedUser.username}</p>
+                <p className="text-sm font-medium">{follow.followedUser.email}</p>
               </div>
               <button className="bg-red-500 text-gray-300 rounded-lg px-3 py-1">
                 Eliminar
               </button>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </section>
   );
 }
+
+export default Profile;
