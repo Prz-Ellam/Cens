@@ -158,7 +158,7 @@ export default function CreatePoll() {
     }
 
     try {
-      const response = await axios.post('/api/v1/polls', poll, {
+      const response = await axios.post('/polls', poll, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
