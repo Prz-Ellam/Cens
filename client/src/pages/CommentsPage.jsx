@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
 import Observable from '../components/Observable';
 
-export default function CommentsPage() {
+function CommentsPage() {
   const { user } = useAuth();
 
   const { pollId } = useParams();
@@ -165,3 +165,5 @@ export default function CommentsPage() {
     </div>
   );
 }
+
+export default CommentsPage;

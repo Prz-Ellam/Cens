@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { getToken } from '../utils/auth';
-import axios from 'axios';
+import axios from '@/services/api';
 import z from 'zod';
 import Swal from 'sweetalert2';
 import ErrorList from './ErrorList';
@@ -19,20 +18,20 @@ export default function CreatePoll() {
   });
 
   /**
-   * 
-   * @param {Event} event 
-   * @returns 
+   *
+   * @param {Event} event
+   * @returns
    */
   const handleChange = (event) => {
     const { name, value } = event.target;
     setPoll({
       ...poll,
-      [name]: value,
+      [name]: value
     });
 
-    const validationResult = createPollValidator.shape.question.safeParse(value);
+    const validationResult =
+      createPollValidator.shape.question.safeParse(value);
     if (validationResult.error) {
-     
       const lerrors = [];
       console.log(validationResult.error.issues);
 
@@ -43,7 +42,7 @@ export default function CreatePoll() {
       });
 
       console.log(lerrors);
-      
+
       setErrors({
         ...errors,
         [name]: lerrors
@@ -54,12 +53,11 @@ export default function CreatePoll() {
 
     setErrors({
       ...errors,
-      [name]: '',
+      [name]: ''
     });
   };
 
   const [errors, setErrors] = useState({});
-
 
   // Function to handle changes in input values
   const handleInputChange = (index, event) => {
@@ -69,9 +67,9 @@ export default function CreatePoll() {
     newOptions[index] = event.target.value;
     setPoll({ ...poll, options: newOptions });
 
-    const validationResult = createPollValidator.shape.question.safeParse(value);
+    const validationResult =
+      createPollValidator.shape.question.safeParse(value);
     if (validationResult.error) {
-     
       const lerrors = [];
       console.log(validationResult.error.issues);
 
@@ -82,7 +80,7 @@ export default function CreatePoll() {
       });
 
       console.log(lerrors);
-      
+
       setErrors({
         ...errors,
         [name]: lerrors
@@ -93,7 +91,7 @@ export default function CreatePoll() {
 
     setErrors({
       ...errors,
-      [name]: '',
+      [name]: ''
     });
   };
 
@@ -105,16 +103,16 @@ export default function CreatePoll() {
       });
     }
   };
-  
+
   const handleDelete = (indexToDelete) => {
     if (poll.options.length <= 2) {
       return;
     }
-  
+
     const updatedOptions = poll.options.filter(
       (_option, index) => index !== indexToDelete
     );
-  
+
     setPoll({
       ...poll,
       options: updatedOptions
@@ -153,16 +151,12 @@ export default function CreatePoll() {
     if (!validateForm()) {
       await Swal.fire({
         title: 'Error'
-      })
+      });
       return;
     }
 
     try {
-      const response = await axios.post('/polls', poll, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.post('/polls', poll);
 
       await Swal.fire({
         title: 'Ok',
@@ -171,7 +165,7 @@ export default function CreatePoll() {
     } catch (error) {
       await Swal.fire({
         title: 'Error'
-      })
+      });
     }
   };
 
@@ -192,7 +186,7 @@ export default function CreatePoll() {
           placeholder="Pregunta"
           onChange={handleChange}
         />
-        { errors.question && <ErrorList errors={errors.question} /> }
+        {errors.question && <ErrorList errors={errors.question} />}
       </div>
 
       <div className="mb-5">
@@ -212,7 +206,7 @@ export default function CreatePoll() {
           placeholder="Descripción"
           onChange={handleChange}
         ></textarea>
-        { errors.description && <ErrorList errors={errors.description} /> }
+        {errors.description && <ErrorList errors={errors.description} />}
       </div>
 
       <label className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer">
@@ -220,29 +214,29 @@ export default function CreatePoll() {
       </label>
       <div>
         {poll.options.map((value, index) => (
-          <div key={index} className='mb-4'>
-          <div
-            className="relative flex flex-wrap items-stretch"
-          >
-            <input
-              type="text"
-              className="bg-accent shadow hover:shadow-md appearance-none rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-300 outline-none transition duration-200 ease-in-out focus:z-[3]"
-              placeholder={`Opción ${index + 1}`}
-              value={value}
-              name={`options.${index}`}
-              onChange={(event) => handleInputChange(index, event)}
-            />
-            <button
-              type="button"
-              className="bg-red-500 text-gray-300 flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-red-500 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6]"
-              onClick={() => {
-                handleDelete(index);
-              }}
-            >
-              &times;
-            </button>
+          <div key={index} className="mb-4">
+            <div className="relative flex flex-wrap items-stretch">
+              <input
+                type="text"
+                className="bg-accent shadow hover:shadow-md appearance-none rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-300 outline-none transition duration-200 ease-in-out focus:z-[3]"
+                placeholder={`Opción ${index + 1}`}
+                value={value}
+                name={`options.${index}`}
+                onChange={(event) => handleInputChange(index, event)}
+              />
+              <button
+                type="button"
+                className="bg-red-500 text-gray-300 flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-red-500 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6]"
+                onClick={() => {
+                  handleDelete(index);
+                }}
+              >
+                &times;
+              </button>
             </div>
-            { errors[`options.${index}`] && <ErrorList errors={errors[`options.${index}`]} /> }
+            {errors[`options.${index}`] && (
+              <ErrorList errors={errors[`options.${index}`]} />
+            )}
           </div>
         ))}
         <button

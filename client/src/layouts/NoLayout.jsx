@@ -1,3 +1,5 @@
-export default function NoLayout() {
+function NoLayout() {
   return <></>;
 }
+
+export default NoLayout;

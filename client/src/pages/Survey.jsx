@@ -4,7 +4,7 @@ import SurveyForm from '@/components/SurveyForm';
 import { useEffect, useState } from 'react';
 import axios from '@/services/api';
 
-export default function Survey() {
+function Survey() {
   const { pollId } = useParams();
   const [poll, setPoll] = useState(null);
   const [comments, setComments] = useState(null);
@@ -12,7 +12,7 @@ export default function Survey() {
 
   const postComment = async () => {
     try {
-      await axios.post(`/api/v1/polls/${pollId}/comments`, { text: comment });
+      await axios.post(`/polls/${pollId}/comments`, { text: comment });
     } catch (error) {
       console.error('Error sending comment:', error);
     }
@@ -22,8 +22,8 @@ export default function Survey() {
     // Function to fetch the survey data
     const fetchPoll = async () => {
       try {
-        const response = await axios.get(`/api/v1/polls/${pollId}`);
-        const surveyData = response.data; // Assuming the response data contains the survey information
+        const response = await axios.get(`/polls/${pollId}`);
+        const surveyData = response.data;
         setPoll(surveyData);
       } catch (error) {
         console.error('Error fetching survey:', error);
@@ -38,7 +38,7 @@ export default function Survey() {
     // Function to fetch the survey data
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`/api/v1/polls/${pollId}/comments`);
+        const response = await axios.get(`/polls/${pollId}/comments`);
         const commentsData = response.data; // Assuming the response data contains the survey information
         setComments(commentsData);
       } catch (error) {
@@ -109,3 +109,5 @@ export default function Survey() {
     </div>
   );
 }
+
+export default Survey;

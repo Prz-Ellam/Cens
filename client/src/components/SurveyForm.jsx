@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { getToken } from '../utils/auth';
+import { getToken } from '@/utils/auth';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 // import { ToastTopEnd } from '../utils/toast';
 
 function SurveyForm({
