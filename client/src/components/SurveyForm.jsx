@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { getToken } from '@/utils/auth';
+import axios from '@/services/api';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -34,12 +33,7 @@ function SurveyForm({
     try {
       await axios.post(
         `/polls/${pollId}/votes`,
-        { optionId },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { optionId }
       );
 
       onUpdate(id);
@@ -60,12 +54,7 @@ function SurveyForm({
     try {
       await axios.put(
         `/votes/${voteId}`,
-        { optionId },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { optionId }
       );
 
       onUpdate(id);
@@ -85,11 +74,7 @@ function SurveyForm({
 
   const submitDeleteVote = async (voteId) => {
     try {
-      await axios.delete(`/votes/${voteId}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      await axios.delete(`/votes/${voteId}`);
 
       onUpdate(id);
     } catch (error) {
@@ -130,12 +115,7 @@ function SurveyForm({
     try {
       const response = await axios.post(
         `/polls/${pollId}/reactions`,
-        { isLike },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { isLike }
       );
       console.log(response.data);
       onUpdate(id);
@@ -149,12 +129,7 @@ function SurveyForm({
       console.log('Update', reactionId);
       const response = await axios.put(
         `/reactions/${reactionId}`,
-        { isLike },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { isLike }
       );
 
       console.log(response.data);
@@ -167,11 +142,7 @@ function SurveyForm({
   const deleteReaction = async (reactionId) => {
     try {
       console.log('Delete', reactionId);
-      await axios.delete(`/reactions/${reactionId}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      await axios.delete(`/reactions/${reactionId}`);
       onUpdate(id);
     } catch (error) {
       console.log(error.response.data);
@@ -269,7 +240,7 @@ function SurveyForm({
               >
                 <p className="truncate">{option.text}</p>
                 <p className=" text-gray-300">
-                  {option.percentage.toFixed(2)}%
+                  {option.percentage.toFixed(0)}%
                 </p>
               </label>
             </div>
@@ -285,10 +256,8 @@ function SurveyForm({
             if (!hasLiked && !hasDisliked) {
               createReaction(id, true);
             } else if (hasLiked && !hasDisliked) {
-              // eslint-disable-next-line react/prop-types
               deleteReaction(reaction.id);
             } else if (!hasLiked && hasDisliked) {
-              // eslint-disable-next-line react/prop-types
               updateReaction(reaction.id, true);
             }
           }}
@@ -301,15 +270,11 @@ function SurveyForm({
             hasDisliked ? 'text-red-400' : ''
           }`}
           onClick={async () => {
-            // eslint-disable-next-line react/prop-types
-            console.log(reaction?.id);
             if (!hasLiked && !hasDisliked) {
               createReaction(id, false);
             } else if (!hasLiked && hasDisliked) {
-              // eslint-disable-next-line react/prop-types
               deleteReaction(reaction.id);
             } else if (hasLiked && !hasDisliked) {
-              // eslint-disable-next-line react/prop-types
               updateReaction(reaction.id, false);
             }
           }}

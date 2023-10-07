@@ -54,7 +54,7 @@ export default function Comment({
       );
 
       console.log(response.data.message);
-      await onUpdate(commentId);
+      onUpdate(commentId);
       setIsUpdate(false);
     } catch (error) {
       console.log(error.response.data.message);
