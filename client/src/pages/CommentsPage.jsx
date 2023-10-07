@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom';
-import Comment from '../components/Comment';
-import SurveyForm from '../components/SurveyForm';
+import Comment from '@/components/Comment';
+import SurveyForm from '@/components/SurveyForm';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { getToken } from '../utils/auth';
+import axios from '@/services/api';
+import { getToken } from '@/utils/auth';
 import Swal from 'sweetalert2';
-import { useAuth } from '../context/AuthContext';
-import Observable from '../components/Observable';
+import { useAuth } from '@/context/AuthContext';
+import Observable from '@/components/Observable';
 
 function CommentsPage() {
   const { user } = useAuth();
@@ -24,11 +24,7 @@ function CommentsPage() {
    */
   const fetchComments = async (pollId) => {
     try {
-      const response = await axios.get(`/polls/${pollId}/comments?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/polls/${pollId}/comments?page=${page}`);
       const commentsData = response.data; // Assuming the response data contains the survey information
 
       setPage(page + 1);
@@ -41,6 +37,20 @@ function CommentsPage() {
       setComments(combinedComments);
     } catch (error) {
       console.error('Error fetching comments:', error);
+    }
+  };
+
+  const updateComment = async (commentId) => {
+    try {
+      const response = await axios.get(`/comments/${commentId}`);
+
+      const newComment = response.data;
+      const newComments = comments.map((comment) =>
+      comment.id === commentId ? newComment : comment
+      );
+      setComments(newComments);
+    } catch (error) {
+      console.error('Error updating comment:', error);
     }
   };
 
@@ -146,11 +156,11 @@ function CommentsPage() {
                 username={comment.user.username}
                 avatar={
                   comment.user.avatar
-                    ? `/users/${comment.user.id}/avatar`
+                    ? `/api/v1/users/${comment.user.id}/avatar`
                     : `/default-profile-picture.png`
                 }
                 isAuthUser={comment.user.id === user.id}
-                onUpdate={() => fetchComments(pollId)}
+                onUpdate={updateComment}
               />
             ))}
           {comments.length > 0 && fetchMore && (
