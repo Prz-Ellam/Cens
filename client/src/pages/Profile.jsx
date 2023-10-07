@@ -22,7 +22,7 @@ function Profile() {
 
   const fetchUserPolls = async (userId) => {
     try {
-      const response = await axios.get(`/api/v1/users/${userId}/polls`, {
+      const response = await axios.get(`/users/${userId}/polls`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -36,7 +36,7 @@ function Profile() {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`/api/v1/users/${userId}`, {
+      const response = await axios.get(`/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -51,7 +51,7 @@ function Profile() {
 
   const fetchFollowers = async () => {
     try {
-      const response = await axios.get(`/api/v1/users/${userId}/followers`, {
+      const response = await axios.get(`/users/${userId}/followers`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -66,7 +66,7 @@ function Profile() {
 
   const fetchFollowing = async () => {
     try {
-      const response = await axios.get(`/api/v1/users/${userId}/following`, {
+      const response = await axios.get(`/users/${userId}/following`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -112,7 +112,7 @@ function Profile() {
       <div className="w-4/5 mx-auto my-4">
         <header className="p-4 flex md:flex-row flex-col gap-5 items-center">
           <img
-            src={`/api/v1/users/${user?.id}/avatar`}
+            src={`/users/${user?.id}/avatar`}
             className="w-48 min-w-[12rem] h-48 rounded-full object-cover"
             alt="Avatar"
           />
@@ -171,7 +171,7 @@ function Profile() {
                 onUpdate={async (pollId) => {
                   try {
                     const response = await axios.get(
-                      `/api/v1/polls/${pollId}`,
+                      `/polls/${pollId}`,
                       {
                         headers: {
                           Authorization: `Bearer ${getToken()}`
@@ -197,7 +197,7 @@ function Profile() {
             followers.map((follower, index) => (
               <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
                 <img
-                  src={`/api/v1/users/${follower.followerUser.id}/avatar`}
+                  src={`/users/${follower.followerUser.id}/avatar`}
                   alt="Avatar"
                   className="h-12 w-12 rounded-full object-cover"
                 />
@@ -214,7 +214,7 @@ function Profile() {
             following.map((follow, index) => (
             <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
               <img
-                src={`/api/v1/users/${follow.followedUser.id}/avatar`}
+                src={`/users/${follow.followedUser.id}/avatar`}
                 alt="Your Image"
                 className="h-12 w-12 rounded-full object-cover"
               />

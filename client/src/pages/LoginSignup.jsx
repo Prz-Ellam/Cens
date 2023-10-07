@@ -49,7 +49,7 @@ function LoginSignup() {
 
     const config = {
       method: 'POST',
-      url: '/api/v1/users', // URL de la API
+      url: '/users', // URL de la API
       headers: { 'Content-Type': 'application/json' },
       data: JSON.stringify(register) // En lugar de { loginInfo }
     };
@@ -110,7 +110,7 @@ function LoginSignup() {
     // Configuración de axios para la solicitud POST
     const config = {
       method: 'POST',
-      url: '/api/v1/auth', // URL de la API
+      url: '/auth', // URL de la API
       headers: { 'Content-Type': 'application/json' },
       data: JSON.stringify(loginData) // En lugar de { loginInfo }
     };

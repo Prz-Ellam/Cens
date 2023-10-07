@@ -50,7 +50,7 @@ export default function Comment({
   const handleUpdateComment = async (commentId, text) => {
     try {
       const response = await axios.put(
-        `/api/v1/comments/${commentId}`,
+        `/comments/${commentId}`,
         { text },
         {
           headers: {
@@ -82,7 +82,7 @@ export default function Comment({
     }
 
     try {
-      const response = await axios.delete(`/api/v1/comments/${commentId}`, {
+      const response = await axios.delete(`/comments/${commentId}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }

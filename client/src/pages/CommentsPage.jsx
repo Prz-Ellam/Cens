@@ -24,7 +24,7 @@ export default function CommentsPage() {
    */
   const fetchComments = async (pollId) => {
     try {
-      const response = await axios.get(`/api/v1/polls/${pollId}/comments?page=${page}`, {
+      const response = await axios.get(`/polls/${pollId}/comments?page=${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -47,7 +47,7 @@ export default function CommentsPage() {
   const handleComment = async () => {
     try {
       const response = await axios.post(
-        `/api/v1/polls/${pollId}/comments`,
+        `/polls/${pollId}/comments`,
         { text },
         {
           headers: {
@@ -76,7 +76,7 @@ export default function CommentsPage() {
   const fetchPoll = async () => {
     try {
       // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for fetching the survey
-      const response = await axios.get(`/api/v1/polls/${pollId}`, {
+      const response = await axios.get(`/polls/${pollId}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -146,7 +146,7 @@ export default function CommentsPage() {
                 username={comment.user.username}
                 avatar={
                   comment.user.avatar
-                    ? `/api/v1/users/${comment.user.id}/avatar`
+                    ? `/users/${comment.user.id}/avatar`
                     : `/default-profile-picture.png`
                 }
                 isAuthUser={comment.user.id === user.id}
