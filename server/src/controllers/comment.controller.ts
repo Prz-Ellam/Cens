@@ -155,6 +155,37 @@ class CommentController {
         }
     }
 
+    async findOne(req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            const commentId = Number.parseInt(req.params.commentId) || -1;
+            const idResult = validateId(commentId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: idResult.errors,
+                });
+            }
+
+            const comment = await Comment.findOne({
+                where: {
+                    id: commentId,
+                },
+                relations: ['user'],
+            });
+            if (!comment) {
+                return res.status(404).json({
+                    message: 'No se encontró el comentario solicitado',
+                });
+            }
+
+            return res.json(comment);
+        } catch (exception) {
+            logger.error(`${exception as string}`);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
     async findAllByPoll(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const pollId = Number.parseInt(req.params.pollId) || -1;
@@ -191,6 +222,7 @@ class CommentController {
 
             return res.json(comments);
         } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
