@@ -6,6 +6,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
 export default function MoonAnimation() {
   useEffect(() => {
+    console.log('a');
     const scene = new THREE.Scene();
     const $sceneContainer = document.getElementById('scene-container');
 
@@ -32,6 +33,7 @@ export default function MoonAnimation() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
+    document.getElementById('scene-container').innerHTML = '';
     document.getElementById('scene-container').appendChild(renderer.domElement);
 
     let fbx;

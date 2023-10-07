@@ -6,14 +6,17 @@ import axios from 'axios';
 import { getToken } from '../utils/auth';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
+import Observable from '../components/Observable';
 
 export default function CommentsPage() {
   const { user } = useAuth();
 
   const { pollId } = useParams();
   const [poll, setPoll] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [text, setText] = useState('');
+  const [page, setPage] = useState(1);
+  const [fetchMore, setFetchMore] = useState(true);
 
   /**
    * Recupera todos los comentarios de una encuesta
@@ -21,13 +24,21 @@ export default function CommentsPage() {
    */
   const fetchComments = async (pollId) => {
     try {
-      const response = await axios.get(`/api/v1/polls/${pollId}/comments`, {
+      const response = await axios.get(`/api/v1/polls/${pollId}/comments?page=${page}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
       });
       const commentsData = response.data; // Assuming the response data contains the survey information
-      setComments(commentsData);
+
+      setPage(page + 1);
+      
+      const combinedComments = [...comments, ...commentsData];
+      if (commentsData.length < 1) {
+        setFetchMore(false);
+      }
+
+      setComments(combinedComments);
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
@@ -62,23 +73,23 @@ export default function CommentsPage() {
     }
   };
 
-  useEffect(() => {
-    // Function to fetch the survey data
-    const fetchPoll = async () => {
-      try {
-        // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for fetching the survey
-        const response = await axios.get(`/api/v1/polls/${pollId}`, {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        });
-        const surveyData = response.data; // Assuming the response data contains the survey information
-        setPoll(surveyData);
-      } catch (error) {
-        console.error('Error fetching survey:', error);
-      }
-    };
+  const fetchPoll = async () => {
+    try {
+      // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for fetching the survey
+      const response = await axios.get(`/api/v1/polls/${pollId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
 
+      const surveyData = response.data; // Assuming the response data contains the survey information
+      setPoll(surveyData);
+    } catch (error) {
+      console.error('Error fetching survey:', error);
+    }
+  };
+
+  useEffect(() => {
     // Call the fetchSurvey function when the component mounts
     fetchPoll();
   }, []);
@@ -88,24 +99,12 @@ export default function CommentsPage() {
   }, []);
 
   return (
-    <div className="h-full overflow-auto">
+    <div className="h-full overflow-auto mt-5">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
         {poll ? (
           <SurveyForm
-            id={poll.id}
-            question={poll.question}
-            description={poll.description}
-            options={poll.options}
-            name={poll.user.username}
-            user={poll.user}
-            commentCount={poll.comments}
-            likeCount={poll.reactions.likes}
-            dislikeCount={poll.reactions.dislikes}
-            hasLiked={poll.hasLiked}
-            hasDisliked={poll.hasDisliked}
-            vote={poll.vote}
-            voteCount={poll.voteCount}
-            reaction={poll.reaction}
+            poll={poll}
+            onUpdate={() => fetchPoll()}
           />
         ) : (
           <></>
@@ -138,21 +137,29 @@ export default function CommentsPage() {
               </button>
             </div>
           </form>
-          {comments && comments.map((comment, index) => (
-            <Comment
-              key={index}
-              id={comment.id}
-              text={comment.text}
-              username={comment.user.username}
-              avatar={
-                comment.user.avatar
-                  ? `/api/v1/users/${comment.user.id}/avatar`
-                  : `/default-profile-picture.png`
-              }
-              isAuthUser={comment.user.id === user.id}
-              onUpdate={() => fetchComments(pollId)}
-            />
-          ))}
+          {comments &&
+            comments.map((comment, index) => (
+              <Comment
+                key={index}
+                id={comment.id}
+                text={comment.text}
+                username={comment.user.username}
+                avatar={
+                  comment.user.avatar
+                    ? `/api/v1/users/${comment.user.id}/avatar`
+                    : `/default-profile-picture.png`
+                }
+                isAuthUser={comment.user.id === user.id}
+                onUpdate={() => fetchComments(pollId)}
+              />
+            ))}
+          {comments.length > 0 && fetchMore && (
+              <Observable
+                onElementVisible={() => setTimeout(fetchComments, 1000, pollId)}
+              >
+                Cargando más...
+              </Observable>
+            )}
         </div>
       </div>
     </div>

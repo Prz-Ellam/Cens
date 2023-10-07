@@ -5,29 +5,26 @@ import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
-import { ToastTopEnd } from '../utils/toast';
+// import { ToastTopEnd } from '../utils/toast';
 
 function SurveyForm({
-  id,
-  question,
-  description,
-  options,
-  // eslint-disable-next-line react/prop-types
-  user,
-  name,
-  commentCount,
-  likeCount,
-  dislikeCount,
-  hasLiked,
-  hasDisliked,
-  // eslint-disable-next-line react/prop-types
-  vote,
-  // eslint-disable-next-line react/prop-types
-  voteCount,
-  // eslint-disable-next-line react/prop-types
-  reaction,
+  poll,
   onUpdate
 }) {
+  const {
+    id,
+    question,
+    description,
+    options,
+    user,
+    reactions,
+    vote,
+    hasLiked,
+    hasDisliked,
+    reaction,
+    voteCount,
+    comments
+  } = poll;
   const authContext = useAuth();
   const authUser = authContext.user;
 
@@ -35,8 +32,8 @@ function SurveyForm({
 
   const submitCreateVote = async (pollId, optionId) => {
     try {
-      const response = await axios.post(
-        `/api/v1/polls/${pollId}/votes`,
+      await axios.post(
+        `/polls/${pollId}/votes`,
         { optionId },
         {
           headers: {
@@ -45,7 +42,7 @@ function SurveyForm({
         }
       );
 
-      await onUpdate(id);
+      onUpdate(id);
       // ToastTopEnd.fire({
       //   icon: 'success',
       //   title: response.data.message
@@ -61,8 +58,8 @@ function SurveyForm({
 
   const submitUpdateVote = async (voteId, optionId) => {
     try {
-      const response = await axios.put(
-        `/api/v1/votes/${voteId}`,
+      await axios.put(
+        `/votes/${voteId}`,
         { optionId },
         {
           headers: {
@@ -71,7 +68,7 @@ function SurveyForm({
         }
       );
 
-      await onUpdate(id);
+      onUpdate(id);
       // ToastTopEnd.fire({
       //   icon: 'success',
       //   title: response.data.message
@@ -88,16 +85,13 @@ function SurveyForm({
 
   const submitDeleteVote = async (voteId) => {
     try {
-      const response = await axios.delete(
-        `/api/v1/votes/${voteId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
+      await axios.delete(`/votes/${voteId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
         }
-      );
+      });
 
-      await onUpdate(id);
+      onUpdate(id);
     } catch (error) {
       // TODO: Validar que es de axios
       Swal.fire({
@@ -135,7 +129,7 @@ function SurveyForm({
   const createReaction = async (pollId, isLike) => {
     try {
       const response = await axios.post(
-        `/api/v1/polls/${pollId}/reactions`,
+        `/polls/${pollId}/reactions`,
         { isLike },
         {
           headers: {
@@ -154,7 +148,7 @@ function SurveyForm({
     try {
       console.log('Update', reactionId);
       const response = await axios.put(
-        `/api/v1/reactions/${reactionId}`,
+        `/reactions/${reactionId}`,
         { isLike },
         {
           headers: {
@@ -173,7 +167,7 @@ function SurveyForm({
   const deleteReaction = async (reactionId) => {
     try {
       console.log('Delete', reactionId);
-      await axios.delete(`/api/v1/reactions/${reactionId}`, {
+      await axios.delete(`/reactions/${reactionId}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`
         }
@@ -192,7 +186,7 @@ function SurveyForm({
           <img
             src={
               user.avatar
-                ? `/api/v1/users/${user.id}/avatar`
+                ? `/users/${user.id}/avatar`
                 : `/default-profile-picture.png`
             }
             alt="Avatar"
@@ -203,7 +197,7 @@ function SurveyForm({
               to={`/profile/${user.id}`}
               className="font-bold hover:underline truncate"
             >
-              {name}
+              {user.username}
             </Link>
             <p className="font-md truncate">{question}</p>
           </div>
@@ -247,11 +241,17 @@ function SurveyForm({
               defaultChecked={vote?.option.id === option.id}
               onClick={() => {
                 vote
-                  ? vote?.option.id === option.id ? submitDeleteVote(vote.id) : submitUpdateVote(vote.id, option.id)
+                  ? // eslint-disable-next-line react/prop-types
+                    vote?.option.id === option.id
+                    ? submitDeleteVote(vote.id)
+                    : submitUpdateVote(vote.id, option.id)
                   : submitCreateVote(id, option.id);
 
+                // eslint-disable-next-line react/prop-types
                 if (vote?.option.id === option.id)
-                document.getElementById(`radio-${id}-${index}`).checked = false;
+                  document.getElementById(
+                    `radio-${id}-${index}`
+                  ).checked = false;
               }}
             />
           </div>
@@ -285,39 +285,44 @@ function SurveyForm({
             if (!hasLiked && !hasDisliked) {
               createReaction(id, true);
             } else if (hasLiked && !hasDisliked) {
+              // eslint-disable-next-line react/prop-types
               deleteReaction(reaction.id);
             } else if (!hasLiked && hasDisliked) {
+              // eslint-disable-next-line react/prop-types
               updateReaction(reaction.id, true);
             }
           }}
         >
           <i className="bx-sm bx bxs-like"></i>
-          <span>{likeCount}</span>
+          <span>{reactions.likes}</span>
         </button>
         <button
           className={`flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in ${
             hasDisliked ? 'text-red-400' : ''
           }`}
           onClick={async () => {
+            // eslint-disable-next-line react/prop-types
             console.log(reaction?.id);
             if (!hasLiked && !hasDisliked) {
               createReaction(id, false);
             } else if (!hasLiked && hasDisliked) {
+              // eslint-disable-next-line react/prop-types
               deleteReaction(reaction.id);
             } else if (hasLiked && !hasDisliked) {
+              // eslint-disable-next-line react/prop-types
               updateReaction(reaction.id, false);
             }
           }}
         >
           <i className="bx-sm bx bxs-dislike"></i>
-          <span>{dislikeCount}</span>
+          <span>{reactions.dislikes}</span>
         </button>
         <Link
           to={`/survey/${id}`}
           className="flex content-center gap-1 cursor-pointer hover:text-violet-400 transition duration-150 ease-out hover:ease-in"
         >
           <i className="bx-sm bx bxs-message-rounded"></i>
-          <span>{commentCount}</span>
+          <span>{comments}</span>
         </Link>
       </footer>
     </article>
@@ -325,21 +330,27 @@ function SurveyForm({
 }
 
 SurveyForm.propTypes = {
-  id: PropTypes.number.isRequired,
-  question: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
-  name: PropTypes.string.isRequired,
-  commentCount: PropTypes.number.isRequired,
-  likeCount: PropTypes.number.isRequired,
-  dislikeCount: PropTypes.number.isRequired,
-  hasLiked: PropTypes.number.isRequired,
-  hasDisliked: PropTypes.number.isRequired,
-  user: PropTypes.object.isRequired
-  // vote: PropTypes.oneOfType([
-  //   PropTypes.string.isRequired,
-  //   PropTypes.oneOf([null]).isRequired,
-  // ]).isRequired,
+  onUpdate: PropTypes.func,
+  poll: PropTypes.shape({
+    id: PropTypes.number.isRequired, // Assuming 'id' is a number, adjust if it's a different type
+    question: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    options: PropTypes.array.isRequired,
+    user: PropTypes.object.isRequired,
+    reactions: PropTypes.object.isRequired,
+    reaction: PropTypes.oneOfType([
+      PropTypes.object.isRequired,
+      PropTypes.oneOf([null]).isRequired
+    ]),
+    hasLiked: PropTypes.number.isRequired,
+    hasDisliked: PropTypes.number.isRequired,
+    comments: PropTypes.number.isRequired,
+    voteCount: PropTypes.number.isRequired,
+    vote: PropTypes.oneOfType([
+      PropTypes.object.isRequired,
+      PropTypes.oneOf([null]).isRequired
+    ]).isRequired,
+  }).isRequired
 };
 
 export default SurveyForm;

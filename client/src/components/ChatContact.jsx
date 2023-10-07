@@ -34,7 +34,7 @@ function ChatContact({
         <img
           src={avatar}
           alt="Profile Picture"
-          className="w-10 min-w-[2.5rem] h-10 rounded-full"
+          className="w-10 min-w-[2.5rem] h-10 rounded-full object-cover"
         />
         <div className="truncate">
           <p className="text-base text-gray-300 truncate">{username}</p>
