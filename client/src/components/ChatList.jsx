@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import ChatContact from './ChatContact';
-import { formatDate } from '../utils/format-date';
+import { formatDate } from '@/utils/format-date';
 import Modal from './Modal';
 import { useState } from 'react';
 

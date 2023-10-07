@@ -1,18 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import '../assets/css/LoginSignup.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
-export default function MoonAnimation() {
+function MoonAnimation() {
+  const sceneContainer = useRef();
   useEffect(() => {
     console.log('a');
     const scene = new THREE.Scene();
-    const $sceneContainer = document.getElementById('scene-container');
 
     const camera = new THREE.PerspectiveCamera(
       75,
-      $sceneContainer.clientWidth / $sceneContainer.clientHeight,
+      sceneContainer.current.clientWidth / sceneContainer.current.clientHeight,
       0.1,
       1000
     );
@@ -33,8 +33,8 @@ export default function MoonAnimation() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
-    document.getElementById('scene-container').innerHTML = '';
-    document.getElementById('scene-container').appendChild(renderer.domElement);
+    sceneContainer.current.innerHTML = '';
+    sceneContainer.current.appendChild(renderer.domElement);
 
     let fbx;
     let fbxSpaceRocks;
@@ -168,8 +168,8 @@ export default function MoonAnimation() {
     // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
     function onWindowResize() {
       // Obtén el nuevo ancho y alto de la ventana
-      const newWidth = $sceneContainer.clientWidth;
-      const newHeight = $sceneContainer.clientHeight;
+      const newWidth = sceneContainer.current.clientWidth;
+      const newHeight = sceneContainer.current.clientHeight;
 
       // Actualiza el tamaño del lienzo de renderizado
       renderer.setSize(newWidth, newHeight);
@@ -191,5 +191,7 @@ export default function MoonAnimation() {
       window.removeEventListener('resize', onWindowResize);
     };
   }, []);
-  return <div id="scene-container"></div>;
+  return <div ref={sceneContainer}></div>;
 }
+
+export default MoonAnimation;

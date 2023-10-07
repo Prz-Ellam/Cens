@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 // eslint-disable-next-line react/prop-types
 function Observable({ children, onElementVisible, onClick }) {
@@ -6,9 +6,9 @@ function Observable({ children, onElementVisible, onClick }) {
 
   useEffect(() => {
     const options = {
-      root: null, // The viewport is the default root
-      rootMargin: '0px', // No margin
-      threshold: 0.5 // When at least 50% of the element is visible
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -33,7 +33,11 @@ function Observable({ children, onElementVisible, onClick }) {
     };
   }, [onElementVisible]);
 
-  return <button ref={targetRef} onClick={onClick}>{children}</button>;
+  return (
+    <button ref={targetRef} onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
 export default Observable;

@@ -5,7 +5,7 @@ import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
 import { ToastTopEnd } from '@/utils/toast';
 
-export default function Chat() {
+function Chat() {
   const { user } = useAuth();
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -138,3 +138,5 @@ export default function Chat() {
     </section>
   );
 }
+
+export default Chat;

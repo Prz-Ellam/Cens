@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
-export default function Navbar() {
+function Navbar() {
   const { user } = useAuth();
 
   return (
@@ -86,3 +86,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
+export default Navbar;

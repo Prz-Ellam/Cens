@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import MoonAnimation from '../components/MoonAnimation.jsx';
-import axios from 'axios';
+import MoonAnimation from '@/components/MoonAnimation';
+import axios from '@/services/api';
 import { z } from 'zod';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
-import { setToken, setUserData } from '../utils/auth.js';
-import { useAuth } from '../context/AuthContext.jsx';
+import { setToken, setUserData } from '@/utils/auth';
+import { useAuth } from '@/context/AuthContext';
 
 function LoginSignup() {
   const [email, setEmail] = useState(''); //para login

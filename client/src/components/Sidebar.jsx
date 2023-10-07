@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-export default function Sidebar() {
+function Sidebar() {
   return (
     <aside>
       <div className="flex justify-center align-middle h-full px-3 py-3 overflow-y-auto bg-dark">
@@ -114,3 +114,5 @@ export default function Sidebar() {
     </aside>
   );
 }
+
+export default Sidebar;

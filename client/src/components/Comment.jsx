@@ -1,8 +1,7 @@
-import axios from 'axios';
+import axios from '@/services/api';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { getToken } from '../utils/auth';
 
 /**
  * Componente que representa un comentario.
@@ -51,12 +50,7 @@ export default function Comment({
     try {
       const response = await axios.put(
         `/comments/${commentId}`,
-        { text },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { text }
       );
 
       console.log(response.data.message);
@@ -82,11 +76,7 @@ export default function Comment({
     }
 
     try {
-      const response = await axios.delete(`/comments/${commentId}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.delete(`/comments/${commentId}`);
 
       console.log(response.data.message);
       await onUpdate(commentId);

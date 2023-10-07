@@ -1,6 +1,5 @@
-
 // eslint-disable-next-line react/prop-types
-export default function Modal({ title, close, setClose, bodySlot }) {
+function Modal({ title, close, setClose, bodySlot }) {
   return (
     <div
       className={`fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-50 w-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 ${
@@ -62,3 +61,5 @@ export default function Modal({ title, close, setClose, bodySlot }) {
     </div>
   );
 }
+
+export default Modal;

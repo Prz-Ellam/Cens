@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import SurveyForm from '../components/SurveyForm';
+import SurveyForm from '@/components/SurveyForm';
 import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
-import { getToken } from '../utils/auth';
-import { useAuth } from '../context/AuthContext';
+import axios from '@/services/api';
+import { useAuth } from '@/context/AuthContext';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -22,11 +21,7 @@ function Profile() {
 
   const fetchUserPolls = async (userId) => {
     try {
-      const response = await axios.get(`/users/${userId}/polls`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/users/${userId}/polls`);
 
       setPolls(response.data);
     } catch (error) {
@@ -36,11 +31,7 @@ function Profile() {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/users/${userId}`);
 
       console.log(response.data);
       setUser(response.data.user);
@@ -51,11 +42,7 @@ function Profile() {
 
   const fetchFollowers = async () => {
     try {
-      const response = await axios.get(`/users/${userId}/followers`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/users/${userId}/followers`);
 
       console.log(response.data);
       setFollowers(response.data);
@@ -66,11 +53,7 @@ function Profile() {
 
   const fetchFollowing = async () => {
     try {
-      const response = await axios.get(`/users/${userId}/following`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/users/${userId}/following`);
 
       console.log(response.data);
       setFollowing(response.data);
@@ -171,12 +154,7 @@ function Profile() {
                 onUpdate={async (pollId) => {
                   try {
                     const response = await axios.get(
-                      `/polls/${pollId}`,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${getToken()}`
-                        }
-                      }
+                      `/polls/${pollId}`
                     );
 
                     // console.log(response.data);
