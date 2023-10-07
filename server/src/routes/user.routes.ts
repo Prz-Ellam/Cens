@@ -55,4 +55,6 @@ userRouter.get(
     pollController.findByFollowingUser,
 );
 
+userRouter.get('/:userId/polls', authMiddleware, pollController.findByUser);
+
 export default userRouter;

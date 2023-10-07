@@ -7,6 +7,7 @@ import PollService from '@/services/poll.service';
 import { validateCreatePoll } from '@/validators/create-poll.validator';
 import { validateId } from '@/validators/id.validator';
 import logger from '@/config/logger';
+import User from '@/models/user.model';
 
 class PollController {
     /**
@@ -160,7 +161,52 @@ class PollController {
     ): Promise<Response> {
         try {
             const user = req.user;
-            const polls = await PollService.findByFollowed(user.id);
+
+            const page = Number.parseInt(req.query.page as string) || 1;
+            const limit = Number.parseInt(req.query.limit as string) || 5;
+
+            const polls = await PollService.findByFollowed(
+                user.id,
+                page,
+                limit,
+            );
+            return res.json(polls);
+        } catch (exception) {
+            logger.error(`${exception as string}`);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
+    async findByUser(req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            const userId = Number.parseInt(req.params.userId) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
+            const authUser = req.user;
+
+            const page = Number.parseInt(req.query.page as string) || 1;
+            const limit = Number.parseInt(req.query.limit as string) || 5;
+
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+            }
+
+            const polls = await PollService.findByUser(
+                user.id,
+                authUser.id,
+                page,
+                limit,
+            );
             return res.json(polls);
         } catch (exception) {
             logger.error(`${exception as string}`);

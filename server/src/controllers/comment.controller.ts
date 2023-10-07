@@ -172,7 +172,7 @@ class CommentController {
                 });
             }
 
-            const page = Number.parseInt(req.query.page as string) - 1 || 1;
+            const page = Number.parseInt(req.query.page as string) || 1;
             const limit = Number.parseInt(req.query.limit as string) || 5;
 
             // TODO: Validar page y limit

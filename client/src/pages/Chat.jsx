@@ -1,52 +1,36 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import ChatList from '../components/ChatList';
-import ChatMessage from '../components/ChatMessage';
+import { useAuth } from '@/context/AuthContext';
+import ChatList from '@/components/ChatList';
+import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
-import { getToken } from '../utils/auth';
-import { ToastTopEnd } from '../utils/toast';
+import { ToastTopEnd } from '@/utils/toast';
 
 export default function Chat() {
   const { user } = useAuth();
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
-
   const [message, setMessage] = useState('');
 
   const [selectedContact, setSelectedContact] = useState(null);
 
   const fetchMessages = async (chatId) => {
     try {
-      const response = await axios.get(
-        `/api/v1/conversations/${chatId}/messages`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
-      );
+      const response = await axios.get(`/conversations/${chatId}/messages`);
 
       // console.log(response.data);
       setMessages(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching messages:', error);
     }
   };
 
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(
-        `/api/v1/users/${user.id}/conversations`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
-      );
+      const response = await axios.get(`/users/${user.id}/conversations`);
 
       setContacts(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching contacts:', error);
     }
   };
 
@@ -56,21 +40,13 @@ export default function Chat() {
       return;
     }
     try {
-      const response = await axios.post(
-        `/api/v1/conversations/${chatId}/messages`,
-        {
-          text: message
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
-      );
+      const response = await axios.post(`/conversations/${chatId}/messages`, {
+        text: message
+      });
 
       console.log(response.data);
     } catch (error) {
-      console.error(error);
+      console.error('Error sending message:', error);
     }
   };
 
@@ -129,7 +105,7 @@ export default function Chat() {
               {messages.map((message, index) => (
                 <ChatMessage
                   key={index}
-                  avatar={`/api/v1/users/${message.sender.id}/avatar`}
+                  avatar={`/users/${message.sender.id}/avatar`}
                   message={message.text}
                   own={user.id === message.sender.id}
                 />

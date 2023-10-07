@@ -3,6 +3,7 @@ import SurveyForm from '../components/SurveyForm';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getToken } from '../utils/auth';
+import { useAuth } from '../context/AuthContext';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -11,10 +12,27 @@ const TABS = Object.freeze({
 });
 
 function Profile() {
+  const authUser = useAuth().user;
+
   const { userId } = useParams();
   const [user, setUser] = useState(null);
+  const [polls, setPolls] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+
+  const fetchUserPolls = async (userId) => {
+    try {
+      const response = await axios.get(`/api/v1/users/${userId}/polls`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      setPolls(response.data);
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
 
   const fetchUser = async () => {
     try {
@@ -62,6 +80,12 @@ function Profile() {
   };
 
   useEffect(() => {
+    if (userId) {
+      fetchUserPolls(userId);
+    }
+  }, []);
+
+  useEffect(() => {
     fetchUser();
   }, []);
 
@@ -78,77 +102,6 @@ function Profile() {
   useEffect(() => {
     sessionStorage.setItem('tab', selectedTab);
   }, [selectedTab]);
-
-  const polls = [
-    {
-      id: 1,
-      question: 'Poll 1',
-      description: 'Poll description 1',
-      options: [
-        {
-          text: 'Opcion 1',
-          percentage: 50
-        },
-        {
-          text: 'Opcion 2',
-          percentage: 50
-        }
-      ]
-    },
-    {
-      id: 2,
-      question: 'Poll 2',
-      description: 'Poll description 2',
-      options: [
-        {
-          text: 'Opcion 1',
-          percentage: 33
-        },
-        {
-          text: 'Opcion 2',
-          percentage: 33
-        },
-        {
-          text: 'Opcion 3',
-          percentage: 33
-        }
-      ]
-    },
-    {
-      id: 3,
-      question: 'Poll 3',
-      description: 'Poll description 3',
-      options: [
-        {
-          text: 'Opcion 1',
-          percentage: 25
-        },
-        {
-          text: 'Opcion 2',
-          percentage: 25
-        },
-        {
-          text: 'Opcion 3',
-          percentage: 25
-        },
-        {
-          text: 'Opcion 4',
-          percentage: 25
-        }
-      ]
-    },
-    {
-      id: 4,
-      question: 'Poll 4',
-      description: 'Poll description 4',
-      options: [
-        {
-          text: 'Ejemplo',
-          percentage: 100
-        }
-      ]
-    }
-  ];
 
   if (!user) {
     return <></>;
@@ -169,7 +122,7 @@ function Profile() {
             </h3>
             <h6 className="text-gray-300 text-xl">{user?.email}</h6>
             <h6 className="text-gray-300">{user?.birthDate}</h6>
-            <div className="flex md:flex-row flex-col gap-4 my-3">
+            { user.id === authUser.id && <div className="flex md:flex-row flex-col gap-4 my-3">
               <Link
                 to="/"
                 className="bg-purple text-gray-300 py-2 px-4 rounded-lg shadow-none cursor-pointer"
@@ -182,7 +135,7 @@ function Profile() {
               >
                 Cambiar contraseña
               </Link>
-            </div>
+            </div> }
           </div>
         </header>
 
@@ -211,17 +164,33 @@ function Profile() {
 
         <div className="md:w-9/12 w-11/12 flex flex-col gap-4 mx-auto mb-5">
           {selectedTab === TABS.POSTS &&
-            polls.map((poll, index) => (
+            polls && polls.map((poll, index) => (
               <SurveyForm
                 key={index}
-                id={poll.id}
-                question={poll.question}
-                description={poll.description}
-                options={poll.options}
-                name={'Eliam'}
-                commentCount={3}
-                likeCount={23}
-                dislikeCount={3}
+                poll={poll}
+                onUpdate={async (pollId) => {
+                  try {
+                    const response = await axios.get(
+                      `/api/v1/polls/${pollId}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${getToken()}`
+                        }
+                      }
+                    );
+
+                    // console.log(response.data);
+                    const newPoll = response.data;
+                    console.log(newPoll);
+                    const newPolls = polls.map((poll) =>
+                      poll.id === pollId ? newPoll : poll
+                    );
+                    setPolls(newPolls);
+                    console.log(newPolls);
+                  } catch (error) {
+                    console.log('error');
+                  }
+                }}
               />
             ))}
           {selectedTab === TABS.FOLLOWERS &&

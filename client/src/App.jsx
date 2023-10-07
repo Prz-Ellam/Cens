@@ -7,20 +7,10 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import CommentsPage from './pages/CommentsPage';
 import { useAuth } from './context/AuthContext';
+import Logout from './pages/Logout';
 
 export default function App() {
   const { user } = useAuth();
-  // Aplica el estilo 'overflow-hidden' solo cuando la ruta es '/login'
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   // Aplica el estilo 'overflow-hidden' al body solo cuando la ruta es '/login'
-  //   if (location.pathname !== '/') {
-  //     document.body.style.overflow = 'hidden';
-  //   } else {
-  //     document.body.style.overflow = 'auto'; // Restablece el scroll en otras rutas
-  //   }
-  // }, [location]);
 
   const isEmpty = (item) => {
     return Object.keys(item).length === 0;
@@ -42,6 +32,7 @@ export default function App() {
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/survey/:pollId" element={<CommentsPage />} />
         </Route>
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

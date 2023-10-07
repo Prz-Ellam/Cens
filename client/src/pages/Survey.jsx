@@ -1,9 +1,8 @@
 import { useParams } from 'react-router-dom';
-import Comment from '../components/Comment';
-import SurveyForm from '../components/SurveyForm';
+import Comment from '@/components/Comment';
+import SurveyForm from '@/components/SurveyForm';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { getToken } from '../utils/auth';
+import axios from '@/services/api';
 
 export default function Survey() {
   const { pollId } = useParams();
@@ -12,27 +11,18 @@ export default function Survey() {
   const [comment, setComment] = useState('');
 
   const postComment = async () => {
-    await axios.post(
-      `/api/v1/polls/${pollId}/comments`,
-      { text: comment },
-      {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      }
-    );
+    try {
+      await axios.post(`/api/v1/polls/${pollId}/comments`, { text: comment });
+    } catch (error) {
+      console.error('Error sending comment:', error);
+    }
   };
 
   useEffect(() => {
     // Function to fetch the survey data
     const fetchPoll = async () => {
       try {
-        // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for fetching the survey
-        const response = await axios.get(`/api/v1/polls/${pollId}`, {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        });
+        const response = await axios.get(`/api/v1/polls/${pollId}`);
         const surveyData = response.data; // Assuming the response data contains the survey information
         setPoll(surveyData);
       } catch (error) {
@@ -48,11 +38,7 @@ export default function Survey() {
     // Function to fetch the survey data
     const fetchComments = async () => {
       try {
-        const response = await axios.get(`/api/v1/polls/${pollId}/comments`, {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        });
+        const response = await axios.get(`/api/v1/polls/${pollId}/comments`);
         const commentsData = response.data; // Assuming the response data contains the survey information
         setComments(commentsData);
       } catch (error) {
