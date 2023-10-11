@@ -32,7 +32,7 @@ function ChatList({ contacts, onSelect }) {
           <ChatContact
             key={index}
             chatId={contact.conversationId}
-            avatar={`/users/${contact.userId}/avatar`}
+            avatar={`/api/v1/users/${contact.userId}/avatar`}
             username={contact.username}
             lastMessage={contact.lastMessage}
             date={formatDate(contact.lastMessageCreatedAt)}

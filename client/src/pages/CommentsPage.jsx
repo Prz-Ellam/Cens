@@ -3,9 +3,8 @@ import Comment from '@/components/Comment';
 import SurveyForm from '@/components/SurveyForm';
 import { useEffect, useState } from 'react';
 import axios from '@/services/api';
-import { getToken } from '@/utils/auth';
 import Swal from 'sweetalert2';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import Observable from '@/components/Observable';
 
 function CommentsPage() {
@@ -25,7 +24,7 @@ function CommentsPage() {
   const fetchComments = async (pollId) => {
     try {
       const response = await axios.get(`/polls/${pollId}/comments?page=${page}`);
-      const commentsData = response.data; // Assuming the response data contains the survey information
+      const commentsData = response.data;
 
       setPage(page + 1);
       
@@ -40,6 +39,7 @@ function CommentsPage() {
     }
   };
 
+  // TODO: Un handler especifico para eliminar mejor
   const updateComment = async (commentId) => {
     try {
       const response = await axios.get(`/comments/${commentId}`);
@@ -50,6 +50,8 @@ function CommentsPage() {
       );
       setComments(newComments);
     } catch (error) {
+      const newComments = comments.filter((comment) => comment.id != commentId);
+      setComments(newComments);
       console.error('Error updating comment:', error);
     }
   };
@@ -58,12 +60,7 @@ function CommentsPage() {
     try {
       const response = await axios.post(
         `/polls/${pollId}/comments`,
-        { text },
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`
-          }
-        }
+        { text }
       );
 
       setText('');
@@ -86,11 +83,7 @@ function CommentsPage() {
   const fetchPoll = async () => {
     try {
       // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint for fetching the survey
-      const response = await axios.get(`/polls/${pollId}`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
-      });
+      const response = await axios.get(`/polls/${pollId}`);
 
       const surveyData = response.data; // Assuming the response data contains the survey information
       setPoll(surveyData);

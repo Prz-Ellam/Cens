@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Modal from '@/components/Modal';
 import SurveyForm from '@/components/SurveyForm';
 import CreatePoll from '@/components/CreatePoll';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import Observable from '@/components/Observable';
 import axios from '@/services/api';
 
@@ -51,6 +51,15 @@ function Home() {
     }
   };
 
+  const deletePoll = async (pollId) => {
+    try {
+      const newPolls = polls.filter((poll) => poll.id !== pollId);
+      setPolls(newPolls);
+    } catch (error) {
+      console.error('Error deleting poll:', error);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchPolls();
@@ -88,7 +97,7 @@ function Home() {
 
         <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
           {polls.map((poll, index) => (
-            <SurveyForm key={index} poll={poll} onUpdate={updatePoll} />
+            <SurveyForm key={index} poll={poll} onUpdate={updatePoll} onDelete={deletePoll} />
           ))}
           {polls.length > 0 && fetchMore && (
             <Observable onElementVisible={() => setTimeout(fetchPolls, 1000)}>

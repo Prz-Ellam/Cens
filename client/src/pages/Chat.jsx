@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import ChatList from '@/components/ChatList';
 import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
@@ -105,7 +105,7 @@ function Chat() {
               {messages.map((message, index) => (
                 <ChatMessage
                   key={index}
-                  avatar={`/users/${message.sender.id}/avatar`}
+                  avatar={`/api/v1/users/${message.sender.id}/avatar`}
                   message={message.text}
                   own={user.id === message.sender.id}
                 />
