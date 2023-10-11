@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SurveyForm from '@/components/SurveyForm';
 import { Link, useParams } from 'react-router-dom';
 import axios from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -95,7 +95,7 @@ function Profile() {
       <div className="w-4/5 mx-auto my-4">
         <header className="p-4 flex md:flex-row flex-col gap-5 items-center">
           <img
-            src={`/users/${user?.id}/avatar`}
+            src={`/api/v1/users/${user?.id}/avatar`}
             className="w-48 min-w-[12rem] h-48 rounded-full object-cover"
             alt="Avatar"
           />
@@ -107,13 +107,13 @@ function Profile() {
             <h6 className="text-gray-300">{user?.birthDate}</h6>
             { user.id === authUser.id && <div className="flex md:flex-row flex-col gap-4 my-3">
               <Link
-                to="/"
+                to="/profileEdit"
                 className="bg-purple text-gray-300 py-2 px-4 rounded-lg shadow-none cursor-pointer"
               >
                 Editar perfil
               </Link>
               <Link
-                to="/"
+                to="/profileEdit"
                 className="bg-purple text-gray-300 py-2 px-4 rounded-lg shadow-none cursor-pointer"
               >
                 Cambiar contraseña
@@ -151,6 +151,14 @@ function Profile() {
               <SurveyForm
                 key={index}
                 poll={poll}
+                onDelete={async (pollId) => {
+                  try {
+                    const newPolls = polls.filter((poll) => poll.id !== pollId);
+                    setPolls(newPolls);
+                  } catch (error) {
+                    console.error('Error deleting poll:', error);
+                  }
+                }}
                 onUpdate={async (pollId) => {
                   try {
                     const response = await axios.get(
@@ -175,7 +183,7 @@ function Profile() {
             followers.map((follower, index) => (
               <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
                 <img
-                  src={`/users/${follower.followerUser.id}/avatar`}
+                  src={`/api/v1/users/${follower.followerUser.id}/avatar`}
                   alt="Avatar"
                   className="h-12 w-12 rounded-full object-cover"
                 />
@@ -192,8 +200,8 @@ function Profile() {
             following.map((follow, index) => (
             <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
               <img
-                src={`/users/${follow.followedUser.id}/avatar`}
-                alt="Your Image"
+                src={`/api/v1/users/${follow.followedUser.id}/avatar`}
+                alt="Avatar"
                 className="h-12 w-12 rounded-full object-cover"
               />
               <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">

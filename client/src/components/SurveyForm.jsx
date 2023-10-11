@@ -3,12 +3,13 @@ import axios from '@/services/api';
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 // import { ToastTopEnd } from '../utils/toast';
 
 function SurveyForm({
   poll,
-  onUpdate
+  onUpdate,
+  onDelete
 }) {
   const {
     id,
@@ -77,6 +78,21 @@ function SurveyForm({
       await axios.delete(`/votes/${voteId}`);
 
       onUpdate(id);
+    } catch (error) {
+      // TODO: Validar que es de axios
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: error.response.data.message
+      });
+    }
+  };
+
+  const submitDeletePoll = async (pollId) => {
+    try {
+      await axios.delete(`/polls/${pollId}`);
+
+      onDelete(pollId);
     } catch (error) {
       // TODO: Validar que es de axios
       Swal.fire({
@@ -157,7 +173,7 @@ function SurveyForm({
           <img
             src={
               user.avatar
-                ? `/users/${user.id}/avatar`
+                ? `/api/v1/users/${user.id}/avatar`
                 : `/default-profile-picture.png`
             }
             alt="Avatar"
@@ -187,7 +203,7 @@ function SurveyForm({
               }`}
             >
               <ul className="py-1 text-sm">
-                <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer">
+                <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer" onClick={() => submitDeletePoll(id)}>
                   Eliminar
                 </li>
               </ul>
@@ -296,6 +312,7 @@ function SurveyForm({
 
 SurveyForm.propTypes = {
   onUpdate: PropTypes.func,
+  onDelete: PropTypes.func,
   poll: PropTypes.shape({
     id: PropTypes.number.isRequired, // Assuming 'id' is a number, adjust if it's a different type
     question: PropTypes.string.isRequired,
@@ -314,7 +331,7 @@ SurveyForm.propTypes = {
     vote: PropTypes.oneOfType([
       PropTypes.object.isRequired,
       PropTypes.oneOf([null]).isRequired
-    ]).isRequired,
+    ]),
   }).isRequired
 };
 

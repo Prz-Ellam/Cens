@@ -66,3 +66,11 @@ body::-webkit-scrollbar-track {
   /* border-radius: 5px; */
   /* Bordes redondeados del track del scrollbar */
 }
+
+.profile-picture-label:hover::after {
+  content: 'Foto de perfil';
+}
+
+.profile-picture-label:hover {
+  background-color: rgba(48, 133, 214, 0.5);
+}

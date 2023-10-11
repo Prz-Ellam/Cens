@@ -4,15 +4,14 @@ import axios from '@/services/api';
 import { z } from 'zod';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
-import { setToken, setUserData } from '@/utils/auth';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 function LoginSignup() {
   const [email, setEmail] = useState(''); //para login
   const [password, setPassword] = useState(''); //para login
   const [errors, setErrors] = useState({});
 
-  const { setUser } = useAuth();
+  const { auth } = useAuth();
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerUsername, setRegisterUsername] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
@@ -126,9 +125,7 @@ function LoginSignup() {
         confirmButtonText: 'Continuar'
       });
 
-      setToken(response.data.token);
-      setUserData(response.data.user);
-      setUser(response.data);
+      auth(response.data.user, response.data.token)
       navigate('/home');
       // }
     } catch (error) {
@@ -142,19 +139,6 @@ function LoginSignup() {
       });
     }
 
-    //CON METODO FETCH
-
-    // const config =
-    // {
-    //     method: "POST",
-    //     headers:{"Content-Type": "aplication/json"},
-    //     body:JSON.stringify({loginInfo})
-    // }
-
-    // // console.log("email" + email);
-    // // console.log("contrasena" + password);
-
-    // const response = await fetch ("http://localhost:5173/login", config);
   }
   return (
     <div className="row mybody-loginsignup">

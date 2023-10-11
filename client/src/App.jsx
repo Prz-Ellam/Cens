@@ -6,15 +6,13 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import CommentsPage from './pages/CommentsPage';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './hooks/useAuth';
 import Logout from './pages/Logout';
+import isEmpty from './utils/is-empty';
+import ProfileEdit from './components/ProfileEdit';
 
-export default function App() {
+function App() {
   const { user } = useAuth();
-
-  const isEmpty = (item) => {
-    return Object.keys(item).length === 0;
-  };
 
   if (user === null) {
     return <></>;
@@ -30,6 +28,7 @@ export default function App() {
           {!isEmpty(user) && <Route path="/" element={<Home />} />}
           <Route path="/home" element={<Home />} />
           <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/profileEdit" element={<ProfileEdit />} />
           <Route path="/survey/:pollId" element={<CommentsPage />} />
         </Route>
         <Route path="/logout" element={<Logout />} />
@@ -37,3 +36,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+export default App;

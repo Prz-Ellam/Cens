@@ -174,6 +174,7 @@ class UserController {
 
             return res.json({
                 message: 'Actualizado con éxito',
+                user,
             });
         } catch (exception) {
             logger.error(`
