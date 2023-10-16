@@ -23,11 +23,13 @@ function CommentsPage() {
    */
   const fetchComments = async (pollId) => {
     try {
-      const response = await axios.get(`/polls/${pollId}/comments?page=${page}`);
+      const response = await axios.get(
+        `/polls/${pollId}/comments?page=${page}`
+      );
       const commentsData = response.data;
 
       setPage(page + 1);
-      
+
       const combinedComments = [...comments, ...commentsData];
       if (commentsData.length < 1) {
         setFetchMore(false);
@@ -46,7 +48,7 @@ function CommentsPage() {
 
       const newComment = response.data;
       const newComments = comments.map((comment) =>
-      comment.id === commentId ? newComment : comment
+        comment.id === commentId ? newComment : comment
       );
       setComments(newComments);
     } catch (error) {
@@ -58,10 +60,7 @@ function CommentsPage() {
 
   const handleComment = async () => {
     try {
-      const response = await axios.post(
-        `/polls/${pollId}/comments`,
-        { text }
-      );
+      const response = await axios.post(`/polls/${pollId}/comments`, { text });
 
       setText('');
       Swal.fire({
@@ -104,14 +103,7 @@ function CommentsPage() {
   return (
     <div className="h-full overflow-auto mt-5">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
-        {poll ? (
-          <SurveyForm
-            poll={poll}
-            onUpdate={() => fetchPoll()}
-          />
-        ) : (
-          <></>
-        )}
+        {poll ? <SurveyForm poll={poll} onUpdate={() => fetchPoll()} /> : <></>}
 
         <div className="bg-accent mb-4 p-3 rounded-lg">
           <form className="mb-6">
@@ -144,8 +136,8 @@ function CommentsPage() {
             comments.map((comment, index) => (
               <Comment
                 key={index}
+                comment={comment}
                 id={comment.id}
-                text={comment.text}
                 username={comment.user.username}
                 avatar={
                   comment.user.avatar
@@ -157,12 +149,15 @@ function CommentsPage() {
               />
             ))}
           {comments.length > 0 && fetchMore && (
+            <div className="flex justify-center">
               <Observable
+                className="text-gray-300 text-lg mt-3"
                 onElementVisible={() => setTimeout(fetchComments, 1000, pollId)}
               >
                 Cargando más...
               </Observable>
-            )}
+            </div>
+          )}
         </div>
       </div>
     </div>

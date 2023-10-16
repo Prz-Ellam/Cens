@@ -100,7 +100,7 @@ function Home() {
             <SurveyForm key={index} poll={poll} onUpdate={updatePoll} onDelete={deletePoll} />
           ))}
           {polls.length > 0 && fetchMore && (
-            <Observable onElementVisible={() => setTimeout(fetchPolls, 1000)}>
+            <Observable onElementVisible={() => setTimeout(fetchPolls, 1000)} className="text-gray-300 font-bold text-lg">
               Cargando más...
             </Observable>
           )}

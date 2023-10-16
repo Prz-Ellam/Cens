@@ -1,0 +1,2 @@
+- Scroll extraño en la pagina de perfiles
+- Que se muestre el comentario creado
