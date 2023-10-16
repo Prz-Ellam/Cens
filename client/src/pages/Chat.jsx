@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import ChatList from '@/components/ChatList';
 import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
 import { ToastTopEnd } from '@/utils/toast';
+import z from 'zod';
 
 function Chat() {
   const { user } = useAuth();
@@ -12,6 +13,16 @@ function Chat() {
   const [message, setMessage] = useState('');
 
   const [selectedContact, setSelectedContact] = useState(null);
+  const messageBox = useRef();
+
+  const validator = z.object({
+    text: z
+      .string({
+        invalid_type_error: 'El texto debe ser una cadena de texto'
+      })
+      .min(1, 'Es requerido al menos 1 caracter')
+      .max(255, 'Maximo de 255 caracteres')
+  });
 
   const fetchMessages = async (chatId) => {
     try {
@@ -19,6 +30,12 @@ function Chat() {
 
       // console.log(response.data);
       setMessages(response.data);
+      setTimeout(() => {
+        messageBox.current.scrollTo({
+          left: 0,
+          top: messageBox.current.scrollHeight
+        });
+      }, 0);
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -36,7 +53,10 @@ function Chat() {
 
   const handleMessage = async (chatId) => {
     if (!message) {
-      await ToastTopEnd.fire('hubo un error');
+      await ToastTopEnd.fire({
+        icon: 'error',
+        title: 'Hubo un error'
+      });
       return;
     }
     try {
@@ -45,6 +65,13 @@ function Chat() {
       });
 
       console.log(response.data);
+      await fetchMessages(chatId);
+      setTimeout(() => {
+        messageBox.current.scrollTo({
+          left: 0,
+          top: messageBox.current.scrollHeight
+        });
+      }, 0);
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -100,7 +127,7 @@ function Chat() {
             <hr className="mx-3" />
             <div
               className="overflow-auto px-4 py-2 h-full chat"
-              id="message-box"
+              ref={messageBox}
             >
               {messages.map((message, index) => (
                 <ChatMessage
@@ -117,9 +144,16 @@ function Chat() {
             <div className="relative mb-4 flex flex-wrap items-stretch">
               <input
                 type="text"
-                className="relative m-0 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-                placeholder="Recipient's username"
+                className="bg-dark hover:shadow-md relative m-0 block w-[1px] min-w-0 flex-auto rounded-l bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-400 outline-none transition duration-200 ease-in-out focus:z-[3] focus:outline-none"
+                placeholder="Mensaje..."
                 onChange={(event) => setMessage(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key == 'Enter' && selectedContact?.chatId) {
+                    handleMessage(selectedContact?.chatId);
+                    setMessage('');
+                    event.target.value = '';
+                  }
+                }}
               />
               <button
                 onClick={() =>
@@ -127,7 +161,7 @@ function Chat() {
                     ? handleMessage(selectedContact?.chatId)
                     : ''
                 }
-                className="flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-neutral-300 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6] text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"
+                className="bg-[#573b8a] hover:bg-[#402c66] flex items-center whitespace-nowrap rounded-r text-gray-300 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6] transition duration-150 ease-out hover:ease-in"
               >
                 <i className="bx bxs-send"></i>
               </button>

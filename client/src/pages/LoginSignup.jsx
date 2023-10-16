@@ -7,15 +7,46 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 function LoginSignup() {
-  const [email, setEmail] = useState(''); //para login
-  const [password, setPassword] = useState(''); //para login
   const [errors, setErrors] = useState({});
 
+  const [loginFormData, setLoginFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  /**
+   * 
+   * @param {Event} event 
+   * @returns 
+   */
+  const handleLoginChange = (event) => {
+    const { name, value } = event.target;
+
+    const updatedLoginFormData = {
+      ...loginFormData,
+      [name]: value
+    };
+    setLoginFormData(updatedLoginFormData);
+  }
+
+  const [registerFormData, setRegisterFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const handleRegisterChange = (event) => {
+    const { name, value } = event.target;
+
+    const updatedRegisterFormData = {
+      ...registerFormData,
+      [name]: value
+    };
+    setRegisterFormData(updatedRegisterFormData);
+  }
+
   const { auth } = useAuth();
-  const [registerEmail, setRegisterEmail] = useState('');
-  const [registerUsername, setRegisterUsername] = useState('');
-  const [registerPassword, setRegisterPassword] = useState('');
-  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
 
   const navigate = useNavigate();
 
@@ -36,21 +67,18 @@ function LoginSignup() {
       })
   });
 
+  /**
+   * 
+   * @param {Event} event 
+   */
   async function handleRegister(event) {
     event.preventDefault();
-
-    const register = {
-      username: registerUsername,
-      email: registerEmail,
-      password: registerPassword,
-      confirmPassword: registerConfirmPassword
-    }
 
     const config = {
       method: 'POST',
       url: '/users', // URL de la API
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify(register) // En lugar de { loginInfo }
+      data: JSON.stringify(registerFormData) // En lugar de { loginInfo }
     };
 
     try {
@@ -73,7 +101,7 @@ function LoginSignup() {
       // console.error(error.response.data.message);
       await Swal.fire({
         icon: 'error',
-        title: error.response.data.message,
+        title: JSON.stringify(error.response.data.message),
         confirmButtonText: 'Aceptar'
       });
     }
@@ -87,8 +115,7 @@ function LoginSignup() {
   async function login(event) {
     event.preventDefault();
 
-    const loginData = { email, password };
-    const validationResult = loginValidator.safeParse(loginData);
+    const validationResult = loginValidator.safeParse(loginFormData);
 
     if (!validationResult.success) {
       const validationErrors = {};
@@ -111,13 +138,11 @@ function LoginSignup() {
       method: 'POST',
       url: '/auth', // URL de la API
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify(loginData) // En lugar de { loginInfo }
+      data: JSON.stringify(loginFormData) // En lugar de { loginInfo }
     };
 
     try {
       const response = await axios(config);
-      // Manejar la respuesta exitosa aquí
-      // console.log(response.data.message);
 
       await Swal.fire({
         icon: 'success',
@@ -127,11 +152,7 @@ function LoginSignup() {
 
       auth(response.data.user, response.data.token)
       navigate('/home');
-      // }
     } catch (error) {
-      // Manejar errores aquí
-      // console.error(error.response.data.message);
-
       await Swal.fire({
         icon: 'error',
         title: error.response.data.message,
@@ -150,7 +171,7 @@ function LoginSignup() {
           </Link>
           <input type="checkbox" id="chk" aria-hidden="true"></input>
           <div className="login">
-            <form onSubmit={login}>
+            <form onSubmit={login} noValidate>
               <label
                 htmlFor="chk"
                 aria-hidden="true"
@@ -163,10 +184,9 @@ function LoginSignup() {
                   type="email"
                   name="email"
                   placeholder="Corre electrónico"
-                  className="login-input"
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                  }}
+                  className="login-input outline-none"
+                  defaultValue={loginFormData.email}
+                  onChange={handleLoginChange}
                 />
                 {errors.email && (
                   <span className="error-message">{errors.email}</span>
@@ -177,10 +197,9 @@ function LoginSignup() {
                   type="password"
                   name="password"
                   placeholder="Contraseña"
-                  className="login-input"
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                  }}
+                  className="login-input outline-none"
+                  defaultValue={loginFormData.password}
+                  onChange={handleLoginChange}
                 />
                 {errors.password && (
                   <span className="error-message">{errors.password}</span>
@@ -191,7 +210,7 @@ function LoginSignup() {
                 className="loginBtn"
               >
                 Acceder
-              </button>{' '}
+              </button>
             </form>
           </div>
           <div className="signup">
@@ -204,40 +223,32 @@ function LoginSignup() {
                 id="newUsername"
                 name="newUsername"
                 placeholder="Nombre de usuario"
-                className="login-input"
-                onChange={(event) => {
-                  setRegisterUsername(event.target.value);
-                }}
+                className="login-input outline-none"
+                onChange={handleRegisterChange}
               />
               <input
                 type="email"
                 id="newEmail"
                 name="newEmail"
                 placeholder="Correo electrónico"
-                className="login-input"
-                onChange={(event) => {
-                  setRegisterEmail(event.target.value);
-                }}
+                className="login-input outline-none"
+                onChange={handleRegisterChange}
               />
               <input
                 type="password"
                 id="newPassword"
                 name="newPassword"
                 placeholder="Contraseña"
-                className="login-input"
-                onChange={(event) => {
-                  setRegisterPassword(event.target.value);
-                }}
+                className="login-input outline-none"
+                onChange={handleRegisterChange}
               />
               <input
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
                 placeholder="Confirma tu contraseña"
-                className="login-input"
-                onChange={(event) => {
-                  setRegisterConfirmPassword(event.target.value);
-                }}
+                className="login-input outline-none"
+                onChange={handleRegisterChange}
               />
               <button type="submit" className="registerBtn">
                 Registrarse

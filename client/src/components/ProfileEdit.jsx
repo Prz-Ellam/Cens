@@ -4,8 +4,13 @@ import { allCountries } from '../utils/countries';
 import { useAuth } from '../hooks/useAuth';
 
 import axios from '@/services/api';
+import PasswordEdition from './PasswordEdition';
+import ErrorList from './ErrorList';
+import getErrors from '../utils/error-format';
+import z from 'zod';
+import Swal from 'sweetalert2';
 
-export default function ProfileEdit() {
+function ProfileEdit() {
   const { user, update } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -13,68 +18,108 @@ export default function ProfileEdit() {
     email: user.email,
     birthDate: user.birthDate,
     gender: user.gender,
-    country: user.country.name
+    country: user.country?.name
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [formErrors, setFormErrors] = useState({});
+
+  const formValidator = z.object({
+    email: z
+      .string({
+        invalid_type_error: 'El correo electrónico debe ser una cadena de texto'
+      })
+      .email('Es requerido que sea un email')
+      .optional(),
+    username: z
+      .string({
+        invalid_type_error: 'El nombre de usuario debe ser una cadena de texto'
+      })
+      .trim()
+      .min(1, 'Es requerido al menos 1 caracter')
+      .max(255, 'Maximo de 255 caracteres')
+      .optional(),
+    birthDate: z.coerce.date().optional().or(z.literal('')),
+    country: z.enum(Object.keys(allCountries)).optional().or(z.literal('')),
+    gender: z
+      .enum(['masculino', 'femenino', 'otro'])
+      .optional()
+      .or(z.literal(''))
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    const updatedFormData = {
+      ...formData,
+      [name]: value
+    };
+    setFormData(updatedFormData);
+
+    const result = formValidator.safeParse(updatedFormData);
+    if (!result.success) {
+      const errors = getErrors(result.error);
+      setFormErrors({
+        ...formErrors,
+        [name]: errors[name]
+      });
+      return;
+    }
+
+    const updatedFormErrors = formErrors;
+    delete updatedFormErrors[name];
+    setFormErrors(updatedFormErrors);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Envía los datos del formulario para editar el perfil
 
-    console.log(formData);
+    const result = formValidator.safeParse(formData);
+    if (!result.success) {
+      const errors = getErrors(result.error);
+      setFormErrors(errors);
+      console.error(errors);
+      return;
+    }
 
-    const response = await axios.put(`/users/${user.id}`, formData);
+    try {
+      console.log(formData);
 
-    console.log(response.data);
+      const response = await axios.put(`/users/${user.id}`, formData);
 
-    update(response.data.user);
+      await Swal.fire({
+        title: 'Operación éxitosa',
+        icon: 'success',
+        text: response.data.message
+      });
+
+      update(response.data.user);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: ''
-  });
-
-  const handlePasswordChange = (event) => {
-    setPasswordData({
-      ...passwordData,
-      [event.target.name]: event.target.value
-    });
-  };
-
-  const handlePasswordSubmit = async (event) => {
-    event.preventDefault();
-    // Envía los datos del formulario para cambiar la contraseña
-    const response = await axios.put(
-      `/users/${user.id}/password`,
-      passwordData
-    );
-
-    console.log(response.data);
-  };
-
-  
   const handleAvatarSubmit = async (event) => {
     event.preventDefault();
-    // Envía los datos del formulario para cambiar la contraseña
-    const avatarForm = new FormData();
-    avatarForm.append("avatar", imageFile);
+    try {
+      // Envía los datos del formulario para cambiar la contraseña
+      const avatarForm = new FormData();
+      avatarForm.append('avatar', imageFile);
 
-
-    const response = await axios.put(
-      `/users/${user.id}/avatar`,
-      avatarForm, {
+      const response = await axios.put(`/users/${user.id}/avatar`, avatarForm, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      }
-    );
+      });
 
-    console.log(response.data);
+      console.log(response.data);
+      await Swal.fire({
+        title: 'Operación éxitosa',
+        icon: 'success',
+        text: response.data.message
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const [imageFile, setImageFile] = useState(null);
@@ -112,11 +157,9 @@ export default function ProfileEdit() {
     }
   };
 
-
-
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-accent p-8 rounded-lg shadow-md w-96">
+      <div className="bg-dark p-8 rounded-lg shadow-md my-3">
         <form action="" noValidate onSubmit={handleAvatarSubmit}>
           <div className="flex justify-center relative">
             <label
@@ -126,7 +169,7 @@ export default function ProfileEdit() {
             ></label>
             <img
               src={imageSrc}
-              alt=""
+              alt="Avatar"
               className="w-[8rem] h-[8rem] rounded-full"
             />
             <input
@@ -142,17 +185,21 @@ export default function ProfileEdit() {
           <br />
           <button
             type="submit"
-            className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-md"
+            className="w-full text-gray-300 bg-[#573b8a] hover:bg-[#402c66] focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
           >
             Guardar Cambios
           </button>
         </form>
 
+        <hr className="my-6" />
+
         <form onSubmit={handleSubmit} noValidate>
-          <h2 className="text-2xl font-semibold mb-4">Editar Perfil</h2>
+          <h2 className="text-2xl text-center font-semibold mb-4 text-gray-300">
+            Editar Perfil
+          </h2>
           <div className="mb-4">
             <label
-              className="block text-gray-600 text-sm font-medium mb-2"
+              className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
               htmlFor="username"
             >
               Nombre de Usuario
@@ -161,12 +208,15 @@ export default function ProfileEdit() {
               type="text"
               id="username"
               name="username"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="bg-accent shadow hover:shadow-md appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               defaultValue={user.username}
               onChange={handleChange}
             />
+            {formErrors.username && <ErrorList errors={formErrors.username} />}
+          </div>
+          <div className="mb-4">
             <label
-              className="block text-gray-600 text-sm font-medium mb-2"
+              className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
               htmlFor="email"
             >
               Correo electrónico
@@ -175,13 +225,16 @@ export default function ProfileEdit() {
               type="email"
               id="email"
               name="email"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="bg-accent shadow hover:shadow-md appearance-none rounded w-full py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
               defaultValue={user.email}
               onChange={handleChange}
             />
+            {formErrors.email && <ErrorList errors={formErrors.email} />}
+          </div>
+          <div className="mb-4">
             <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="email"
+              className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
+              htmlFor="birthDate"
             >
               Fecha de nacimiento
             </label>
@@ -189,20 +242,25 @@ export default function ProfileEdit() {
               type="date"
               id="birthDate"
               name="birthDate"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
               defaultValue={user.birthDate}
               onChange={handleChange}
             />
+            {formErrors.birthDate && (
+              <ErrorList errors={formErrors.birthDate} />
+            )}
+          </div>
+          <div className="mb-4">
             <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="email"
+              className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
+              htmlFor="gender"
             >
               Género
             </label>
             <select
               name="gender"
               id="gender"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
               onChange={handleChange}
               defaultValue={user.gender}
             >
@@ -211,24 +269,21 @@ export default function ProfileEdit() {
               <option value="femenino">Mujer</option>
               <option value="otro">Otro</option>
             </select>
-
+            {formErrors.gender && <ErrorList errors={formErrors.gender} />}
+          </div>
+          <div className="mb-4">
             <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="email"
+              className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
+              htmlFor="country"
             >
               País
             </label>
             <select
               name="country"
               id="country"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-              onChange={(event) =>
-                setFormData({
-                  ...formData,
-                  [event.target.name]: event.target.value
-                })
-              }
-              defaultValue={user.country.name}
+              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
+              onChange={handleChange}
+              defaultValue={formData.country}
             >
               <option value="">Seleccionar</option>
               {Object.keys(allCountries).map((key) => (
@@ -238,10 +293,9 @@ export default function ProfileEdit() {
               ))}
             </select>
           </div>
-          {/* Resto de los campos del formulario */}
           <button
             type="submit"
-            className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-md"
+            className="w-full text-gray-300 bg-[#573b8a] hover:bg-[#402c66] focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
           >
             Guardar Cambios
           </button>
@@ -249,63 +303,10 @@ export default function ProfileEdit() {
 
         <hr className="my-6" />
 
-        <form onSubmit={handlePasswordSubmit}>
-          <h2 className="text-2xl font-semibold mb-4">Cambiar Contraseña</h2>
-          <div className="mb-4">
-            <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="currentPassword"
-            >
-              Contraseña Actual
-            </label>
-            <input
-              type="password"
-              id="currentPassword"
-              name="currentPassword"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-              defaultValue={passwordData.currentPassword}
-              onChange={handlePasswordChange}
-            />
-
-            <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="currentPassword"
-            >
-              Nueva contraseña
-            </label>
-            <input
-              type="password"
-              id="newPassword"
-              name="newPassword"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-              defaultValue={passwordData.newPassword}
-              onChange={handlePasswordChange}
-            />
-
-            <label
-              className="block text-gray-600 text-sm font-medium mb-2"
-              htmlFor="currentPassword"
-            >
-              Contraseña Actual
-            </label>
-            <input
-              type="password"
-              id="confirmNewPassword"
-              name="confirmNewPassword"
-              className="w-full border border-gray-300 bg-dark p-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-              defaultValue={passwordData.confirmNewPassword}
-              onChange={handlePasswordChange}
-            />
-          </div>
-          {/* Resto de los campos del formulario de cambio de contraseña */}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white hover:bg-blue-600 py-2 px-4 rounded-md"
-          >
-            Cambiar Contraseña
-          </button>
-        </form>
+        <PasswordEdition />
       </div>
     </div>
   );
 }
+
+export default ProfileEdit;

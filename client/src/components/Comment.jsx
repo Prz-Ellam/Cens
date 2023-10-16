@@ -2,13 +2,16 @@ import axios from '@/services/api';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
+import { ToastTopEnd } from '../utils/toast';
+import { Link } from 'react-router-dom';
+import { formatDate } from '../utils/format-date';
 
 /**
- * Componente que representa un comentario.
+ * Componente que representa un comentario, se encarga de actualizar o eliminar dicho comentario.
  *
  * @param {object} props - Las propiedades del componente.
  * @param {number} props.id - Identificador del comentario.
- * @param {string} props.text - El texto del comentario.
+ * @param {object} props.comment - Objecto del comentario.
  * @param {string} props.username - El nombre de usuario que hizo el comentario.
  * @param {boolean} props.isAuthUser - Verifica si el comentario le pertenece al usuario autenticado.
  * @param {function} props.onUpdate - Verifica si el comentario le pertenece al usuario autenticado.
@@ -16,7 +19,7 @@ import Swal from 'sweetalert2';
  */
 export default function Comment({
   id,
-  text,
+  comment,
   username,
   avatar,
   isAuthUser,
@@ -24,13 +27,13 @@ export default function Comment({
 }) {
   const [open, setOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [updateText, setUpdateText] = useState(text);
+  const [updateText, setUpdateText] = useState(comment.text);
   const menuRef = useRef(null);
 
   useEffect(() => {
-    setUpdateText(text);
-  }, [text]);
-  
+    setUpdateText(comment.text);
+  }, [comment.text]);
+
   // Menu
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,27 +51,36 @@ export default function Comment({
 
   const handleUpdateComment = async (commentId, text) => {
     try {
-      const response = await axios.put(
-        `/comments/${commentId}`,
-        { text }
-      );
+      const response = await axios.put(`/comments/${commentId}`, { text });
 
       console.log(response.data.message);
       onUpdate(commentId);
+      ToastTopEnd.fire({
+        icon: 'success',
+        title: response.data.message
+      });
+
       setIsUpdate(false);
     } catch (error) {
+      ToastTopEnd.fire({
+        title: 'Ocurrio un error',
+        icon: 'error',
+        text: error.response.data.message
+      });
       console.log(error.response.data.message);
     }
   };
 
   const handleDeleteComment = async (commentId) => {
+    setOpen(false);
+
     const result = await Swal.fire({
       title: '¿Estas seguro que deseas borrar el comentario?',
       text: 'No podrás recuperarlo después',
       icon: 'question',
       showDenyButton: true,
       confirmButtonText: 'Eliminar',
-      denyButtonText: `Cancelar`,
+      denyButtonText: `Cancelar`
     });
 
     if (result.isDenied) {
@@ -80,7 +92,11 @@ export default function Comment({
 
       console.log(response.data.message);
       await onUpdate(commentId);
-      setOpen(false);
+      ToastTopEnd.fire({
+        icon: 'success',
+        title: response.data.message
+      });
+
       // setIsUpdate(false);
     } catch (error) {
       console.log(error.response.data.message);
@@ -99,11 +115,12 @@ export default function Comment({
               src={avatar}
               alt="Avatar"
             />
-            {username}
+            {/* TODO */}
+            <Link to={`/profile/${1}`}>{username}</Link>
           </p>
           <p className="text-sm text-gray-400">
             <time dateTime="2022-02-08" title="February 8th, 2022">
-              Feb. 8, 2022
+              {formatDate(comment.createdAt)}
             </time>
           </p>
         </div>
@@ -155,7 +172,7 @@ export default function Comment({
       </footer>
       {!isUpdate ? (
         <>
-          <p className="text-gray-300">{text}</p>
+          <p className="text-gray-300">{comment.text}</p>
         </>
       ) : (
         <>
@@ -166,13 +183,13 @@ export default function Comment({
             onChange={(event) => setUpdateText(event.target.value)}
           />
           <button
-            className="bg-green-500 text-xs mr-3 hover:bg-gray-400 inline-flex items-center py-2.5 px-4 font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+            className="bg-green-500 text-xs mr-3 hover:bg-green-700 inline-flex items-center py-2 px-4 font-medium text-center text-white bg-primary-700 rounded-md"
             onClick={() => handleUpdateComment(id, updateText)}
           >
             Confirmar
           </button>
           <button
-            className="bg-gray-500 text-xs hover:bg-gray-400 inline-flex items-center py-2.5 px-4 font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+            className="bg-gray-500 text-xs hover:bg-gray-400 inline-flex items-center py-2 px-4 font-medium text-center text-white bg-primary-700 rounded-md"
             onClick={() => setIsUpdate(false)}
           >
             Cancelar
@@ -185,7 +202,11 @@ export default function Comment({
 
 Comment.propTypes = {
   id: PropTypes.number.isRequired,
-  text: PropTypes.string.isRequired,
+  comment: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired
+  }),
   username: PropTypes.string.isRequired,
   avatar: PropTypes.string.isRequired,
   isAuthUser: PropTypes.bool.isRequired,

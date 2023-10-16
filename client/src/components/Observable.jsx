@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 // eslint-disable-next-line react/prop-types
-function Observable({ children, onElementVisible, onClick }) {
+function Observable({ children, onElementVisible, onClick, className }) {
   const targetRef = useRef(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function Observable({ children, onElementVisible, onClick }) {
   }, [onElementVisible]);
 
   return (
-    <button ref={targetRef} onClick={onClick}>
+    <button ref={targetRef} onClick={onClick} className={className}>
       {children}
     </button>
   );

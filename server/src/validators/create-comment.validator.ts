@@ -3,7 +3,12 @@ import { formatErrors } from '@/utils/format-error';
 import { z } from 'zod';
 
 const createPollValidator = z.object({
-    text: z.string().min(1).max(255),
+    text: z
+        .string({
+            invalid_type_error: 'El texto debe ser una cadena de texto',
+        })
+        .min(1, 'Es requerido al menos 1 caracter')
+        .max(255, 'Maximo de 255 caracteres'),
 });
 
 export function validateCreateComment(model: unknown): ValidationStatus {

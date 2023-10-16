@@ -3,19 +3,45 @@ import axios from '@/services/api';
 import z from 'zod';
 import Swal from 'sweetalert2';
 import ErrorList from './ErrorList';
+import getErrors from '@/utils/error-format';
 
-export default function CreatePoll() {
-  const createPollValidator = z.object({
-    question: z.string().trim().min(1).max(255),
-    description: z.string().trim().min(1).max(255),
-    options: z.array(z.string().trim().min(1).max(65)).min(2).max(5)
+function CreatePoll() {
+  const formValidator = z.object({
+    question: z
+      .string({
+        invalid_type_error: 'La pregunta debe ser una cadena de texto'
+      })
+      .trim()
+      .min(1, 'Es requerido al menos 1 caracter')
+      .max(255, 'Máximo de 255 caracteres'),
+    description: z
+      .string({
+        invalid_type_error: 'La descripción debe ser una cadena de texto'
+      })
+      .trim()
+      .min(1, 'Es requerido al menos 1 caracter')
+      .max(255, 'Máximo de 255 caracteres'),
+    options: z
+      .array(
+        z
+          .string({
+            invalid_type_error: 'La opción debe ser una cadena de texto'
+          })
+          .trim()
+          .min(1, 'Es requerido al menos 1 caracter')
+          .max(65, 'Máximo de 255 caracteres')
+      )
+      .min(2, 'Debe haber minimo 2 opciones')
+      .max(5, 'Debe haber máximo 5 opciones')
   });
 
-  const [poll, setPoll] = useState({
+  const [formData, setFormData] = useState({
     question: '',
     description: '',
     options: ['', '']
   });
+
+  const [formErrors, setFormErrors] = useState({});
 
   /**
    *
@@ -24,51 +50,39 @@ export default function CreatePoll() {
    */
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setPoll({
-      ...poll,
+
+    const updatedFormData = {
+      ...formData,
       [name]: value
-    });
+    };
+    setFormData(updatedFormData);
 
-    const validationResult =
-      createPollValidator.shape.question.safeParse(value);
-    if (validationResult.error) {
-      const lerrors = [];
-      console.log(validationResult.error.issues);
-
-      validationResult.error.issues.forEach((validationError) => {
-        const message = validationError.message;
-
-        lerrors.push(message);
+    const result = formValidator.safeParse(updatedFormData);
+    if (!result.success) {
+      const errors = getErrors(result.error);
+      setFormErrors({
+        ...formErrors,
+        [name]: errors[name]
       });
-
-      console.log(lerrors);
-
-      setErrors({
-        ...errors,
-        [name]: lerrors
-      });
-
       return;
     }
 
-    setErrors({
-      ...errors,
-      [name]: ''
-    });
+    const updatedFormErrors = formErrors;
+    delete updatedFormErrors[name];
+    setFormErrors(updatedFormErrors);
   };
 
-  const [errors, setErrors] = useState({});
 
   // Function to handle changes in input values
   const handleInputChange = (index, event) => {
     const { name, value } = event.target;
 
-    const newOptions = [...poll.options];
+    const newOptions = [...formData.options];
     newOptions[index] = event.target.value;
-    setPoll({ ...poll, options: newOptions });
+    setFormData({ ...formData, options: newOptions });
 
     const validationResult =
-      createPollValidator.shape.question.safeParse(value);
+    formValidator.shape.question.safeParse(value);
     if (validationResult.error) {
       const lerrors = [];
       console.log(validationResult.error.issues);
@@ -81,64 +95,42 @@ export default function CreatePoll() {
 
       console.log(lerrors);
 
-      setErrors({
-        ...errors,
+      setFormErrors({
+        ...formErrors,
         [name]: lerrors
       });
 
       return;
     }
 
-    setErrors({
-      ...errors,
+    setFormErrors({
+      ...formErrors,
       [name]: ''
     });
   };
 
   const handleAddInput = () => {
-    if (poll.options.length < 5) {
-      setPoll({
-        ...poll,
-        options: [...poll.options, '']
+    if (formData.options.length < 5) {
+      setFormData({
+        ...formData,
+        options: [...formData.options, '']
       });
     }
   };
 
   const handleDelete = (indexToDelete) => {
-    if (poll.options.length <= 2) {
+    if (formData.options.length <= 2) {
       return;
     }
 
-    const updatedOptions = poll.options.filter(
+    const updatedOptions = formData.options.filter(
       (_option, index) => index !== indexToDelete
     );
 
-    setPoll({
-      ...poll,
+    setFormData({
+      ...formData,
       options: updatedOptions
     });
-  };
-
-  const validateForm = async () => {
-    const validationResult = createPollValidator.safeParse(poll);
-    if (validationResult.error) {
-      console.log('Hubo un error');
-      const lerrors = {};
-
-      validationResult.error.issues.forEach((validationError) => {
-        const path = validationError.path.join('.');
-        const message = validationError.message;
-
-        if (!lerrors[path]) {
-          lerrors[path] = [];
-        }
-        lerrors[path].push(message);
-      });
-      console.log(lerrors);
-      setErrors(lerrors);
-      return false;
-    }
-    return true;
   };
 
   /**
@@ -148,23 +140,26 @@ export default function CreatePoll() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!validateForm()) {
-      await Swal.fire({
-        title: 'Error'
-      });
+    const result = formValidator.safeParse(formData);
+    if (!result.success) {
+      const errors = getErrors(result.error);
+      setFormErrors(errors);
       return;
     }
 
     try {
-      const response = await axios.post('/polls', poll);
+      const response = await axios.post('/polls', formData);
 
       await Swal.fire({
-        title: 'Ok',
+        title: 'Operación éxitosa',
+        icon: 'success',
         text: response.data.message
       });
     } catch (error) {
       await Swal.fire({
-        title: 'Error'
+        title: 'Ocurrio un error',
+        icon: 'error',
+        text: error.response.data.message
       });
     }
   };
@@ -186,7 +181,7 @@ export default function CreatePoll() {
           placeholder="Pregunta"
           onChange={handleChange}
         />
-        {errors.question && <ErrorList errors={errors.question} />}
+        {formErrors['question'] && <ErrorList errors={formErrors.question} />}
       </div>
 
       <div className="mb-5">
@@ -206,14 +201,14 @@ export default function CreatePoll() {
           placeholder="Descripción"
           onChange={handleChange}
         ></textarea>
-        {errors.description && <ErrorList errors={errors.description} />}
+        {formErrors['description'] && <ErrorList errors={formErrors.description} />}
       </div>
 
       <label className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer">
         Opciones
       </label>
       <div>
-        {poll.options.map((value, index) => (
+        {formData.options.map((value, index) => (
           <div key={index} className="mb-4">
             <div className="relative flex flex-wrap items-stretch">
               <input
@@ -234,8 +229,8 @@ export default function CreatePoll() {
                 &times;
               </button>
             </div>
-            {errors[`options.${index}`] && (
-              <ErrorList errors={errors[`options.${index}`]} />
+            {formErrors[`options.${index}`] && (
+              <ErrorList errors={formErrors[`options.${index}`]} />
             )}
           </div>
         ))}
@@ -257,3 +252,5 @@ export default function CreatePoll() {
     </form>
   );
 }
+
+export default CreatePoll;

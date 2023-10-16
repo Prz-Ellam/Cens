@@ -80,7 +80,12 @@ class UserController {
             }
 
             const { email, password } = req.body;
-            const requestedUser = await User.findOneBy({ email });
+            const requestedUser = await User.findOne({
+                where: {
+                    email,
+                },
+                relations: ['country'],
+            });
             if (!requestedUser) {
                 return res.status(401).json({
                     message: 'Credenciales incorrectas',
@@ -104,9 +109,9 @@ class UserController {
                 token,
             });
         } catch (error) {
-            logger.error(`
-                Error durante un inicio de sesión: ${error as string}
-            `);
+            logger.error(
+                `Error durante un inicio de sesión: ${error as string}`,
+            );
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
