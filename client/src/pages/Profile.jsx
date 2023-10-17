@@ -108,13 +108,13 @@ function Profile() {
             { user.id === authUser.id && <div className="flex md:flex-row flex-col gap-4 my-3">
               <Link
                 to="/profileEdit"
-                className="bg-purple text-gray-300 py-2 px-4 rounded-lg shadow-none cursor-pointer"
+                className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
               >
                 Editar perfil
               </Link>
               <Link
                 to="/profileEdit"
-                className="bg-purple text-gray-300 py-2 px-4 rounded-lg shadow-none cursor-pointer"
+                className="text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
               >
                 Cambiar contraseña
               </Link>
@@ -126,19 +126,19 @@ function Profile() {
 
         <div className="grid grid-flow-col justify-stretch mb-5">
           <button
-            className="border-t hover:border-purple sm:text-xl text-md text-gray-300 hover:bg-purple text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className="border-t hover:border-purple sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
             onClick={() => setSelectedTab(TABS.POSTS)}
           >
             Actividad
           </button>
           <button
-            className="sm:text-xl text-md text-gray-300 hover:bg-purple text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className="sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
             onClick={() => setSelectedTab(TABS.FOLLOWERS)}
           >
             Seguidores
           </button>
           <button
-            className="sm:text-xl text-md text-gray-300 hover:bg-purple text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className="sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
             onClick={() => setSelectedTab(TABS.FOLLOWING)}
           >
             Seguidos

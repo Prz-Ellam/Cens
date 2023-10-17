@@ -10,6 +10,8 @@ import { useAuth } from './hooks/useAuth';
 import Logout from './pages/Logout';
 import isEmpty from './utils/is-empty';
 import ProfileEdit from './components/ProfileEdit';
+import Search from './pages/Search';
+import Analytics from './pages/Analytics';
 
 function App() {
   const { user } = useAuth();
@@ -30,6 +32,8 @@ function App() {
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/profileEdit" element={<ProfileEdit />} />
           <Route path="/survey/:pollId" element={<CommentsPage />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/analytics/:pollId" element={<Analytics />} />
         </Route>
         <Route path="/logout" element={<Logout />} />
       </Routes>

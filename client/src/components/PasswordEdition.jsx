@@ -5,10 +5,11 @@ import z from 'zod';
 import getErrors from '@/utils/error-format';
 import ErrorList from './ErrorList';
 import Swal from 'sweetalert2';
+import { ToastTopEnd } from '../utils/toast';
 
 /**
  * El componente PasswordEdition es una interfaz de usuario para permitir a los usuarios cambiar su contraseña.
- * @returns 
+ * @returns
  */
 function PasswordEdition() {
   const { user } = useAuth();
@@ -105,6 +106,12 @@ function PasswordEdition() {
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);
+
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
+
       return;
     }
 
@@ -151,7 +158,7 @@ function PasswordEdition() {
       ))}
       <button
         type="submit"
-        className="w-full text-gray-300 bg-[#573b8a] hover:bg-[#402c66] focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
+        className="w-full text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
       >
         Cambiar Contraseña
       </button>

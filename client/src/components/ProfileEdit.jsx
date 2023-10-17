@@ -1,15 +1,18 @@
 import { useState } from 'react';
-
 import { allCountries } from '../utils/countries';
 import { useAuth } from '../hooks/useAuth';
-
 import axios from '@/services/api';
 import PasswordEdition from './PasswordEdition';
 import ErrorList from './ErrorList';
 import getErrors from '../utils/error-format';
 import z from 'zod';
 import Swal from 'sweetalert2';
+import { ToastTopEnd } from '../utils/toast';
 
+/**
+ * Formulario para editar datos básicos del usuario
+ * @returns
+ */
 function ProfileEdit() {
   const { user, update } = useAuth();
 
@@ -38,12 +41,17 @@ function ProfileEdit() {
       .min(1, 'Es requerido al menos 1 caracter')
       .max(255, 'Maximo de 255 caracteres')
       .optional(),
-    birthDate: z.coerce.date().optional().or(z.literal('')),
-    country: z.enum(Object.keys(allCountries)).optional().or(z.literal('')),
+    birthDate: z.coerce.date().optional().or(z.literal('')).or(z.literal(null)),
+    country: z
+      .enum(Object.keys(allCountries))
+      .optional()
+      .or(z.literal(''))
+      .or(z.literal(null)),
     gender: z
       .enum(['masculino', 'femenino', 'otro'])
       .optional()
       .or(z.literal(''))
+      .or(z.literal(null))
   });
 
   const handleChange = (event) => {
@@ -77,13 +85,16 @@ function ProfileEdit() {
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);
-      console.error(errors);
+
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
+
       return;
     }
 
     try {
-      console.log(formData);
-
       const response = await axios.put(`/users/${user.id}`, formData);
 
       await Swal.fire({
@@ -128,20 +139,32 @@ function ProfileEdit() {
   const handleImageChange = (event) => {
     const files = Array.from(event.target.files);
     if (files.length === 0) {
-      setImageSrc('/default-profile-picture.png');
+      ToastTopEnd.fire({
+        title: 'Imagen no válida',
+        icon: 'error'
+      });
+      setImageSrc(`/api/v1/users/${user.id}/avatar`);
       return;
     }
     const file = files[0];
 
     const allowedExtensions = ['image/jpg', 'image/jpeg', 'image/png'];
     if (!allowedExtensions.includes(file.type)) {
-      setImageSrc('/default-profile-picture.png');
+      ToastTopEnd.fire({
+        title: 'Extensión no válida',
+        icon: 'error'
+      });
+      setImageSrc(`/api/v1/users/${user.id}/avatar`);
       return;
     }
 
     // Solo 8MB
     if (file.size >= 8 * 1024 * 1024) {
-      setImageSrc('/default-profile-picture.png');
+      ToastTopEnd.fire({
+        title: 'La imagen es demasiado pesada (solo 8MB)',
+        icon: 'error'
+      });
+      setImageSrc(`/api/v1/users/${user.id}/avatar`);
       return;
     }
 
@@ -160,7 +183,10 @@ function ProfileEdit() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-dark p-8 rounded-lg shadow-md my-3">
-        <form action="" noValidate onSubmit={handleAvatarSubmit}>
+        <form noValidate onSubmit={handleAvatarSubmit}>
+          <h2 className="text-2xl text-center font-semibold mb-4 text-gray-300">
+            Editar foto de perfil
+          </h2>
           <div className="flex justify-center relative">
             <label
               htmlFor="profile-picture"
@@ -295,7 +321,7 @@ function ProfileEdit() {
           </div>
           <button
             type="submit"
-            className="w-full text-gray-300 bg-[#573b8a] hover:bg-[#402c66] focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
+            className="w-full text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
           >
             Guardar Cambios
           </button>

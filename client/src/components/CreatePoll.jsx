@@ -236,7 +236,7 @@ function CreatePoll() {
         ))}
         <button
           type="button"
-          className="text-white bg-violet-500 hover:bg-violet-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          className="mb-3 text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
           onClick={handleAddInput}
         >
           Añadir opción
@@ -245,9 +245,9 @@ function CreatePoll() {
 
       <button
         type="submit"
-        className="text-white bg-violet-500 hover:bg-violet-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+        className="text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
       >
-        Create
+        Crear
       </button>
     </form>
   );

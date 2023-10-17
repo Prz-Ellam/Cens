@@ -101,7 +101,7 @@ function LoginSignup() {
       // console.error(error.response.data.message);
       await Swal.fire({
         icon: 'error',
-        title: JSON.stringify(error.response.data.message),
+        title: 'Datos incorrectos',
         confirmButtonText: 'Aceptar'
       });
     }
@@ -214,30 +214,30 @@ function LoginSignup() {
             </form>
           </div>
           <div className="signup">
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleRegister} noValidate>
               <label htmlFor="chk" aria-hidden="true" className="login-label">
                 Regístrate
               </label>
               <input
                 type="text"
-                id="newUsername"
-                name="newUsername"
+                id="username"
+                name="username"
                 placeholder="Nombre de usuario"
                 className="login-input outline-none"
                 onChange={handleRegisterChange}
               />
               <input
                 type="email"
-                id="newEmail"
-                name="newEmail"
+                id="email"
+                name="email"
                 placeholder="Correo electrónico"
                 className="login-input outline-none"
                 onChange={handleRegisterChange}
               />
               <input
                 type="password"
-                id="newPassword"
-                name="newPassword"
+                id="password"
+                name="password"
                 placeholder="Contraseña"
                 className="login-input outline-none"
                 onChange={handleRegisterChange}

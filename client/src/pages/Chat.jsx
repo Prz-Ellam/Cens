@@ -5,6 +5,7 @@ import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
 import { ToastTopEnd } from '@/utils/toast';
 import z from 'zod';
+// import getErrors from '../utils/error-format';
 
 function Chat() {
   const { user } = useAuth();
@@ -15,11 +16,12 @@ function Chat() {
   const [selectedContact, setSelectedContact] = useState(null);
   const messageBox = useRef();
 
-  const validator = z.object({
+  const formValidator = z.object({
     text: z
       .string({
         invalid_type_error: 'El texto debe ser una cadena de texto'
       })
+      .trim()
       .min(1, 'Es requerido al menos 1 caracter')
       .max(255, 'Maximo de 255 caracteres')
   });
@@ -52,6 +54,21 @@ function Chat() {
   };
 
   const handleMessage = async (chatId) => {
+
+    const result = formValidator.safeParse({
+      text: message
+    });
+    if (!result.success) {
+      // const errors = getErrors(result.error);
+      
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
+
+      return;
+    }
+
     if (!message) {
       await ToastTopEnd.fire({
         icon: 'error',

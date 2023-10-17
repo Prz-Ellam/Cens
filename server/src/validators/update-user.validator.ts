@@ -25,12 +25,13 @@ const updateUserValidator = z.object({
         .min(1, 'Es requerido al menos 1 caracter')
         .max(255, 'Maximo de 255 caracteres')
         .optional(),
-    birthDate: z.coerce.date().optional().or(z.literal('')),
-    country: z.enum(countries).optional().or(z.literal('')),
+    birthDate: z.coerce.date().optional().or(z.literal('')).or(z.literal(null)),
+    country: z.enum(countries).optional().or(z.literal('')).or(z.literal(null)),
     gender: z
         .enum(['masculino', 'femenino', 'otro'])
         .optional()
-        .or(z.literal('')),
+        .or(z.literal(''))
+        .or(z.literal(null)),
 });
 
 export function validateUpdateUser(model: unknown): ValidationStatus {
