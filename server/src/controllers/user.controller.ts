@@ -16,6 +16,7 @@ import { validateUpdatePassword } from '@/validators/update-password.validator';
 import fs from 'fs';
 import { promisify } from 'util';
 import path from 'path';
+import { connection } from '@/config/database';
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -594,6 +595,54 @@ class UserController {
                 Error al dejar de seguir a un usuario: 
                 ${error as string}
             `);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
+    async getNotFollowedByUser(
+        req: AuthRequest,
+        res: Response,
+    ): Promise<Response> {
+        try {
+            const userId = Number.parseInt(req.params.userId) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+            }
+
+            const usersNotFollowedByUser = await connection
+                .getRepository(User)
+                .createQueryBuilder('u')
+                .where(
+                    'u.id NOT IN (' +
+                        connection
+                            .createQueryBuilder()
+                            .select('f.followed_user_id')
+                            .from('followers', 'f')
+                            .where('f.follower_user_id = :userId', {
+                                userId,
+                            })
+                            .getQuery() +
+                        ')',
+                )
+                .andWhere('u.id != :userId', { userId })
+                .orderBy('RAND()') // Esto varía según la base de datos, RAND() es para MySQL/MariaDB
+                .getMany();
+
+            return res.json(usersNotFollowedByUser);
+        } catch (exception) {
+            logger.error(`${exception as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });

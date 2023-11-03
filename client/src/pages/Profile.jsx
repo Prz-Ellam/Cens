@@ -3,6 +3,7 @@ import SurveyForm from '@/components/SurveyForm';
 import { Link, useParams } from 'react-router-dom';
 import axios from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
+import Swal from 'sweetalert2';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -62,6 +63,22 @@ function Profile() {
     }
   };
 
+  const unfollowUser = async (userId) => {
+    try {
+      const response = await axios.delete(`/users/${userId}/following`);
+
+      Swal.fire({
+        title: 'Operación éxitosa',
+        icon: 'success',
+        text: response.data.message
+      });
+
+      fetchFollowing();
+    } catch (error) {
+      console.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       fetchUserPolls(userId);
@@ -105,20 +122,22 @@ function Profile() {
             </h3>
             <h6 className="text-gray-300 text-xl">{user?.email}</h6>
             <h6 className="text-gray-300">{user?.birthDate}</h6>
-            { user.id === authUser.id && <div className="flex md:flex-row flex-col gap-4 my-3">
-              <Link
-                to="/profileEdit"
-                className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
-              >
-                Editar perfil
-              </Link>
-              <Link
-                to="/profileEdit"
-                className="text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
-              >
-                Cambiar contraseña
-              </Link>
-            </div> }
+            {user.id === authUser.id && (
+              <div className="flex md:flex-row flex-col gap-4 my-3">
+                <Link
+                  to="/profileEdit"
+                  className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+                >
+                  Editar perfil
+                </Link>
+                <Link
+                  to="/profileEdit"
+                  className="text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+                >
+                  Cambiar contraseña
+                </Link>
+              </div>
+            )}
           </div>
         </header>
 
@@ -147,7 +166,8 @@ function Profile() {
 
         <div className="md:w-9/12 w-11/12 flex flex-col gap-4 mx-auto mb-5">
           {selectedTab === TABS.POSTS &&
-            polls && polls.map((poll, index) => (
+            polls &&
+            polls.map((poll, index) => (
               <SurveyForm
                 key={index}
                 poll={poll}
@@ -161,9 +181,7 @@ function Profile() {
                 }}
                 onUpdate={async (pollId) => {
                   try {
-                    const response = await axios.get(
-                      `/polls/${pollId}`
-                    );
+                    const response = await axios.get(`/polls/${pollId}`);
 
                     // console.log(response.data);
                     const newPoll = response.data;
@@ -181,38 +199,55 @@ function Profile() {
             ))}
           {selectedTab === TABS.FOLLOWERS &&
             followers.map((follower, index) => (
-              <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
+              <div
+                className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                key={index}
+              >
                 <img
                   src={`/api/v1/users/${follower.followerUser.id}/avatar`}
                   alt="Avatar"
                   className="h-12 w-12 rounded-full object-cover"
                 />
                 <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                  <p className="text-md font-medium">{follower.followerUser.username}</p>
-                  <p className="text-sm font-medium">{follower.followerUser.email}</p>
+                  <Link
+                    to={`/profile/${follower.followerUser.id}/#`}
+                    className="text-md font-bold"
+                  >
+                    {follower.followerUser.username}
+                  </Link>
+                  <p className="text-sm font-medium">
+                    {follower.followerUser.email}
+                  </p>
                 </div>
-                <button className="bg-gray-500 text-gray-300 rounded-lg px-3 py-1">
-                  Dejar de seguir
-                </button>
               </div>
             ))}
-          {selectedTab === TABS.FOLLOWING && 
+          {selectedTab === TABS.FOLLOWING &&
             following.map((follow, index) => (
-            <div className="flex flex-row items-center p-4 bg-accent rounded-lg" key={index}>
-              <img
-                src={`/api/v1/users/${follow.followedUser.id}/avatar`}
-                alt="Avatar"
-                className="h-12 w-12 rounded-full object-cover"
-              />
-              <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                <p className="text-md font-bold">{follow.followedUser.username}</p>
-                <p className="text-sm font-medium">{follow.followedUser.email}</p>
+              <div
+                className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                key={index}
+              >
+                <img
+                  src={`/api/v1/users/${follow.followedUser.id}/avatar`}
+                  alt="Avatar"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+                <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                  <p className="text-md font-bold">
+                    {follow.followedUser.username}
+                  </p>
+                  <p className="text-sm font-medium">
+                    {follow.followedUser.email}
+                  </p>
+                </div>
+                {authUser.id == userId && <button
+                  className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
+                  onClick={() => unfollowUser(follow.followedUser.id)}
+                >
+                  Eliminar
+                </button>}
               </div>
-              <button className="bg-red-500 text-gray-300 rounded-lg px-3 py-1">
-                Eliminar
-              </button>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </section>

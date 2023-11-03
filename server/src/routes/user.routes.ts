@@ -36,7 +36,17 @@ userRouter.post(
     authMiddleware,
     UserController.followUser,
 );
-userRouter.delete('/:userId/followers', authMiddleware);
+userRouter.delete(
+    '/:userId/following',
+    authMiddleware,
+    UserController.unfollowUser,
+);
+
+userRouter.get(
+    '/:userId/notFollowing',
+    authMiddleware,
+    UserController.getNotFollowedByUser,
+);
 
 userRouter.get(
     '/:userId/conversations',

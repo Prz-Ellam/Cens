@@ -150,7 +150,7 @@ function CommentsPage() {
   };
 
   return (
-    <div className="h-full overflow-auto mt-5">
+    <div className="h-full mt-5">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
         {poll ? <SurveyForm poll={poll} onUpdate={() => fetchPoll()} /> : <></>}
 

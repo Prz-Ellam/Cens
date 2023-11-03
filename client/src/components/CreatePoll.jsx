@@ -4,6 +4,7 @@ import z from 'zod';
 import Swal from 'sweetalert2';
 import ErrorList from './ErrorList';
 import getErrors from '@/utils/error-format';
+import { ToastTopEnd } from '../utils/toast';
 
 function CreatePoll() {
   const formValidator = z.object({
@@ -63,6 +64,11 @@ function CreatePoll() {
       setFormErrors({
         ...formErrors,
         [name]: errors[name]
+      });
+
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
       });
       return;
     }
@@ -144,6 +150,11 @@ function CreatePoll() {
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);
+
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
       return;
     }
 

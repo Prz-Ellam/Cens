@@ -13,6 +13,17 @@ function Home() {
   const [fetchMore, setFetchMore] = useState(true);
   const [close, setClose] = useState(true);
   const [polls, setPolls] = useState([]);
+  const [recomendations, setRecomendations] = useState([]);
+
+  const fetchRecomendations = async () => {
+    try {
+      const response = await axios(`/users/${user.id}/notFollowing`);
+
+      setRecomendations(response.data);
+    } catch (error) {
+      console.error('Error fetching polls:', error);
+    }
+  };
 
   const fetchPolls = async () => {
     try {
@@ -66,6 +77,12 @@ function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      fetchRecomendations();
+    }
+  }, []);
+
   return (
     <section className="flex">
       <div className="md:w-2/3 w-full p-3">
@@ -97,62 +114,49 @@ function Home() {
 
         <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
           {polls.map((poll, index) => (
-            <SurveyForm key={index} poll={poll} onUpdate={updatePoll} onDelete={deletePoll} />
+            <SurveyForm
+              key={index}
+              poll={poll}
+              onUpdate={updatePoll}
+              onDelete={deletePoll}
+            />
           ))}
           {polls.length > 0 && fetchMore && (
-            <Observable onElementVisible={() => setTimeout(fetchPolls, 1000)} className="text-gray-300 font-bold text-lg">
+            <Observable
+              onElementVisible={() => setTimeout(fetchPolls, 1000)}
+              className="text-gray-300 font-bold text-lg"
+            >
               Cargando más...
             </Observable>
           )}
         </section>
       </div>
-      <div className="md:w-1/3 md:block hidden p-3">
+      <section className="md:w-1/3 md:block hidden p-3">
         <div className="h-screen rounded-lg bg-accent text-white mb-5 p-4">
-          <h2 className="text-lg font-bold mb-2">Buscar encuestas</h2>
+          <h2 className="text-lg font-bold mb-2">¿A quién seguir?</h2>
 
-          <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
-            <img
-              src="/default-profile-picture.png"
-              alt="Avatar"
-              className="h-12 w-12 rounded-full object-cover"
-            />
-            <div className="flex flex-col flex-grow ml-3 truncate">
-              <div className="flex items-center">
-                <div className="text-sm font-medium">Nombre apellido</div>
+          {recomendations.map((user, index) => (
+            <article
+              key={index}
+              className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
+            >
+              <img
+                src={`/api/v1/users/${user.id}/avatar`}
+                alt="Avatar"
+                className="h-12 w-12 rounded-full object-cover"
+              />
+              <div className="flex flex-col flex-grow ml-3 truncate">
+                <div className="flex items-center justify-between">
+                  <p className="text-md font-bold">{user.username}</p>
+                  <button className="rounded-full bg-gray-300 hover:bg-gray-400 px-3 py-1 text-black" onClick={async () => {
+                    await axios.post(`/users/${user.id}/followers`);
+                  }}>Seguir</button>
+                </div>
               </div>
-              <p className="font-bold">Título de la encuesta</p>
-            </div>
-          </div>
-
-          <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
-            <img
-              src="/default-profile-picture.png"
-              alt="Avatar"
-              className="h-12 w-12 rounded-full object-cover"
-            />
-            <div className="flex flex-col flex-grow ml-3 truncate">
-              <div className="flex items-center">
-                <div className="text-sm font-medium">Nombre apellido</div>
-              </div>
-              <p className="font-bold">Título de la encuesta</p>
-            </div>
-          </div>
-
-          <div className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer">
-            <img
-              src="/default-profile-picture.png"
-              alt="Avatar"
-              className="h-12 w-12 rounded-full object-cover"
-            />
-            <div className="flex flex-col flex-grow ml-3 truncate">
-              <div className="flex items-center">
-                <div className="text-sm font-medium">Nombre apellido</div>
-              </div>
-              <p className="font-bold">Título de la encuesta</p>
-            </div>
-          </div>
+            </article>
+          ))}
         </div>
-      </div>
+      </section>
       <Modal
         question="Crear encuesta"
         close={close}
