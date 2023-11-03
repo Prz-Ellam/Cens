@@ -7,7 +7,7 @@ import axios from '@/services/api';
 function Survey() {
   const { pollId } = useParams();
   const [poll, setPoll] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [comment, setComment] = useState('');
 
   const postComment = async () => {
@@ -39,7 +39,8 @@ function Survey() {
     const fetchComments = async () => {
       try {
         const response = await axios.get(`/polls/${pollId}/comments`);
-        const commentsData = response.data; // Assuming the response data contains the survey information
+        console.log(response.data);
+        const commentsData = response.data.comments; // Assuming the response data contains the survey information
         setComments(commentsData);
       } catch (error) {
         console.error('Error fetching comments:', error);

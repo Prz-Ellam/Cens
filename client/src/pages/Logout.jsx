@@ -4,11 +4,11 @@ import { useAuth } from '@/hooks/useAuth';
 
 function Logout() {
   const { logout } = useAuth();
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     logout();
-    navigation('/');
+    window.location.reload('/');
   }, []);
 
   return <></>;

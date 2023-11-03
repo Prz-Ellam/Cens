@@ -181,7 +181,7 @@ function ProfileEdit() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex justify-center">
       <div className="bg-dark p-8 rounded-lg shadow-md my-3">
         <form noValidate onSubmit={handleAvatarSubmit}>
           <h2 className="text-2xl text-center font-semibold mb-4 text-gray-300">
@@ -206,7 +206,7 @@ function ProfileEdit() {
               id="profile-picture"
               autoComplete="off"
               onChange={handleImageChange}
-            ></input>
+            />
           </div>
           <br />
           <button
@@ -268,7 +268,7 @@ function ProfileEdit() {
               type="date"
               id="birthDate"
               name="birthDate"
-              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
+              className="w-full bg-accent text-gray-300 p-2 rounded-md focus:outline-none"
               defaultValue={user.birthDate}
               onChange={handleChange}
             />
@@ -286,7 +286,7 @@ function ProfileEdit() {
             <select
               name="gender"
               id="gender"
-              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
+              className="w-full bg-accent text-gray-300 p-2 rounded-md focus:outline-none cursor-pointer"
               onChange={handleChange}
               defaultValue={user.gender}
             >
@@ -307,7 +307,7 @@ function ProfileEdit() {
             <select
               name="country"
               id="country"
-              className="w-full bg-accent text-gray-400 p-2 rounded-md focus:outline-none"
+              className="w-full bg-accent text-gray-300 p-2 rounded-md focus:outline-none cursor-pointer"
               onChange={handleChange}
               defaultValue={formData.country}
             >

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 function Navbar() {
+  const { logout } = useAuth();
   const { user } = useAuth();
 
   return (
@@ -41,44 +42,19 @@ function Navbar() {
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
             <li>
               <Link
-                to="/"
-                className="block py-2 pl-3 pr-4 text-white rounded md:bg-transparent md:p-0 dark:text-white md:hover:text-blue-700"
-                aria-current="page"
-              >
-                Home
-              </Link>
-            </li>
-            {/* <li>
-              <a
-                href="#"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Services
-              </a>
-            </li> */}
-            <li>
-              <Link
                 to={`/profile/${user.id}`}
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                className="block font-bold py-2 pl-3 pr-4 text-white rounded bg-transparent md:p-0 hover:text-violet-200"
               >
                 {user?.username}
               </Link>
             </li>
             <li>
-              <Link
-                to="/logout"
-                className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+              <a
+                onClick={ () => { logout(); window.location.reload();} }
+                className="cursor-pointer block font-bold py-2 pl-3 pr-4 text-white rounded bg-transparent md:p-0 hover:text-violet-200"
               >
                 Cerrar sesión
-              </Link>
+              </a>
             </li>
           </ul>
         </div>

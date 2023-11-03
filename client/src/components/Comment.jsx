@@ -12,18 +12,20 @@ import { formatDate } from '../utils/format-date';
  * @param {object} props - Las propiedades del componente.
  * @param {number} props.id - Identificador del comentario.
  * @param {object} props.comment - Objecto del comentario.
+ * @param {number} props.userid - Identificador del usuario que hizo el comentario.
  * @param {string} props.username - El nombre de usuario que hizo el comentario.
  * @param {boolean} props.isAuthUser - Verifica si el comentario le pertenece al usuario autenticado.
  * @param {function} props.onUpdate - Verifica si el comentario le pertenece al usuario autenticado.
  * @returns {JSX.Element} - El elemento JSX del comentario.
  */
-export default function Comment({
+function Comment({
   id,
   comment,
+  userId,
   username,
   avatar,
   isAuthUser,
-  onUpdate
+  onChange
 }) {
   const [open, setOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
@@ -53,8 +55,7 @@ export default function Comment({
     try {
       const response = await axios.put(`/comments/${commentId}`, { text });
 
-      console.log(response.data.message);
-      onUpdate(commentId);
+      onChange();
       ToastTopEnd.fire({
         icon: 'success',
         title: response.data.message
@@ -67,7 +68,7 @@ export default function Comment({
         icon: 'error',
         text: error.response.data.message
       });
-      console.log(error.response.data.message);
+      console.error('Error:', error.response.data.message);
     }
   };
 
@@ -90,8 +91,7 @@ export default function Comment({
     try {
       const response = await axios.delete(`/comments/${commentId}`);
 
-      console.log(response.data.message);
-      await onUpdate(commentId);
+      onChange();
       ToastTopEnd.fire({
         icon: 'success',
         title: response.data.message
@@ -103,10 +103,10 @@ export default function Comment({
     }
   };
 
-  // focus:ring-4 focus:outline-none focus:ring-gray-50  dark:focus:ring-gray-600
+  // focus:ring-4 focus:outline-none focus:ring-gray-50 dark:focus:ring-gray-600
 
   return (
-    <article className="p-6 text-baserounded-lg bg-accent border-b text-gray-300">
+    <article className="p-6 text-baserounded-lg bg-accent border-b border-gray-300 text-gray-300">
       <footer className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
@@ -115,8 +115,7 @@ export default function Comment({
               src={avatar}
               alt="Avatar"
             />
-            {/* TODO */}
-            <Link to={`/profile/${1}`}>{username}</Link>
+            <Link to={`/profile/${userId}`}>{username}</Link>
           </p>
           <p className="text-sm text-gray-400">
             <time dateTime="2022-02-08" title="February 8th, 2022">
@@ -207,8 +206,11 @@ Comment.propTypes = {
     text: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired
   }),
+  userId: PropTypes.number.isRequired,
   username: PropTypes.string.isRequired,
   avatar: PropTypes.string.isRequired,
   isAuthUser: PropTypes.bool.isRequired,
-  onUpdate: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired
 };
+
+export default Comment;

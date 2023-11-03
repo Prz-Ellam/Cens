@@ -37,7 +37,7 @@ function LandingPage() {
 
   return (
     <div className="mybody-landingPage">
-      <header className='landing-header'>
+      <header className="landing-header">
         <a href="#" className="logo">
           <img
             src="../src/assets/img/Cens_Logo2.png"
@@ -46,22 +46,6 @@ function LandingPage() {
             height="150"
           />
         </a>
-        <ul>
-          <li>
-            <a href="#">Inicio</a>
-          </li>
-          <li>
-            <a href="#">Acerca de</a>
-          </li>
-          <li>
-            <a href="#">Contacto</a>
-          </li>
-          <li>
-            <Link to="/login" className="active">
-              Iniciar Sesión
-            </Link>
-          </li>
-        </ul>
       </header>
       <section className="landing-section">
         <img src="../src/assets/img/stars1.png" id="stars" alt="Estrellas" />
@@ -69,13 +53,13 @@ function LandingPage() {
         <img src="../src/assets/img/sea1.png" id="sea" alt="Mar" />
         <img src="../src/assets/img/sea2.png" id="sea2" alt="Mar 2" />
         <h2 id="text">Bienvenido a Cens</h2>
-        <a href="#" id="btn">
-          Explorar
-        </a>
+        <Link to="/login" id="btn">
+          Iniciar sesión
+        </Link>
       </section>
       <div className="sec" id="sec">
-        <h1>Explora Opiniones</h1>
-        <h2>
+        <h2 className="text-gray-300 text-5xl py-3 text-center font-bold">Explora Opiniones</h2>
+        <p className="text-gray-300 text-2xl py-4">
           Cens es una propuesta de plataforma en línea que une a personas de
           todas partes del mundo para crear, responder y compartir encuestas de
           una amplia variedad de temas. Nuestra plataforma brinda a las personas
@@ -84,7 +68,7 @@ function LandingPage() {
           del mundo para crear, responder y compartir encuestas de una amplia
           variedad de temas. Nuestra plataforma brinda a las personas la
           oportunidad de expresar sus opiniones y perspectivas.
-        </h2>
+        </p>
       </div>
     </div>
   );

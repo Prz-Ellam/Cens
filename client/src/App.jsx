@@ -20,22 +20,28 @@ function App() {
     return <></>;
   }
 
+  console.log(user);
+
   return (
     <BrowserRouter>
       <Routes>
-        {isEmpty(user) && <Route path="/" element={<LandingPage />} />}
+        {isEmpty(user) && <Route exact path="/" element={<LandingPage />} />}
+
         <Route path="/login" element={<LoginSignup />} />
+
         <Route element={<MainLayout />}>
           <Route path="/chat" element={<Chat />} />
           {!isEmpty(user) && <Route path="/" element={<Home />} />}
-          <Route path="/home" element={<Home />} />
+          
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/profileEdit" element={<ProfileEdit />} />
           <Route path="/survey/:pollId" element={<CommentsPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/analytics/:pollId" element={<Analytics />} />
         </Route>
+
         <Route path="/logout" element={<Logout />} />
+
       </Routes>
     </BrowserRouter>
   );

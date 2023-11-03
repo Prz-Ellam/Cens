@@ -206,9 +206,17 @@ class CommentController {
             const page = Number.parseInt(req.query.page as string) || 1;
             const limit = Number.parseInt(req.query.limit as string) || 5;
 
-            // TODO: Validar page y limit
+            // Solo pueden medir lo de un int
+            // No poner numeros negativos
 
-            const comments = await Comment.find({
+            // TODO: Validar page y limit
+            if (isNaN(page) || isNaN(limit)) {
+                return res.status(422).json({
+                    message: 'Pagina o limite no valido',
+                });
+            }
+
+            const [comments, total] = await Comment.findAndCount({
                 where: {
                     poll: { id: pollId },
                 },
@@ -219,8 +227,12 @@ class CommentController {
                     createdAt: 'DESC',
                 },
             });
+            const totalPages = Math.ceil(total / limit);
 
-            return res.json(comments);
+            return res.json({
+                comments,
+                totalPages,
+            });
         } catch (exception) {
             logger.error(`${exception as string}`);
             return res.status(500).json({

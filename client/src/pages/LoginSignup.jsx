@@ -151,7 +151,7 @@ function LoginSignup() {
       });
 
       auth(response.data.user, response.data.token)
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       await Swal.fire({
         icon: 'error',

@@ -141,7 +141,7 @@ function PasswordEdition() {
         <div className="mb-4" key={key}>
           <label
             className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
-            htmlFor="currentPassword"
+            htmlFor={key}
           >
             {labelMappings[key]}
           </label>
