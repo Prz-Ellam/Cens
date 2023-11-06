@@ -46,7 +46,7 @@ function Profile() {
       const response = await axios.get(`/users/${userId}/followers`);
 
       console.log(response.data);
-      setFollowers(response.data);
+      setFollowers(response.data.followers);
     } catch (error) {
       console.error(error.response.data.message);
     }
@@ -56,8 +56,7 @@ function Profile() {
     try {
       const response = await axios.get(`/users/${userId}/following`);
 
-      console.log(response.data);
-      setFollowing(response.data);
+      setFollowing(response.data.following);
     } catch (error) {
       console.error(error.response.data.message);
     }
@@ -145,19 +144,25 @@ function Profile() {
 
         <div className="grid grid-flow-col justify-stretch mb-5">
           <button
-            className="border-t hover:border-purple sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className={`${
+              selectedTab === TABS.POSTS ? 'bg-purple-800' : ''
+            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
             onClick={() => setSelectedTab(TABS.POSTS)}
           >
             Actividad
           </button>
           <button
-            className="sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className={`${
+              selectedTab === TABS.FOLLOWERS ? 'bg-purple-800' : ''
+            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
             onClick={() => setSelectedTab(TABS.FOLLOWERS)}
           >
             Seguidores
           </button>
           <button
-            className="sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in"
+            className={`${
+              selectedTab === TABS.FOLLOWING ? 'bg-purple-800' : ''
+            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
             onClick={() => setSelectedTab(TABS.FOLLOWING)}
           >
             Seguidos
@@ -166,87 +171,107 @@ function Profile() {
 
         <div className="md:w-9/12 w-11/12 flex flex-col gap-4 mx-auto mb-5">
           {selectedTab === TABS.POSTS &&
-            polls &&
-            polls.map((poll, index) => (
-              <SurveyForm
-                key={index}
-                poll={poll}
-                onDelete={async (pollId) => {
-                  try {
-                    const newPolls = polls.filter((poll) => poll.id !== pollId);
-                    setPolls(newPolls);
-                  } catch (error) {
-                    console.error('Error deleting poll:', error);
-                  }
-                }}
-                onUpdate={async (pollId) => {
-                  try {
-                    const response = await axios.get(`/polls/${pollId}`);
+            (polls.length > 0 ? (
+              polls.map((poll, index) => (
+                <SurveyForm
+                  key={index}
+                  poll={poll}
+                  onDelete={async (pollId) => {
+                    try {
+                      const newPolls = polls.filter((poll) => poll.id !== pollId);
+                      setPolls(newPolls);
+                    } catch (error) {
+                      console.error('Error deleting poll:', error);
+                    }
+                  }}
+                  onUpdate={async (pollId) => {
+                    try {
+                      const response = await axios.get(`/polls/${pollId}`);
 
-                    // console.log(response.data);
-                    const newPoll = response.data;
-                    console.log(newPoll);
-                    const newPolls = polls.map((poll) =>
-                      poll.id === pollId ? newPoll : poll
-                    );
-                    setPolls(newPolls);
-                    console.log(newPolls);
-                  } catch (error) {
-                    console.log('error');
-                  }
-                }}
-              />
+                      // console.log(response.data);
+                      const newPoll = response.data;
+                      console.log(newPoll);
+                      const newPolls = polls.map((poll) =>
+                        poll.id === pollId ? newPoll : poll
+                      );
+                      setPolls(newPolls);
+                      console.log(newPolls);
+                    } catch (error) {
+                      console.log('error');
+                    }
+                  }}
+                />
+              ))
+            ) : (
+              <p className="text-gray-300 text-2xl text-center font-bold">
+                Está cuenta no tiene ninguna actividad...
+              </p>
             ))}
           {selectedTab === TABS.FOLLOWERS &&
-            followers.map((follower, index) => (
-              <div
-                className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                key={index}
-              >
-                <img
-                  src={`/api/v1/users/${follower.followerUser.id}/avatar`}
-                  alt="Avatar"
-                  className="h-12 w-12 rounded-full object-cover"
-                />
-                <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                  <Link
-                    to={`/profile/${follower.followerUser.id}/#`}
-                    className="text-md font-bold"
-                  >
-                    {follower.followerUser.username}
-                  </Link>
-                  <p className="text-sm font-medium">
-                    {follower.followerUser.email}
-                  </p>
+            (followers.length > 0 ? (
+              followers.map((follower, index) => (
+                <div
+                  className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                  key={index}
+                >
+                  <img
+                    src={`/api/v1/users/${follower.followerUser.id}/avatar`}
+                    alt="Avatar"
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
+                  <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                    <Link
+                      to={`/profile/${follower.followerUser.id}`}
+                      className="text-md font-bold"
+                      reloadDocument
+                    >
+                      {follower.followerUser.username}
+                    </Link>
+                    <p className="text-sm font-medium">
+                      {follower.followerUser.email}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ))
+            ) : (
+              <p className="text-gray-300 text-2xl text-center font-bold">
+                Está cuenta no tiene seguidores...
+              </p>
             ))}
           {selectedTab === TABS.FOLLOWING &&
-            following.map((follow, index) => (
-              <div
-                className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                key={index}
-              >
-                <img
-                  src={`/api/v1/users/${follow.followedUser.id}/avatar`}
-                  alt="Avatar"
-                  className="h-12 w-12 rounded-full object-cover"
-                />
-                <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                  <p className="text-md font-bold">
-                    {follow.followedUser.username}
-                  </p>
-                  <p className="text-sm font-medium">
-                    {follow.followedUser.email}
-                  </p>
-                </div>
-                {authUser.id == userId && <button
-                  className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
-                  onClick={() => unfollowUser(follow.followedUser.id)}
+            (followers.length > 0 ? (
+              following.map((follow, index) => (
+                <div
+                  className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                  key={index}
                 >
-                  Eliminar
-                </button>}
-              </div>
+                  <img
+                    src={`/api/v1/users/${follow.followedUser.id}/avatar`}
+                    alt="Avatar"
+                    className="h-12 w-12 rounded-full object-cover"
+                  />
+                  <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                    <p className="text-md font-bold">
+                      {follow.followedUser.username}
+                    </p>
+                    <p className="text-sm font-medium">
+                      {follow.followedUser.email}
+                    </p>
+                  </div>
+                  {authUser.id == userId && (
+                    <button
+                      className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
+                      onClick={() => unfollowUser(follow.followedUser.id)}
+                    >
+                      Eliminar
+                    </button>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-300 text-2xl text-center font-bold">
+                Está cuenta no sigue a nadie...
+              </p>
             ))}
         </div>
       </div>

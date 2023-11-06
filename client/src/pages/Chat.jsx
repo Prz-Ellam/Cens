@@ -12,6 +12,7 @@ function Chat() {
   const [contacts, setContacts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [chatId, setChatId] = useState(-1);
 
   const [selectedContact, setSelectedContact] = useState(null);
   const messageBox = useRef();
@@ -112,6 +113,7 @@ function Chat() {
           contacts={contacts}
           onSelect={(contact) => {
             fetchMessages(contact.chatId);
+            setChatId(contact.chatId);
             setSelectedContact(contact);
           }}
         />
@@ -149,9 +151,14 @@ function Chat() {
               {messages.map((message, index) => (
                 <ChatMessage
                   key={index}
+                  id={message.id}
                   avatar={`/api/v1/users/${message.sender.id}/avatar`}
                   message={message.text}
                   own={user.id === message.sender.id}
+                  onUpdate={() => {
+                    fetchMessages(chatId);
+                    fetchContacts();
+                  }}
                 />
               ))}
             </div>

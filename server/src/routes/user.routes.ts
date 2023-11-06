@@ -7,7 +7,7 @@ import pollController from '@/controllers/poll.controller';
 
 const userRouter = Router();
 
-userRouter.get('/', UserController.findAll);
+userRouter.get('/', authMiddleware, UserController.findAll);
 userRouter.get('/:id', UserController.findOne);
 userRouter.post('/', UserController.register);
 userRouter.put('/:id', authMiddleware, UserController.update);

@@ -76,7 +76,17 @@ class MessageController {
                     message: 'La conversación no fue encontrada',
                 });
             }
-            return res.json();
+
+            // TODO: Validar
+            const { text } = req.body;
+
+            message.text = text;
+
+            await message.save();
+
+            return res.json({
+                message: 'El mensaje ha sido actualizado con éxito',
+            });
         } catch (exception) {
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
@@ -105,7 +115,12 @@ class MessageController {
                     message: 'La conversación no fue encontrada',
                 });
             }
-            return res.json();
+
+            await message.softRemove();
+
+            return res.json({
+                message: 'El mensaje fue eliminado éxitosamente',
+            });
         } catch (exception) {
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',

@@ -143,3 +143,56 @@ WHERE
     LEFT JOIN votes ON options.id = votes.option_id
     WHERE options.poll_id = 1
     GROUP BY options.id;
+
+SELECT * FROM users;
+
+SELECT u.*
+FROM users u
+WHERE u.id NOT IN (
+    SELECT f.followed_user_id
+    FROM followers f
+    WHERE f.follower_user_id = 1  -- Reemplaza 1 con el user_id del usuario específico
+) AND u.id <> 1 -- Para asegurarse de que el usuario no aparezca como resultado
+ORDER BY RAND()
+LIMIT 5;
+
+
+SELECT
+    conversations.id AS chatId,
+    participants.user_id,
+    users.username
+FROM conversations
+INNER JOIN participants 
+ON conversations.id = participants.conversation_id
+INNER JOIN users
+ON participants.user_id = users.id;
+
+
+
+
+
+SELECT users.* FROM conversations 
+INNER JOIN participants 
+ON conversations.id = participants.conversation_id
+INNER JOIN users
+ON participants.user_id = users.id
+WHERE conversations.id IN (
+    SELECT conversations.id
+    FROM conversations 
+    INNER JOIN participants 
+    ON conversations.id = participants.conversation_id
+    WHERE participants.user_id = 1
+) AND participants.user_id <> 1;
+
+
+
+SELECT `conversation`.`id` AS `conversation_id` FROM `conversations` `conversation` INNER JOIN `participants` `participants` ON `participants`.`conversation_id`=`conversation`.`id` WHERE `participants`.`user_id` = 1
+
+
+
+
+SELECT conversations.id
+FROM conversations 
+INNER JOIN participants 
+ON conversations.id = participants.conversation_id
+WHERE participants.user_id = 1

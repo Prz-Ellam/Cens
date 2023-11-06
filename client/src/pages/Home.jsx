@@ -5,6 +5,7 @@ import CreatePoll from '@/components/CreatePoll';
 import { useAuth } from '@/hooks/useAuth';
 import Observable from '@/components/Observable';
 import axios from '@/services/api';
+import { Link } from 'react-router-dom';
 
 function Home() {
   const { user } = useAuth();
@@ -136,9 +137,10 @@ function Home() {
           <h2 className="text-lg font-bold mb-2">¿A quién seguir?</h2>
 
           {recomendations.map((user, index) => (
-            <article
+            <Link
               key={index}
               className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
+              to={`/profile/${user.id}`}
             >
               <img
                 src={`/api/v1/users/${user.id}/avatar`}
@@ -153,7 +155,7 @@ function Home() {
                   }}>Seguir</button>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>

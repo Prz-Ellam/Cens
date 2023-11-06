@@ -12,11 +12,13 @@ import Follower from '@/models/follower.model';
 import UserService from '@/services/user.service';
 import Country from '@/models/country.model';
 import { validateUpdatePassword } from '@/validators/update-password.validator';
+import { In, Like, Not } from 'typeorm';
 
 import fs from 'fs';
 import { promisify } from 'util';
 import path from 'path';
 import { connection } from '@/config/database';
+import Conversation from '@/models/conversation.model';
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -379,11 +381,52 @@ class UserController {
         }
     }
 
-    async findAll(_req: Request, res: Response): Promise<Response> {
-        const users = await User.find();
+    // TODO: PUEDE SER MEJOR
+    async findAll(req: AuthRequest, res: Response): Promise<Response> {
+        const authUser = req.user;
+        const username = req.query.username ?? '';
+
+        const query = connection
+            .getRepository(Conversation)
+            .createQueryBuilder('conversation')
+            .innerJoin('conversation.participants', 'participants')
+            .select('conversation.id')
+            .where('participants.user = :userId', { userId: authUser.id })
+            .getQuery();
+
+        const usersWithoutConversation = await connection
+            .getRepository(Conversation)
+            .createQueryBuilder('conversation')
+            .innerJoin('conversation.participants', 'participants')
+            .innerJoin('participants.user', 'user')
+            .select(['user.id'])
+            .where(`conversation.id IN (${query})`)
+            .andWhere('user.id != :userId', { userId: authUser.id })
+            .getRawMany();
+
+        const userIDs = usersWithoutConversation.map((user) => user.user_id);
+        userIDs.push(authUser.id);
+
+        const users = await User.find({
+            where: {
+                id: Not(In(userIDs)),
+                username: Like(`%${username as string}%`),
+            },
+        });
 
         return res.json({
             users,
+        });
+    }
+
+    async findNotChatUsers(req: Request, res: Response): Promise<Response> {
+        const users = await User.find();
+
+        const conversations = await Conversation.find();
+
+        return res.json({
+            users,
+            conversations,
         });
     }
 
@@ -541,14 +584,23 @@ class UserController {
 
             // const authUser = req.user;
 
-            const followers = await Follower.find({
+            const page = Number.parseInt(req.query.page as string) || 1;
+            const limit = Number.parseInt(req.query.limit as string) || 5;
+
+            const [followers, total] = await Follower.findAndCount({
                 where: {
                     followedUser: { id: userId },
                 },
                 relations: ['followerUser'],
+                skip: (page - 1) * limit,
+                take: limit,
             });
+            const totalPages = Math.ceil(total / limit);
 
-            return res.json(followers);
+            return res.json({
+                followers,
+                totalPages,
+            });
         } catch (error) {
             logger.error(`
                 Error al dejar de seguir a un usuario: 
@@ -580,16 +632,25 @@ class UserController {
                 });
             }
 
+            const page = Number.parseInt(req.query.page as string) || 1;
+            const limit = Number.parseInt(req.query.limit as string) || 5;
+
             // const authUser = req.user;
 
-            const followers = await Follower.find({
+            const [following, total] = await Follower.findAndCount({
                 where: {
                     followerUser: { id: userId },
                 },
-                relations: ['followerUser', 'followedUser'],
+                relations: ['followedUser'],
+                skip: (page - 1) * limit,
+                take: limit,
             });
+            const totalPages = Math.ceil(total / limit);
 
-            return res.json(followers);
+            return res.json({
+                following,
+                totalPages,
+            });
         } catch (error) {
             logger.error(`
                 Error al dejar de seguir a un usuario: 
