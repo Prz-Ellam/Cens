@@ -12,7 +12,7 @@ import getErrors from '@/utils/error-format';
 
 /**
  * Pagina con los comentarios de una encuesta
- * @returns 
+ * @returns
  */
 function CommentsPage() {
   const { user } = useAuth();
@@ -42,6 +42,18 @@ function CommentsPage() {
       .min(1, 'Es requerido al menos 1 caracter')
       .max(255, 'Maximo de 255 caracteres')
   });
+
+  /**
+   * Recupera la encuesta de la pagina
+   */
+  const fetchPoll = async () => {
+    try {
+      const response = await axios.get(`/polls/${pollId}`);
+      setPoll(response.data);
+    } catch (error) {
+      console.error('Error fetching survey:', error);
+    }
+  };
 
   /**
    * Recupera todos los comentarios de una encuesta
@@ -97,7 +109,6 @@ function CommentsPage() {
 
       await fetchComments(1);
       await fetchPoll();
-
     } catch (error) {
       Swal.fire({
         title: 'Error',
@@ -115,7 +126,7 @@ function CommentsPage() {
       [name]: value
     };
     setFormData(updatedFormData);
-    
+
     const result = formValidator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
@@ -131,13 +142,17 @@ function CommentsPage() {
     setFormErrors(updatedFormErrors);
   };
 
-  const fetchPoll = async () => {
-    try {
-      const response = await axios.get(`/polls/${pollId}`);
-      setPoll(response.data);
-    } catch (error) {
-      console.error('Error fetching survey:', error);
-    }
+  /**
+   *
+   * @param {number} number
+   * @returns
+   */
+  const findPaginationSection = (number) => {
+    const sectionSize = 5;
+    const start =
+      Math.ceil(number / sectionSize) * sectionSize - sectionSize + 1;
+    const end = Math.min(start + sectionSize - 1, totalPages);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   };
 
   useEffect(() => {
@@ -147,14 +162,6 @@ function CommentsPage() {
   useEffect(() => {
     fetchComments(page);
   }, []);
-
-  const findPaginationSection = (number) => {
-    const sectionSize = 5;
-    const start =
-      Math.ceil(number / sectionSize) * sectionSize - sectionSize + 1;
-    const end = Math.min(start + sectionSize - 1, totalPages);
-    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
-  };
 
   return (
     <div className="h-full mt-5">
@@ -199,16 +206,11 @@ function CommentsPage() {
                 <Comment
                   key={index}
                   comment={comment}
-                  id={comment.id}
                   userId={comment.user.id}
                   username={comment.user.username}
-                  avatar={
-                    comment.user.avatar
-                      ? `/api/v1/users/${comment.user.id}/avatar`
-                      : `/default-profile-picture.png`
-                  }
+                  avatar={`/api/v1/users/${comment.user.id}/avatar`}
                   isAuthUser={comment.user.id === user.id}
-                  onChange={() => { 
+                  onChange={() => {
                     fetchComments(page);
                     fetchPoll();
                   }}

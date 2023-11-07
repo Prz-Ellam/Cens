@@ -116,6 +116,7 @@ function Chat() {
             setChatId(contact.chatId);
             setSelectedContact(contact);
           }}
+          onUpdate={() => fetchContacts()}
         />
       </div>
 

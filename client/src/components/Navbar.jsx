@@ -50,7 +50,7 @@ function Navbar() {
             </li>
             <li>
               <a
-                onClick={ () => { logout(); window.location.reload();} }
+                onClick={ () => { logout(); window.location.href = '/';} }
                 className="cursor-pointer block font-bold py-2 pl-3 pr-4 text-white rounded bg-transparent md:p-0 hover:text-violet-200"
               >
                 Cerrar sesión

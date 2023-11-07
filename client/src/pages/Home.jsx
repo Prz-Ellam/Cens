@@ -5,7 +5,7 @@ import CreatePoll from '@/components/CreatePoll';
 import { useAuth } from '@/hooks/useAuth';
 import Observable from '@/components/Observable';
 import axios from '@/services/api';
-import { Link } from 'react-router-dom';
+import FollowSuggestions from '../components/FollowSuggestions';
 
 function Home() {
   const { user } = useAuth();
@@ -14,17 +14,6 @@ function Home() {
   const [fetchMore, setFetchMore] = useState(true);
   const [close, setClose] = useState(true);
   const [polls, setPolls] = useState([]);
-  const [recomendations, setRecomendations] = useState([]);
-
-  const fetchRecomendations = async () => {
-    try {
-      const response = await axios(`/users/${user.id}/notFollowing`);
-
-      setRecomendations(response.data);
-    } catch (error) {
-      console.error('Error fetching polls:', error);
-    }
-  };
 
   const fetchPolls = async () => {
     try {
@@ -78,12 +67,6 @@ function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetchRecomendations();
-    }
-  }, []);
-
   return (
     <section className="flex">
       <div className="md:w-2/3 w-full p-3">
@@ -132,33 +115,7 @@ function Home() {
           )}
         </section>
       </div>
-      <section className="md:w-1/3 md:block hidden p-3">
-        <div className="h-screen rounded-lg bg-accent text-white mb-5 p-4">
-          <h2 className="text-lg font-bold mb-2">¿A quién seguir?</h2>
-
-          {recomendations.map((user, index) => (
-            <Link
-              key={index}
-              className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
-              to={`/profile/${user.id}`}
-            >
-              <img
-                src={`/api/v1/users/${user.id}/avatar`}
-                alt="Avatar"
-                className="h-12 w-12 rounded-full object-cover"
-              />
-              <div className="flex flex-col flex-grow ml-3 truncate">
-                <div className="flex items-center justify-between">
-                  <p className="text-md font-bold">{user.username}</p>
-                  <button className="rounded-full bg-gray-300 hover:bg-gray-400 px-3 py-1 text-black" onClick={async () => {
-                    await axios.post(`/users/${user.id}/followers`);
-                  }}>Seguir</button>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <FollowSuggestions />
       <Modal
         question="Crear encuesta"
         close={close}

@@ -480,6 +480,11 @@ class UserController {
             }
 
             const authUser = req.user;
+            if (authUser.id === userId) {
+                return res.status(400).json({
+                    message: 'No te puedes seguir a ti mismo',
+                });
+            }
 
             // Validar si es que ya lo sigue
             const existingFollower = await Follower.findOne({

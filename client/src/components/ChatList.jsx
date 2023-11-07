@@ -13,7 +13,7 @@ import axios from '@/services/api';
  * @param {function} params.onSelect - Lista de contactos del usuario
  * @returns
  */
-function ChatList({ contacts, onSelect }) {
+function ChatList({ contacts, onSelect, onUpdate }) {
   const [closeModal, setCloseModal] = useState(true);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
@@ -21,13 +21,11 @@ function ChatList({ contacts, onSelect }) {
   const fetchUsers = async () => {
     const response = await axios.get(`/users?username=${search}`);
     setUsers(response.data.users);
-  }
+  };
 
   const createConversation = async (userId) => {
     /* const response = */ await axios.post(`users/${userId}/conversations`);
-
-
-  }
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -44,6 +42,7 @@ function ChatList({ contacts, onSelect }) {
         </button>
       </div>
 
+      {/* TODO: PENDING DE LOS MENSAJES */}
       <hr className="mb-2 bg-gray-300" />
       <div className="overflow-auto">
         {contacts &&
@@ -88,7 +87,12 @@ function ChatList({ contacts, onSelect }) {
                 <article
                   key={index}
                   className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
-                  onClick={() => createConversation(user.id)}
+                  onClick={async () => {
+                    await createConversation(user.id);
+                    await fetchUsers();
+                    setCloseModal(true);
+                    onUpdate();
+                  }}
                 >
                   <img
                     src={`/api/v1/users/${user.id}/avatar`}
@@ -96,7 +100,9 @@ function ChatList({ contacts, onSelect }) {
                     className="h-12 w-12 rounded-full object-cover"
                   />
                   <div className="flex flex-col flex-grow ml-3 truncate">
-                    <p className="text-base text-gray-300 truncate">{user.username}</p>
+                    <p className="text-base text-gray-300 truncate">
+                      {user.username}
+                    </p>
                   </div>
                 </article>
               ))}
@@ -110,7 +116,8 @@ function ChatList({ contacts, onSelect }) {
 
 ChatList.propTypes = {
   contacts: PropTypes.array,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  onUpdate: PropTypes.func
 };
 
 export default ChatList;

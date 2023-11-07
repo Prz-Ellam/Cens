@@ -19,7 +19,6 @@ import { formatDate } from '../utils/format-date';
  * @returns {JSX.Element} - El elemento JSX del comentario.
  */
 function Comment({
-  id,
   comment,
   userId,
   username,
@@ -159,7 +158,7 @@ function Comment({
                   <a
                     href="#"
                     className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    onClick={() => handleDeleteComment(id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     Eliminar
                   </a>
@@ -183,7 +182,7 @@ function Comment({
           />
           <button
             className="bg-green-500 text-xs mr-3 hover:bg-green-700 inline-flex items-center py-2 px-4 font-medium text-center text-white bg-primary-700 rounded-md"
-            onClick={() => handleUpdateComment(id, updateText)}
+            onClick={() => handleUpdateComment(comment.id, updateText)}
           >
             Confirmar
           </button>
@@ -200,7 +199,6 @@ function Comment({
 }
 
 Comment.propTypes = {
-  id: PropTypes.number.isRequired,
   comment: PropTypes.shape({
     id: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
