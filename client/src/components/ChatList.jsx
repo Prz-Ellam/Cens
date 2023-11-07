@@ -23,6 +23,12 @@ function ChatList({ contacts, onSelect }) {
     setUsers(response.data.users);
   }
 
+  const createConversation = async (userId) => {
+    /* const response = */ await axios.post(`users/${userId}/conversations`);
+
+
+  }
+
   useEffect(() => {
     fetchUsers();
   }, [search]);
@@ -82,6 +88,7 @@ function ChatList({ contacts, onSelect }) {
                 <article
                   key={index}
                   className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
+                  onClick={() => createConversation(user.id)}
                 >
                   <img
                     src={`/api/v1/users/${user.id}/avatar`}
