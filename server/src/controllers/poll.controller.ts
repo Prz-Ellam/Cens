@@ -145,8 +145,23 @@ class PollController {
     async findMany(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const user = req.user;
-            const polls = await PollService.findMany(user.id);
-            return res.json(polls);
+
+            const search = (req.query.search as string) ?? '';
+            const page = Number.parseInt(req.query.page as string) || 1;
+            const limit = Number.parseInt(req.query.limit as string) || 5;
+
+            const [polls, total] = await PollService.findMany(
+                user.id,
+                search,
+                page,
+                limit,
+            );
+            const totalPages = Math.ceil(total / limit);
+
+            return res.json({
+                polls,
+                totalPages,
+            });
         } catch (exception) {
             logger.error(`${exception as string}`);
             return res.status(500).json({
@@ -165,12 +180,17 @@ class PollController {
             const page = Number.parseInt(req.query.page as string) || 1;
             const limit = Number.parseInt(req.query.limit as string) || 5;
 
-            const polls = await PollService.findByFollowed(
+            const [polls, total] = await PollService.findByFollowed(
                 user.id,
                 page,
                 limit,
             );
-            return res.json(polls);
+            const totalPages = Math.ceil(total / limit);
+
+            return res.json({
+                polls,
+                totalPages,
+            });
         } catch (exception) {
             logger.error(`${exception as string}`);
             return res.status(500).json({
@@ -191,6 +211,7 @@ class PollController {
 
             const authUser = req.user;
 
+            // TODO: Validar
             const page = Number.parseInt(req.query.page as string) || 1;
             const limit = Number.parseInt(req.query.limit as string) || 5;
 
@@ -201,13 +222,18 @@ class PollController {
                 });
             }
 
-            const polls = await PollService.findByUser(
+            const [polls, total] = await PollService.findByUser(
                 user.id,
                 authUser.id,
                 page,
                 limit,
             );
-            return res.json(polls);
+            const totalPages = Math.ceil(total / limit);
+
+            return res.json({
+                polls,
+                totalPages,
+            });
         } catch (exception) {
             logger.error(`${exception as string}`);
             return res.status(500).json({

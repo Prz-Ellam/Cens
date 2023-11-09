@@ -3,32 +3,31 @@ import Modal from '@/components/Modal';
 import SurveyForm from '@/components/SurveyForm';
 import CreatePoll from '@/components/CreatePoll';
 import { useAuth } from '@/hooks/useAuth';
-import Observable from '@/components/Observable';
 import axios from '@/services/api';
 import FollowSuggestions from '../components/FollowSuggestions';
+import Pagination from '../components/Pagination';
 
+/**
+ * Página principal con el feed y las recomendaciones de usuarios
+ * @returns
+ */
 function Home() {
   const { user } = useAuth();
 
-  const [page, setPage] = useState(1);
-  const [fetchMore, setFetchMore] = useState(true);
   const [close, setClose] = useState(true);
-  const [polls, setPolls] = useState([]);
 
-  const fetchPolls = async () => {
+  const [polls, setPolls] = useState([]);
+  const [pollsPage, setPollsPage] = useState(1);
+  const [pollsTotalPages, setPollsTotalPages] = useState(0);
+
+  const fetchPolls = async (page) => {
     try {
       const response = await axios(
-        `/users/${user.id}/polls/following?page=${page}`
+        `/users/${user.id}/polls/following?page=${page}&limit=5`
       );
-      setPage(page + 1);
-
-      if (response.data.length < 1) {
-        setFetchMore(false);
-      }
-
-      const combinedPolls = [...polls, ...response.data];
-
-      setPolls(combinedPolls);
+      setPolls(response.data.polls);
+      setPollsTotalPages(response.data.totalPages);
+      setPollsPage(page);
     } catch (error) {
       console.error('Error fetching polls:', error);
     }
@@ -63,9 +62,9 @@ function Home() {
 
   useEffect(() => {
     if (user) {
-      fetchPolls();
+      fetchPolls(pollsPage);
     }
-  }, []);
+  }, [user]);
 
   return (
     <section className="flex">
@@ -105,14 +104,11 @@ function Home() {
               onDelete={deletePoll}
             />
           ))}
-          {polls.length > 0 && fetchMore && (
-            <Observable
-              onElementVisible={() => setTimeout(fetchPolls, 1000)}
-              className="text-gray-300 font-bold text-lg"
-            >
-              Cargando más...
-            </Observable>
-          )}
+          <Pagination
+            page={pollsPage}
+            totalPages={pollsTotalPages}
+            onSelect={(page) => fetchPolls(page)}
+          />
         </section>
       </div>
       <FollowSuggestions />

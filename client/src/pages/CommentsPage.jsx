@@ -1,7 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Comment from '@/components/Comment';
 import SurveyForm from '@/components/SurveyForm';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from '@/services/api';
 import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,6 +9,7 @@ import z from 'zod';
 import { ToastTopEnd } from '../utils/toast';
 import ErrorList from '../components/ErrorList';
 import getErrors from '@/utils/error-format';
+import Pagination from '../components/Pagination';
 
 /**
  * Pagina con los comentarios de una encuesta
@@ -16,7 +17,10 @@ import getErrors from '@/utils/error-format';
  */
 function CommentsPage() {
   const { user } = useAuth();
+
   const { pollId } = useParams();
+
+  const navigate = useNavigate();
 
   const [poll, setPoll] = useState(null);
   const textArea = useRef();
@@ -46,31 +50,35 @@ function CommentsPage() {
   /**
    * Recupera la encuesta de la pagina
    */
-  const fetchPoll = async () => {
+  const fetchPoll = useCallback(async () => {
     try {
       const response = await axios.get(`/polls/${pollId}`);
       setPoll(response.data);
     } catch (error) {
-      console.error('Error fetching survey:', error);
+      console.error('Error fetching survey');
+      navigate('/');
     }
-  };
+  }, [navigate, pollId]);
 
   /**
    * Recupera todos los comentarios de una encuesta
    * @param {number} page - Pagina de la que se desea extraer los comentarios
    */
-  const fetchComments = async (page) => {
-    try {
-      const response = await axios.get(
-        `/polls/${pollId}/comments?page=${page}&limit=${limit}`
-      );
-      setComments(response.data.comments);
-      setTotalPages(response.data.totalPages);
-      setPage(page);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+  const fetchComments = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/polls/${pollId}/comments?page=${page}&limit=${limit}`
+        );
+        setComments(response.data.comments);
+        setTotalPages(response.data.totalPages);
+        setPage(page);
+      } catch (error) {
+        console.error('Error fetching comments');
+      }
+    },
+    [pollId]
+  );
 
   /**
    * Crear un comentario
@@ -142,26 +150,13 @@ function CommentsPage() {
     setFormErrors(updatedFormErrors);
   };
 
-  /**
-   *
-   * @param {number} number
-   * @returns
-   */
-  const findPaginationSection = (number) => {
-    const sectionSize = 5;
-    const start =
-      Math.ceil(number / sectionSize) * sectionSize - sectionSize + 1;
-    const end = Math.min(start + sectionSize - 1, totalPages);
-    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
-  };
-
   useEffect(() => {
     fetchPoll();
-  }, []);
+  }, [fetchPoll]);
 
   useEffect(() => {
     fetchComments(page);
-  }, []);
+  }, [fetchComments, page]);
 
   return (
     <div className="h-full mt-5">
@@ -218,50 +213,11 @@ function CommentsPage() {
               ))}
           </section>
 
-          <nav className="pt-5 text-center">
-            <ul className="inline-flex text-base h-10">
-              <li>
-                <button
-                  disabled={page <= 1}
-                  onClick={() => (page <= 1 ? null : fetchComments(page - 1))}
-                  className={`${
-                    page <= 1
-                      ? 'text-gray-500'
-                      : 'text-gray-300 hover:bg-purple'
-                  } flex items-center justify-center px-4 h-10 ml-0 leading-tigh bg-dark rounded-l-lg`}
-                >
-                  <i className="bx bx-chevron-left"></i>
-                </button>
-              </li>
-              {findPaginationSection(page).map((value, index) => (
-                <li key={index}>
-                  <button
-                    onClick={() => fetchComments(value)}
-                    className={`${
-                      value === page ? 'bg-purple' : 'bg-dark hover:bg-purple'
-                    } flex items-center justify-center px-4 h-10 leading-tight text-gray-300 cursor-pointer`}
-                  >
-                    {value}
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  disabled={page >= totalPages}
-                  onClick={() =>
-                    page < totalPages ? fetchComments(page + 1) : null
-                  }
-                  className={`${
-                    page < totalPages
-                      ? 'text-gray-300 hover:bg-purple'
-                      : 'text-gray-500'
-                  } flex items-center justify-center px-4 h-10 leading-tight bg-dark rounded-r-lg`}
-                >
-                  <i className="bx bx-chevron-right"></i>
-                </button>
-              </li>
-            </ul>
-          </nav>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onSelect={(page) => fetchComments(page)}
+          />
         </div>
       </div>
     </div>

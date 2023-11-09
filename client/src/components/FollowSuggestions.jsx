@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ function FollowSuggestions() {
 
   const [recomendations, setRecomendations] = useState([]);
 
-  const fetchRecomendations = async () => {
+  const fetchRecomendations = useCallback(async () => {
     try {
       const response = await axios(`/users/${user.id}/notFollowing`);
 
@@ -17,7 +17,7 @@ function FollowSuggestions() {
     } catch (error) {
       console.error('Error fetching polls:', error);
     }
-  };
+  }, [user.id]);
 
   const createFollowing = async (userId) => {
     try {
@@ -36,7 +36,7 @@ function FollowSuggestions() {
     if (user) {
       fetchRecomendations();
     }
-  }, []);
+  }, [user, fetchRecomendations]);
 
   return (
     <section className="md:w-1/3 md:block hidden p-3">

@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 function Navbar() {
   const { logout } = useAuth();
   const { user } = useAuth();
+
+  const navigate = useNavigate();
 
   return (
     <nav className="border-gray-200 bg-gradient-to-r from-secondary to-primary h-14 shadow-md">
@@ -37,7 +39,17 @@ function Navbar() {
             />
           </svg>
         </button>
-        {/* <input type="text" id="search-navbar" className="block w-[50%] p-2 pl-10 text-sm text-gray-900 shadow-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-dark dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search..." /> */}
+        <input
+          type="text"
+          id="search-navbar"
+          className="block w-[50%] bg-accent shadow hover:shadow-md appearance-none rounded py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Search..."
+          onKeyDown={(event) => {
+            if (event.key == 'Enter') {
+              navigate(`/search?search=${event.target.value}`)
+            }
+          }}
+        />
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
             <li>
@@ -50,7 +62,10 @@ function Navbar() {
             </li>
             <li>
               <a
-                onClick={ () => { logout(); window.location.href = '/';} }
+                onClick={() => {
+                  logout();
+                  window.location.href = '/';
+                }}
                 className="cursor-pointer block font-bold py-2 pl-3 pr-4 text-white rounded bg-transparent md:p-0 hover:text-violet-200"
               >
                 Cerrar sesión

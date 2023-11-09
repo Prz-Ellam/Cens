@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Comment from '@/components/Comment';
 import SurveyForm from '@/components/SurveyForm';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from '@/services/api';
 
 function Survey() {
@@ -18,38 +18,33 @@ function Survey() {
     }
   };
 
-  useEffect(() => {
-    // Function to fetch the survey data
-    const fetchPoll = async () => {
-      try {
-        const response = await axios.get(`/polls/${pollId}`);
-        const surveyData = response.data;
-        setPoll(surveyData);
-      } catch (error) {
-        console.error('Error fetching survey:', error);
-      }
-    };
+  const fetchPoll = useCallback(async () => {
+    try {
+      const response = await axios.get(`/polls/${pollId}`);
+      const surveyData = response.data;
+      setPoll(surveyData);
+    } catch (error) {
+      console.error('Error fetching survey:', error);
+    }
+  }, [pollId]);
 
-    // Call the fetchSurvey function when the component mounts
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await axios.get(`/polls/${pollId}/comments`);
+      const commentsData = response.data.comments;
+      setComments(commentsData);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }, [pollId]);
+
+  useEffect(() => {
     fetchPoll();
-  }, []);
+  }, [fetchPoll]);
 
   useEffect(() => {
-    // Function to fetch the survey data
-    const fetchComments = async () => {
-      try {
-        const response = await axios.get(`/polls/${pollId}/comments`);
-        console.log(response.data);
-        const commentsData = response.data.comments; // Assuming the response data contains the survey information
-        setComments(commentsData);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    };
-
-    // Call the fetchSurvey function when the component mounts
     fetchComments();
-  }, []);
+  }, [fetchComments]);
 
   if (!poll || !comments) {
     // Render a loading message or spinner while the survey data is being fetched

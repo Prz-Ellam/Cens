@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import ChatContact from './ChatContact';
 import { formatDate } from '@/utils/format-date';
 import Modal from './Modal';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from '@/services/api';
 
 /**
@@ -18,10 +18,10 @@ function ChatList({ contacts, onSelect, onUpdate }) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     const response = await axios.get(`/users?username=${search}`);
     setUsers(response.data.users);
-  };
+  }, [search]);
 
   const createConversation = async (userId) => {
     /* const response = */ await axios.post(`users/${userId}/conversations`);
@@ -29,7 +29,7 @@ function ChatList({ contacts, onSelect, onUpdate }) {
 
   useEffect(() => {
     fetchUsers();
-  }, [search]);
+  }, [fetchUsers]);
 
   return (
     <section className="flex flex-col h-full p-3 bg-accent rounded-lg shadow-lg">

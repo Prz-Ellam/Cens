@@ -109,14 +109,28 @@ export default class PollService {
         return poll;
     }
 
-    static async findMany(userId: number): Promise<unknown[]> {
+    static async findMany(
+        userId: number,
+        search: string,
+        page: number,
+        limit: number,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): Promise<any[]> {
         const repository = connection.getRepository(Poll);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const polls: any = await repository
+        const [polls, total]: any = await repository
             .createQueryBuilder('poll')
             .leftJoinAndSelect('poll.user', 'user')
+            .where('poll.question LIKE :search', {
+                search: `%${search}%`,
+            })
+            .orWhere('poll.description LIKE :search', {
+                search: `%${search}%`,
+            })
             .orderBy('poll.created_at', 'DESC')
-            .getMany();
+            .limit(limit)
+            .offset((page - 1) * limit)
+            .getManyAndCount();
 
         for (let i = 0; i < polls.length; i++) {
             const reactionsResult = await connection
@@ -207,14 +221,15 @@ export default class PollService {
             polls[i].voteCount = voteCount;
         }
 
-        return polls;
+        return [polls, total];
     }
 
     static async findByFollowed(
         userId: number,
         page: number,
         limit: number,
-    ): Promise<unknown[]> {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): Promise<any[]> {
         try {
             const userIds = connection
                 .getRepository(User)
@@ -230,7 +245,7 @@ export default class PollService {
                 });
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const polls: any = await connection
+            const [polls, total]: any = await connection
                 .getRepository(Poll)
                 .createQueryBuilder('poll')
                 .leftJoinAndSelect('poll.user', 'user')
@@ -239,7 +254,7 @@ export default class PollService {
                 .orderBy('poll.created_at', 'DESC')
                 .limit(limit)
                 .offset((page - 1) * limit)
-                .getMany();
+                .getManyAndCount();
 
             for (let i = 0; i < polls.length; i++) {
                 const reactionsResult = await connection
@@ -332,7 +347,7 @@ export default class PollService {
                 polls[i].voteCount = voteCount;
             }
 
-            return polls;
+            return [polls, total];
         } catch (error) {
             logger.error(`${error as string}`);
             return [];
@@ -344,17 +359,31 @@ export default class PollService {
         authUserId: number,
         page: number,
         limit: number,
-    ): Promise<unknown[]> {
-        const repository = connection.getRepository(Poll);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const polls: any = await repository
-            .createQueryBuilder('poll')
-            .leftJoinAndSelect('poll.user', 'user')
-            .where('poll.user_id = :userId', { userId })
-            .orderBy('poll.created_at', 'DESC')
-            .limit(limit)
-            .offset((page - 1) * limit)
-            .getMany();
+    ): Promise<any[]> {
+        // const repository = connection.getRepository(Poll);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // const polls: any = await repository
+        //     .createQueryBuilder('poll')
+        //     .leftJoinAndSelect('poll.user', 'user')
+        //     .where('poll.user_id = :userId', { userId })
+        //     .orderBy('poll.created_at', 'DESC')
+        //     .limit(limit)
+        //     .offset((page - 1) * limit)
+        //     .getMany();
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const [polls, total]: any = await Poll.findAndCount({
+            where: {
+                user: { id: userId },
+            },
+            relations: ['user'],
+            order: {
+                createdAt: 'DESC',
+            },
+            take: limit,
+            skip: (page - 1) * limit,
+        });
 
         for (let i = 0; i < polls.length; i++) {
             const reactionsResult = await connection
@@ -445,6 +474,6 @@ export default class PollService {
             polls[i].voteCount = voteCount;
         }
 
-        return polls;
+        return [polls, total];
     }
 }

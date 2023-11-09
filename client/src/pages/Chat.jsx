@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import ChatList from '@/components/ChatList';
 import ChatMessage from '@/components/ChatMessage';
@@ -44,7 +44,7 @@ function Chat() {
     }
   };
 
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     try {
       const response = await axios.get(`/users/${user.id}/conversations`);
 
@@ -52,7 +52,7 @@ function Chat() {
     } catch (error) {
       console.error('Error fetching contacts:', error);
     }
-  };
+  }, [user.id]);
 
   const handleMessage = async (chatId) => {
 
@@ -99,7 +99,7 @@ function Chat() {
     if (user) {
       fetchContacts();
     }
-  }, [user]);
+  }, [user, fetchContacts]);
 
   const isChatDrawerFocus = true;
   return (

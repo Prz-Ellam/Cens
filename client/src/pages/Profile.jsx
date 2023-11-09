@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import SurveyForm from '@/components/SurveyForm';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import Swal from 'sweetalert2';
+import Pagination from '@/components/Pagination';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -11,56 +12,91 @@ const TABS = Object.freeze({
   FOLLOWING: 'FOLLOWING'
 });
 
+/**
+ * Página del perfil de usuario con encuestas, seguidores y seguidos
+ * @returns
+ */
 function Profile() {
   const authUser = useAuth().user;
 
   const { userId } = useParams();
+
   const [user, setUser] = useState(null);
   const [polls, setPolls] = useState([]);
+  const [pollsTotalPages, setPollsTotalPages] = useState(0);
+  const [pollsPage, setPollsPage] = useState(1);
+
   const [followers, setFollowers] = useState([]);
+  const [followersTotalPages, setFollowersTotalPages] = useState(0);
+  const [followersPage, setFollowersPage] = useState(1);
+
   const [following, setFollowing] = useState([]);
+  const [followingTotalPages, setFollowingTotalPages] = useState(0);
+  const [followingPage, setFollowingPage] = useState(1);
 
-  const fetchUserPolls = async (userId) => {
-    try {
-      const response = await axios.get(`/users/${userId}/polls`);
+  const navigate = useNavigate();
 
-      setPolls(response.data);
-    } catch (error) {
-      console.error(error.response.data.message);
-    }
-  };
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       const response = await axios.get(`/users/${userId}`);
 
-      console.log(response.data);
       setUser(response.data.user);
     } catch (error) {
       console.error(error.response.data.message);
+      navigate('/');
     }
-  };
+  }, [navigate, userId]);
 
-  const fetchFollowers = async () => {
-    try {
-      const response = await axios.get(`/users/${userId}/followers`);
+  const fetchUserPolls = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/users/${userId}/polls?page=${page}&limit=5`
+        );
 
-      console.log(response.data);
-      setFollowers(response.data.followers);
-    } catch (error) {
-      console.error(error.response.data.message);
-    }
-  };
+        setPolls(response.data.polls);
+        setPollsTotalPages(response.data.totalPages);
+        setPollsPage(page);
+      } catch (error) {
+        console.error(error.response.data.message);
+      }
+    },
+    [userId]
+  );
 
-  const fetchFollowing = async () => {
-    try {
-      const response = await axios.get(`/users/${userId}/following`);
+  const fetchFollowers = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/users/${userId}/followers?page=${page}&limit=5`
+        );
 
-      setFollowing(response.data.following);
-    } catch (error) {
-      console.error(error.response.data.message);
-    }
-  };
+        setFollowers(response.data.followers);
+        setFollowersTotalPages(response.data.totalPages);
+        setFollowersPage(page);
+      } catch (error) {
+        console.error(error.response.data.message);
+      }
+    },
+    [userId]
+  );
+
+  const fetchFollowing = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/users/${userId}/following?page=${page}&limit=5`
+        );
+
+        setFollowing(response.data.following);
+        setFollowingTotalPages(response.data.totalPages);
+        setFollowingPage(page);
+      } catch (error) {
+        console.error(error.response.data.message);
+      }
+    },
+    [userId]
+  );
 
   const unfollowUser = async (userId) => {
     try {
@@ -79,22 +115,22 @@ function Profile() {
   };
 
   useEffect(() => {
-    if (userId) {
-      fetchUserPolls(userId);
-    }
-  }, []);
-
-  useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
   useEffect(() => {
-    fetchFollowers();
-  }, []);
+    if (userId) {
+      fetchUserPolls(pollsPage);
+    }
+  }, [userId, pollsPage, fetchUserPolls]);
 
   useEffect(() => {
-    fetchFollowing();
-  }, []);
+    fetchFollowers(followersPage);
+  }, [followersPage, fetchFollowers]);
+
+  useEffect(() => {
+    fetchFollowing(followingPage);
+  }, [followingPage, fetchFollowing]);
 
   const [selectedTab, setSelectedTab] = useState(sessionStorage.getItem('tab'));
 
@@ -170,109 +206,149 @@ function Profile() {
         </div>
 
         <div className="md:w-9/12 w-11/12 flex flex-col gap-4 mx-auto mb-5">
-          {selectedTab === TABS.POSTS &&
-            (polls.length > 0 ? (
-              polls.map((poll, index) => (
-                <SurveyForm
-                  key={index}
-                  poll={poll}
-                  onDelete={async (pollId) => {
-                    try {
-                      const newPolls = polls.filter((poll) => poll.id !== pollId);
-                      setPolls(newPolls);
-                    } catch (error) {
-                      console.error('Error deleting poll:', error);
-                    }
-                  }}
-                  onUpdate={async (pollId) => {
-                    try {
-                      const response = await axios.get(`/polls/${pollId}`);
+          {selectedTab === TABS.POSTS && (
+              <>
+                {polls.length > 0 ? (
+                  <>
+                    {polls.map((poll, index) => (
+                      <SurveyForm
+                        key={index}
+                        poll={poll}
+                        onDelete={async (pollId) => {
+                          try {
+                            const newPolls = polls.filter(
+                              (poll) => poll.id !== pollId
+                            );
+                            setPolls(newPolls);
+                          } catch (error) {
+                            console.error('Error deleting poll:', error);
+                          }
+                        }}
+                        onUpdate={async (pollId) => {
+                          try {
+                            const response = await axios.get(
+                              `/polls/${pollId}`
+                            );
 
-                      // console.log(response.data);
-                      const newPoll = response.data;
-                      console.log(newPoll);
-                      const newPolls = polls.map((poll) =>
-                        poll.id === pollId ? newPoll : poll
-                      );
-                      setPolls(newPolls);
-                      console.log(newPolls);
-                    } catch (error) {
-                      console.log('error');
-                    }
-                  }}
-                />
-              ))
-            ) : (
-              <p className="text-gray-300 text-2xl text-center font-bold">
-                Está cuenta no tiene ninguna actividad...
-              </p>
-            ))}
-          {selectedTab === TABS.FOLLOWERS &&
-            (followers.length > 0 ? (
-              followers.map((follower, index) => (
-                <div
-                  className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                  key={index}
-                >
-                  <img
-                    src={`/api/v1/users/${follower.followerUser.id}/avatar`}
-                    alt="Avatar"
-                    className="h-12 w-12 rounded-full object-cover"
-                  />
-                  <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                    <Link
-                      to={`/profile/${follower.followerUser.id}`}
-                      className="text-md font-bold"
-                      reloadDocument
+                            // console.log(response.data);
+                            const newPoll = response.data;
+                            console.log(newPoll);
+                            const newPolls = polls.map((poll) =>
+                              poll.id === pollId ? newPoll : poll
+                            );
+                            setPolls(newPolls);
+                            console.log(newPolls);
+                          } catch (error) {
+                            console.log('error');
+                          }
+                        }}
+                      />
+                    ))}
+                    <Pagination
+                      page={pollsPage}
+                      totalPages={pollsTotalPages}
+                      onSelect={(page) => fetchUserPolls(page)}
+                    />
+                  </>
+                ) : (
+                  <p className="text-gray-300 text-2xl text-center font-bold">
+                    Está cuenta no tiene ninguna actividad...
+                  </p>
+                )}
+              </>
+            )}
+
+          {selectedTab === TABS.FOLLOWERS && (
+            <>
+              {followers.length > 0 ? (
+                <>
+                  {followers.map((follower, index) => (
+                    <div
+                      className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                      key={index}
                     >
-                      {follower.followerUser.username}
-                    </Link>
-                    <p className="text-sm font-medium">
-                      {follower.followerUser.email}
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-300 text-2xl text-center font-bold">
-                Está cuenta no tiene seguidores...
-              </p>
-            ))}
-          {selectedTab === TABS.FOLLOWING &&
-            (followers.length > 0 ? (
-              following.map((follow, index) => (
-                <div
-                  className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                  key={index}
-                >
-                  <img
-                    src={`/api/v1/users/${follow.followedUser.id}/avatar`}
-                    alt="Avatar"
-                    className="h-12 w-12 rounded-full object-cover"
+                      <img
+                        src={`/api/v1/users/${follower.followerUser.id}/avatar`}
+                        alt="Avatar"
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                        <Link
+                          to={`/profile/${follower.followerUser.id}`}
+                          className="text-md font-bold"
+                        >
+                          {follower.followerUser.username}
+                        </Link>
+                        <p className="text-sm font-medium">
+                          {follower.followerUser.email}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+
+                  <Pagination
+                    page={followersPage}
+                    totalPages={followersTotalPages}
+                    onSelect={(page) => fetchFollowers(page)}
                   />
-                  <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
-                    <p className="text-md font-bold">
-                      {follow.followedUser.username}
-                    </p>
-                    <p className="text-sm font-medium">
-                      {follow.followedUser.email}
-                    </p>
-                  </div>
-                  {authUser.id == userId && (
-                    <button
-                      className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
-                      onClick={() => unfollowUser(follow.followedUser.id)}
+                </>
+              ) : (
+                <p className="text-gray-300 text-2xl text-center font-bold">
+                  Está cuenta no tiene seguidores...
+                </p>
+              )}
+            </>
+          )}
+
+          {selectedTab === TABS.FOLLOWING && (
+            <>
+              {following.length > 0 ? (
+                <>
+                  {following.map((follow, index) => (
+                    <div
+                      className="flex flex-row items-center p-4 bg-accent rounded-lg"
+                      key={index}
                     >
-                      Eliminar
-                    </button>
-                  )}
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-300 text-2xl text-center font-bold">
-                Está cuenta no sigue a nadie...
-              </p>
-            ))}
+                      <img
+                        src={`/api/v1/users/${follow.followedUser.id}/avatar`}
+                        alt="Avatar"
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                      <div className="flex flex-col flex-grow ml-3 truncate text-gray-300">
+                        <Link
+                          to={`/profile/${follow.followedUser.id}`}
+                          className="text-md font-bold"
+                        >
+                          {follow.followedUser.username}
+                        </Link>
+                        <p className="text-sm font-medium">
+                          {follow.followedUser.email}
+                        </p>
+                      </div>
+                      {authUser.id === userId && (
+                        <button
+                          className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
+                          onClick={() => unfollowUser(follow.followedUser.id)}
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <Pagination
+                    page={followingPage}
+                    totalPages={followingTotalPages}
+                    onSelect={(page) => fetchFollowing(page)}
+                  />
+                </>
+              ) : (
+                <p className="text-gray-300 text-2xl text-center font-bold">
+                  Esta cuenta no sigue a nadie...
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
     </section>

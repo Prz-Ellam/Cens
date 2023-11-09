@@ -1,28 +1,37 @@
 import SurveyForm from '@/components/SurveyForm';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import axios from '@/services/api';
+import Pagination from '../components/Pagination';
+import { useSearchParams } from 'react-router-dom';
 
 function Search() {
   const { user } = useAuth();
 
   const [polls, setPolls] = useState([]);
+  const [pollsPage, setPollsPage] = useState(1);
+  const [pollsTotalPages, setPollsTotalPages] = useState(0);
 
-  const fetchPolls = async () => {
+  const [searchParams, ] = useSearchParams();
+
+  console.log(searchParams);
+
+  const fetchPolls = useCallback(async (page) => {
     try {
-      const response = await axios(`/users/${user.id}/polls/following`);
-
-      setPolls(response.data);
+      const response = await axios(`/polls?page=${page}&limit=5&search=${searchParams.get('search')}`);
+      setPolls(response.data.polls);
+      setPollsTotalPages(response.data.totalPages);
+      setPollsPage(page)
     } catch (error) {
       console.error('Error fetching polls:', error);
     }
-  };
+  }, [searchParams]);
 
   useEffect(() => {
     if (user) {
-      fetchPolls();
+      fetchPolls(pollsPage);
     }
-  }, []);
+  }, [user, pollsPage, fetchPolls]);
 
   return (
     <section className="h-full overflow-auto">
@@ -40,6 +49,11 @@ function Search() {
                 onUpdate={async () => {}}
               />
             ))}
+            <Pagination
+              page={pollsPage}
+              totalPages={pollsTotalPages}
+              onSelect={(page) => fetchPolls(page)}
+            />
         </section>
       </div>
     </section>
