@@ -33,33 +33,6 @@ function Home() {
     }
   };
 
-  /**
-   * Actualiza los datos realizados por el usuario en una encuesta si existe
-   * @param {number} pollId
-   */
-  const updatePoll = async (pollId) => {
-    try {
-      const response = await axios.get(`/polls/${pollId}`);
-
-      const newPoll = response.data;
-      const newPolls = polls.map((poll) =>
-        poll.id === pollId ? newPoll : poll
-      );
-      setPolls(newPolls);
-    } catch (error) {
-      console.error('Error updating poll:', error);
-    }
-  };
-
-  const deletePoll = async (pollId) => {
-    try {
-      const newPolls = polls.filter((poll) => poll.id !== pollId);
-      setPolls(newPolls);
-    } catch (error) {
-      console.error('Error deleting poll:', error);
-    }
-  };
-
   useEffect(() => {
     if (user) {
       fetchPolls(pollsPage);
@@ -100,8 +73,8 @@ function Home() {
             <SurveyForm
               key={index}
               poll={poll}
-              onUpdate={updatePoll}
-              onDelete={deletePoll}
+              onUpdate={() => fetchPolls(pollsPage)}
+              onDelete={() => fetchPolls(pollsPage)}
             />
           ))}
           <Pagination

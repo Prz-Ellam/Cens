@@ -7,10 +7,13 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 } from 'chart.js';
-import { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { useCallback, useEffect, useState } from 'react';
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { useNavigate, useParams } from 'react-router-dom';
+import { allCountries } from '../utils/countries';
 
 ChartJS.register(
   CategoryScale,
@@ -18,15 +21,19 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ArcElement
 );
 
 /**
  * Página con las analiticas de cada encuesta
- * @returns 
+ * @returns
  */
 function Analytics() {
-  const optionsAge = {
+  const { pollId } = useParams();
+  const navigate = useNavigate();
+
+  const ageOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -39,7 +46,7 @@ function Analytics() {
     }
   };
 
-  const optionsGender = {
+  const genderOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -50,6 +57,22 @@ function Analytics() {
         text: 'Por genero'
       }
     }
+  };
+
+  const countryOptions = {
+    type: 'doughnut',
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: 'Pos paises'
+        }
+      }
+    },
   };
 
   const colours = [
@@ -71,35 +94,42 @@ function Analytics() {
     'rgba(0, 162, 6, 0.5)'
   ];
 
-  const [datas, setDatas] = useState([]);
+  const [gender, setGender] = useState([]);
   const [ages, setAges] = useState([]);
+  const [countries, setCountries] = useState([]);
 
-  const fetchByGender = async () => {
-    const response = await axios.get('/options');
-    setDatas(response.data);
-  };
+  const fetchPoll = useCallback(async () => {
+    try {
+      await axios.get(`/polls/${pollId}`);
+    } catch (error) {
+      console.error('Error fetching poll');
+      navigate('/');
+    }
+  }, [pollId, navigate]);
 
-  const fetchByAge = async () => {
-    const response = await axios.get('/options/1');
+  const fetchByGender = useCallback(async () => {
+    const response = await axios.get(`/options/gender/${pollId}`);
+    setGender(response.data);
+  }, [pollId]);
+
+  const fetchByAge = useCallback(async () => {
+    const response = await axios.get(`/options/age/${pollId}`);
     setAges(response.data);
-  };
+  }, [pollId]);
 
-  useEffect(() => {
-    fetchByGender();
-  }, []);
+  const fetchByCountry = useCallback(async () => {
+    const response = await axios.get(`/options/country/${pollId}`);
+    setCountries(response.data);
+  }, [pollId]);
 
-  useEffect(() => {
-    fetchByAge();
-  }, []);
-
-  const genderLabels = datas.map((item) => item.option);
+  const genderLabels = gender.map((item) => item.option);
   const genderDatasets = [];
   let i = 0;
-  for (const key of Object.keys(datas[0] ?? [])) {
+  for (const key of Object.keys(gender[0] ?? [])) {
     if (key !== 'option') {
       const dataset = {
         label: key,
-        data: datas.map((item) => item[key]),
+        data: gender.map((item) => item[key]),
         backgroundColor: genderColours[i],
         minBarLength: 5
       };
@@ -107,14 +137,12 @@ function Analytics() {
       i++;
     }
   }
-
   const genderData = {
     labels: genderLabels,
     datasets: genderDatasets
   };
 
   const ageLabels = ages.map((item) => item.option);
-
   const ageDatasets = [];
   i = 0;
   for (const key of Object.keys(ages[0] ?? [])) {
@@ -129,11 +157,38 @@ function Analytics() {
       i++;
     }
   }
-
-  const agesData = {
+  const ageData = {
     labels: ageLabels,
     datasets: ageDatasets
   };
+
+  const countryLabels = countries.map(({ country }) => allCountries[country] ?? 'Desconocido');
+  const countryData = {
+    labels: countryLabels,
+    datasets: [
+      {
+        label: 'Paises',
+        data: countries.map(({ percentage }) => percentage),
+        backgroundColor: colours.map((colour) => colour),
+      }
+    ]
+  };
+
+  useEffect(() => {
+    fetchPoll();
+  }, [fetchPoll]);
+
+  useEffect(() => {
+    fetchByGender();
+  }, [fetchByGender]);
+
+  useEffect(() => {
+    fetchByAge();
+  }, [fetchByAge]);
+
+  useEffect(() => {
+    fetchByCountry();
+  }, [fetchByCountry]);
 
   return (
     <section className="h-full overflow-auto">
@@ -141,18 +196,15 @@ function Analytics() {
         <h1 className="text-4xl text-center font-semibold mb-4 text-gray-300">
           Analiticas
         </h1>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 p-4">
+        <div className="grid grid-cols-2 grid-rows-1 gap-4 p-4 h-100">
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={genderData} options={optionsAge} />
+            <Bar data={genderData} options={ageOptions} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={agesData} options={optionsGender} />
+            <Bar data={ageData} options={genderOptions} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            {/* <Bar data={genderData} options={options} /> */}
-          </div>
-          <div className="bg-white rounded shadow-md p-4">
-            {/* <Bar data={genderData} options={options} /> */}
+            <Doughnut data={countryData} options={countryOptions} />
           </div>
         </div>
       </div>

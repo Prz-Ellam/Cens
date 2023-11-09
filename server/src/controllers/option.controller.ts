@@ -1,10 +1,19 @@
 import { connection } from '@/config/database';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Option from '@/models/option.model';
+import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
 
 class OptionController {
-    async findByGender(_req: AuthRequest, res: Response): Promise<Response> {
+    async findByGender(req: AuthRequest, res: Response): Promise<Response> {
+        const pollId = Number.parseInt(req.params.pollId) || -1;
+        const idResult = validateId(pollId);
+        if (!idResult.status) {
+            return res.status(422).json({
+                message: 'El identificador seleccionado no es válido',
+            });
+        }
+
         // TODO: Solo el dueño de la encuesta deberia ver esto
         const results = await connection
             .createQueryBuilder()
@@ -24,7 +33,7 @@ class OptionController {
             .from(Option, 'o')
             .leftJoin('votes', 'v', 'o.id = v.option_id')
             .leftJoin('users', 'u', 'v.user_id = u.id')
-            .where('o.poll_id = :pollId', { pollId: 1 })
+            .where('o.poll_id = :pollId', { pollId })
             .groupBy('o.id')
             .setParameters({ male: 'masculino', female: 'femenino' })
             .getRawMany();
@@ -32,7 +41,15 @@ class OptionController {
         return res.json(results);
     }
 
-    async findByAge(_req: AuthRequest, res: Response): Promise<Response> {
+    async findByAge(req: AuthRequest, res: Response): Promise<Response> {
+        const pollId = Number.parseInt(req.params.pollId) || -1;
+        const idResult = validateId(pollId);
+        if (!idResult.status) {
+            return res.status(422).json({
+                message: 'El identificador seleccionado no es válido',
+            });
+        }
+
         const results = await connection
             .createQueryBuilder()
             .select('options.text', 'option')
@@ -73,6 +90,31 @@ class OptionController {
             .getRawMany();
 
         return res.json(results);
+    }
+
+    async findByCountry(req: AuthRequest, res: Response): Promise<Response> {
+        const pollId = Number.parseInt(req.params.pollId) || -1;
+        const idResult = validateId(pollId);
+        if (!idResult.status) {
+            return res.status(422).json({
+                message: 'El identificador seleccionado no es válido',
+            });
+        }
+
+        const result = await connection
+            .getRepository('votes')
+            .createQueryBuilder('votes')
+            .select([
+                "IFNULL(country.name, 'Desconocido') AS country",
+                'IFNULL(CAST(100 * COUNT(users.id) / SUM(COUNT(users.id)) OVER(PARTITION BY votes.poll_id) AS FLOAT), 0) as percentage',
+            ])
+            .innerJoin('users', 'users', 'votes.user_id = users.id')
+            .leftJoin('country', 'country', 'users.country_id = country.id')
+            .where('votes.poll_id = :pollId', { pollId })
+            .groupBy('country.name')
+            .getRawMany();
+
+        return res.json(result);
     }
 }
 

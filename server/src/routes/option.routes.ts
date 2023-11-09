@@ -3,7 +3,8 @@ import { Router } from 'express';
 
 const optionRouter = Router();
 
-optionRouter.get('/', optionController.findByGender);
-optionRouter.get('/1', optionController.findByAge);
+optionRouter.get('/gender/:pollId', optionController.findByGender);
+optionRouter.get('/age/:pollId', optionController.findByAge);
+optionRouter.get('/country/:pollId', optionController.findByCountry);
 
 export default optionRouter;

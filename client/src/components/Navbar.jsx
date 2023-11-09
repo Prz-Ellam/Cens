@@ -43,7 +43,7 @@ function Navbar() {
           type="text"
           id="search-navbar"
           className="block w-[50%] bg-accent shadow hover:shadow-md appearance-none rounded py-2 px-3 text-gray-300 leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Search..."
+          placeholder="Buscar encuestas..."
           onKeyDown={(event) => {
             if (event.key == 'Enter') {
               navigate(`/search?search=${event.target.value}`)

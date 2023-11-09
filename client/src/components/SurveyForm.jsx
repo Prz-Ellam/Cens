@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import axios from '@/services/api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
@@ -27,6 +27,8 @@ function SurveyForm({
   } = poll;
   const authContext = useAuth();
   const authUser = authContext.user;
+
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
 
@@ -203,6 +205,9 @@ function SurveyForm({
               }`}
             >
               <ul className="py-1 text-sm">
+                <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer" onClick={() => navigate(`/analytics/${id}`)}>
+                  Estadísticas
+                </li>
                 <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer" onClick={() => submitDeletePoll(id)}>
                   Eliminar
                 </li>

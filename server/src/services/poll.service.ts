@@ -105,7 +105,6 @@ export default class PollService {
         poll.reaction = reaction;
         poll.voteCount = voteCount;
 
-        console.timeEnd('A');
         return poll;
     }
 

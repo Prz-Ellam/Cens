@@ -5,6 +5,10 @@ import axios from '@/services/api';
 import Pagination from '../components/Pagination';
 import { useSearchParams } from 'react-router-dom';
 
+/**
+ * Buscador de encuestas con filtro por pregunta o descripcion
+ * @returns 
+ */
 function Search() {
   const { user } = useAuth();
 
@@ -13,8 +17,6 @@ function Search() {
   const [pollsTotalPages, setPollsTotalPages] = useState(0);
 
   const [searchParams, ] = useSearchParams();
-
-  console.log(searchParams);
 
   const fetchPolls = useCallback(async (page) => {
     try {
@@ -45,8 +47,8 @@ function Search() {
               <SurveyForm
                 key={index}
                 poll={poll}
-                onDelete={async () => {}}
-                onUpdate={async () => {}}
+                onDelete={() => fetchPolls(pollsPage)}
+                onUpdate={() => fetchPolls(pollsPage)}
               />
             ))}
             <Pagination

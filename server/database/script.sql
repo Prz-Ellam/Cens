@@ -281,29 +281,35 @@ WHERE
   o.poll_id = 1
 GROUP BY
   o.id;
-
-
-
 SELECT
   o.text AS option_text,
-  IFNULL(SUM(
-    CASE
-      WHEN u.gender = 'masculino' THEN 1
-      ELSE 0
-    END
-  ) / COUNT(v.id) * 100, 0) AS percentage_male,
-  IFNULL(SUM(
-    CASE
-      WHEN u.gender = 'femenino' THEN 1
-      ELSE 0
-    END
-  ) / COUNT(v.id) * 100, 0) AS percentage_female,
-  IFNULL(SUM(
-    CASE
-      WHEN u.gender IS NULL THEN 1
-      ELSE 0
-    END
-  ) / COUNT(v.id) * 100, 0) AS percentage_other
+  IFNULL(
+    SUM(
+      CASE
+        WHEN u.gender = 'masculino' THEN 1
+        ELSE 0
+      END
+    ) / COUNT(v.id) * 100,
+    0
+  ) AS percentage_male,
+  IFNULL(
+    SUM(
+      CASE
+        WHEN u.gender = 'femenino' THEN 1
+        ELSE 0
+      END
+    ) / COUNT(v.id) * 100,
+    0
+  ) AS percentage_female,
+  IFNULL(
+    SUM(
+      CASE
+        WHEN u.gender IS NULL THEN 1
+        ELSE 0
+      END
+    ) / COUNT(v.id) * 100,
+    0
+  ) AS percentage_other
 FROM
   options o
   LEFT JOIN votes v ON o.id = v.option_id
@@ -312,10 +318,6 @@ WHERE
   o.poll_id = 1
 GROUP BY
   o.id;
-
-
-
-
 -- Consulta para calcular el porcentaje por edad de cada respuesta para un poll_id específico
 SELECT
   options.text AS option_text,
@@ -376,9 +378,6 @@ WHERE
 GROUP BY
   options.id,
   options.text;
-
-
-
 SELECT
   c.name AS country_name,
   o.text AS option_text,
@@ -405,6 +404,8 @@ ORDER BY
   o.text;
 
 
+
+
 SELECT
   options.text AS option_text,
   COALESCE(c.name, 'Unknown') AS country_name,
@@ -419,4 +420,20 @@ FROM
 WHERE
   v.poll_id = 1
 GROUP BY
-  options.id, options.text, country_name, user_username;
+  options.id,
+  options.text,
+  country_name,
+  user_username;
+
+
+SELECT
+  IFNULL(country.name, 'Desconocido') AS country,
+  IFNULL(CAST(100 * COUNT(users.id) / SUM(COUNT(users.id)) OVER(PARTITION BY votes.poll_id) AS FLOAT), 0) as percentage
+FROM
+  votes
+  INNER JOIN users ON votes.user_id = users.id
+  LEFT JOIN country ON users.country_id = country.id
+WHERE
+  votes.poll_id = 1
+GROUP BY
+  country.name;
