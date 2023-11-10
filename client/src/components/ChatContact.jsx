@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import className from 'classnames';
+import { useAuth } from '@/hooks/useAuth';
 
 // const dateTimeRegex = /^\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}$/;
 
@@ -21,10 +22,12 @@ function ChatContact({
   avatar,
   username,
   lastMessage,
+  lastMessageCreatedBy,
   date,
   pending,
   onSelect = () => {}
 }) {
+  const { user } = useAuth();
   return (
     <article
       className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer transition duration-150 ease-out hover:ease-in"
@@ -45,7 +48,7 @@ function ChatContact({
               'text-gray-400': pending <= 0
             })}
           >
-            {lastMessage}
+            {user.id === lastMessageCreatedBy ? 'Tu' : username }: {lastMessage}
           </p>
         </div>
       </div>
@@ -66,6 +69,7 @@ ChatContact.propTypes = {
   avatar: PropTypes.string.isRequired,
   username: PropTypes.string.isRequired,
   lastMessage: PropTypes.string,
+  lastMessageCreatedBy: PropTypes.number,
   date: PropTypes.string,
   pending: PropTypes.number,
   onSelect: PropTypes.func

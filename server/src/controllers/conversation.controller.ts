@@ -122,6 +122,14 @@ class ConversationController {
                 .orderBy('message.createdAt', 'DESC')
                 .limit(1);
 
+            const messageUserSubquery = connection
+                .getRepository(Message)
+                .createQueryBuilder('message')
+                .select('message.sender')
+                .where('message.conversation.id = conversation.id')
+                .orderBy('message.createdAt', 'DESC')
+                .limit(1);
+
             const conversations = await connection
                 .getRepository(Conversation)
                 .createQueryBuilder('conversation')
@@ -131,6 +139,9 @@ class ConversationController {
                 .addSelect('user.id', 'userId')
                 .addSelect('user.username', 'username')
                 .addSelect([`(${messageSubquery.getQuery()}) AS lastMessage`])
+                .addSelect([
+                    `(${messageUserSubquery.getQuery()}) AS lastMessageCreatedBy`,
+                ])
                 .addSelect([
                     `(${messageCreationSubquery.getQuery()}) AS lastMessageCreatedAt`,
                 ])

@@ -86,7 +86,8 @@ function LoginSignup() {
         .max(255, 'Maximo de 255 caracteres')
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: 'Las contraseñas no coinciden'
+      message: 'Las contraseñas no coinciden',
+      path: ['confirmPassword']
     });
 
   const handleLoginChange = (event) => {

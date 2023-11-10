@@ -64,6 +64,7 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
               avatar={`/api/v1/users/${contact.userId}/avatar`}
               username={contact.username}
               lastMessage={contact.lastMessage}
+              lastMessageCreatedBy={contact.lastMessageCreatedBy}
               date={formatDate(contact.lastMessageCreatedAt)}
               pending={contact.pending}
               onSelect={(contact) => onSelect(contact)}
