@@ -28,7 +28,6 @@ function CommentsPage() {
   const [formData, setFormData] = useState({
     text: ''
   });
-
   const [formErrors, setFormErrors] = useState({});
 
   const [comments, setComments] = useState([]);
@@ -59,26 +58,6 @@ function CommentsPage() {
       navigate('/');
     }
   }, [navigate, pollId]);
-
-  /**
-   * Recupera todos los comentarios de una encuesta
-   * @param {number} page - Pagina de la que se desea extraer los comentarios
-   */
-  const fetchComments = useCallback(
-    async (page) => {
-      try {
-        const response = await axios.get(
-          `/polls/${pollId}/comments?page=${page}&limit=${limit}`
-        );
-        setComments(response.data.comments);
-        setTotalPages(response.data.totalPages);
-        setPage(page);
-      } catch (error) {
-        console.error('Error fetching comments');
-      }
-    },
-    [pollId]
-  );
 
   /**
    * Crear un comentario
@@ -118,10 +97,13 @@ function CommentsPage() {
       await fetchComments(1);
       await fetchPoll();
     } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
       Swal.fire({
         title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -149,6 +131,33 @@ function CommentsPage() {
     delete updatedFormErrors[name];
     setFormErrors(updatedFormErrors);
   };
+
+  /**
+   * Recupera todos los comentarios de una encuesta
+   * @param {number} page - Pagina de la que se desea extraer los comentarios
+   */
+  const fetchComments = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/polls/${pollId}/comments?page=${page}&limit=${limit}`
+        );
+        setComments(response.data.comments);
+        setTotalPages(response.data.totalPages);
+        setPage(page);
+      } catch (error) {
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
+      }
+    },
+    [pollId]
+  );
 
   useEffect(() => {
     fetchPoll();

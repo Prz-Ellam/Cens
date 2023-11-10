@@ -111,10 +111,11 @@ function Chat() {
       >
         <ChatList
           contacts={contacts}
-          onSelect={(contact) => {
-            fetchMessages(contact.chatId);
+          onSelect={async (contact) => {
+            await fetchMessages(contact.chatId);
             setChatId(contact.chatId);
             setSelectedContact(contact);
+            await fetchContacts();
           }}
           onUpdate={() => fetchContacts()}
         />
@@ -156,9 +157,9 @@ function Chat() {
                   avatar={`/api/v1/users/${message.sender.id}/avatar`}
                   message={message.text}
                   own={user.id === message.sender.id}
-                  onUpdate={() => {
-                    fetchMessages(chatId);
-                    fetchContacts();
+                  onUpdate={async () => {
+                    await fetchMessages(chatId);
+                    await fetchContacts();
                   }}
                 />
               ))}
@@ -172,11 +173,12 @@ function Chat() {
                 className="bg-dark hover:shadow-md relative m-0 block w-[1px] min-w-0 flex-auto rounded-l bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-400 outline-none transition duration-200 ease-in-out focus:z-[3] focus:outline-none"
                 placeholder="Mensaje..."
                 onChange={(event) => setMessage(event.target.value)}
-                onKeyDown={(event) => {
+                onKeyDown={async (event) => {
                   if (event.key == 'Enter' && selectedContact?.chatId) {
-                    handleMessage(selectedContact?.chatId);
+                    await handleMessage(selectedContact?.chatId);
                     setMessage('');
                     event.target.value = '';
+                    await fetchContacts();
                   }
                 }}
               />

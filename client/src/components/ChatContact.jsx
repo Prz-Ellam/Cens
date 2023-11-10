@@ -23,7 +23,7 @@ function ChatContact({
   lastMessage,
   date,
   pending,
-  onSelect
+  onSelect = () => {}
 }) {
   return (
     <article

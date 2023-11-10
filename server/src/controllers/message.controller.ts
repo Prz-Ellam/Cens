@@ -2,6 +2,7 @@ import { connection } from '@/config/database';
 import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Conversation from '@/models/conversation.model';
+import MessageView from '@/models/message-view.model';
 import Message from '@/models/message.model';
 import Participant from '@/models/participant.model';
 import { validateId } from '@/validators/id.validator';
@@ -175,6 +176,33 @@ class MessageController {
                     createdAt: 'ASC',
                 },
             });
+
+            const views = await connection
+                .createQueryBuilder()
+                .select(`m.id as message, ${authUser.id} as user`)
+                .from(Message, 'm')
+                .where('m.conversation_id = :conversationId', {
+                    conversationId: chatId,
+                })
+                .andWhere('m.sender_id != :senderId', { senderId: authUser.id })
+                .andWhere(
+                    'NOT EXISTS ' +
+                        '(SELECT 1 FROM message_view mv WHERE mv.message_id = m.id AND mv.user_id = :userId)',
+                    { userId: authUser.id },
+                )
+                .getRawMany();
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const inserts: any = [];
+            for (const view of views) {
+                inserts.push(
+                    MessageView.insert({
+                        user: { id: view.user },
+                        message: { id: view.message },
+                    }),
+                );
+            }
+            await Promise.all(inserts);
 
             return res.json(messages);
         } catch (exception) {

@@ -9,6 +9,19 @@ import z from 'zod';
 import Swal from 'sweetalert2';
 import { ToastTopEnd } from '../utils/toast';
 
+// Función para calcular la edad a partir de la fecha de nacimiento
+const calculateAge = (birthDate) => {
+  const today = new Date();
+  const eighteenYearsAgo = new Date(today);
+  eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+  if (eighteenYearsAgo.getTime() <= birthDate.getTime()) {
+    return false;
+  }
+
+  return true;
+};
+
 /**
  * Formulario para editar datos básicos del usuario
  * @returns
@@ -41,7 +54,15 @@ function ProfileEdit() {
       .min(1, 'Es requerido al menos 1 caracter')
       .max(255, 'Maximo de 255 caracteres')
       .optional(),
-    birthDate: z.coerce.date().optional().or(z.literal('')).or(z.literal(null)),
+    birthDate: z.coerce
+      .date()
+      .refine((value) => {
+        if (!value) return true;
+        return calculateAge(value);
+      }, 'Debes ser mayor de 18 años para registrarte')
+      .optional()
+      .or(z.literal(''))
+      .or(z.literal(null)),
     country: z
       .enum(Object.keys(allCountries))
       .optional()

@@ -40,15 +40,12 @@ function SurveyForm({
       );
 
       onUpdate(id);
-      // ToastTopEnd.fire({
-      //   icon: 'success',
-      //   title: response.data.message
-      // });
     } catch (error) {
-      await Swal.fire({
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
         title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -61,16 +58,12 @@ function SurveyForm({
       );
 
       onUpdate(id);
-      // ToastTopEnd.fire({
-      //   icon: 'success',
-      //   title: response.data.message
-      // });
     } catch (error) {
-      // TODO: Validar que es de axios
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
       Swal.fire({
         title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -81,11 +74,11 @@ function SurveyForm({
 
       onUpdate(id);
     } catch (error) {
-      // TODO: Validar que es de axios
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
       Swal.fire({
         title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -96,11 +89,11 @@ function SurveyForm({
 
       onDelete(pollId);
     } catch (error) {
-      // TODO: Validar que es de axios
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
       Swal.fire({
         title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -108,10 +101,6 @@ function SurveyForm({
   const menuRef = useRef(null);
 
   useEffect(() => {
-    /**
-     *
-     * @param {Event} event
-     */
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setOpen(false);
@@ -138,7 +127,12 @@ function SurveyForm({
       console.log(response.data);
       onUpdate(id);
     } catch (error) {
-      console.log(error.response.data);
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -153,7 +147,12 @@ function SurveyForm({
       console.log(response.data);
       onUpdate(id);
     } catch (error) {
-      console.log(error.response.data);
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -163,21 +162,21 @@ function SurveyForm({
       await axios.delete(`/reactions/${reactionId}`);
       onUpdate(id);
     } catch (error) {
-      console.log(error.response.data);
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
-  // TODO: Link to profile
   return (
     <article className="bg-accent text-gray-300 p-4 rounded-lg shadow-lg">
       <header className="flex justify-between mb-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 truncate">
           <img
-            src={
-              user.avatar
-                ? `/api/v1/users/${user.id}/avatar`
-                : `/default-profile-picture.png`
-            }
+            src={`/api/v1/users/${user.id}/avatar`}
             alt="Avatar"
             className="h-12 w-12 rounded-full object-cover"
           />
@@ -216,7 +215,7 @@ function SurveyForm({
           </div>
         )}
       </header>
-      <p>{description}</p>
+      <p className="truncate">{description}</p>
       <small className="text-gray-400">
         {voteCount} {voteCount === 1 ? 'voto' : 'votos'}
       </small>
@@ -229,17 +228,15 @@ function SurveyForm({
               name={`radio-${id}`}
               id={`radio-${id}-${index}`}
               disabled={user.id === authUser.id}
-              // eslint-disable-next-line react/prop-types
               defaultChecked={vote?.option.id === option.id}
               onClick={() => {
                 vote
-                  ? // eslint-disable-next-line react/prop-types
+                  ?
                     vote?.option.id === option.id
                     ? submitDeleteVote(vote.id)
                     : submitUpdateVote(vote.id, option.id)
                   : submitCreateVote(id, option.id);
 
-                // eslint-disable-next-line react/prop-types
                 if (vote?.option.id === option.id)
                   document.getElementById(
                     `radio-${id}-${index}`
@@ -319,7 +316,7 @@ SurveyForm.propTypes = {
   onUpdate: PropTypes.func,
   onDelete: PropTypes.func,
   poll: PropTypes.shape({
-    id: PropTypes.number.isRequired, // Assuming 'id' is a number, adjust if it's a different type
+    id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,

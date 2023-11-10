@@ -136,8 +136,26 @@ class ConversationController {
                 ])
                 .where(`conversation.id IN (${queryBuilder.getQuery()})`)
                 .andWhere('user.id != :userId', { userId })
+                .orderBy('lastMessageCreatedAt', 'DESC')
                 .setParameters(queryBuilder.getParameters())
                 .getRawMany();
+
+            // I dunno...
+            for (let i = 0; i < conversations.length; i++) {
+                const count = await Message.createQueryBuilder('m')
+                    .where('m.conversation_id = :conversationId', {
+                        conversationId: conversations[i].conversationId,
+                    })
+                    .andWhere('m.sender_id != :senderId', { senderId: userId })
+                    .andWhere(
+                        'NOT EXISTS ' +
+                            '(SELECT 1 FROM message_view mv WHERE mv.message_id = m.id AND mv.user_id = :userId)',
+                        { userId },
+                    )
+                    .getCount();
+
+                conversations[i].pending = count;
+            }
 
             return res.json(conversations);
         } catch (exception) {

@@ -83,8 +83,6 @@ function LoginSignup() {
 
     try {
       const response = await axios(config);
-      // Manejar la respuesta exitosa aquí
-      // console.log(response.data.message);
 
       await Swal.fire({
         icon: 'success',
@@ -97,12 +95,11 @@ function LoginSignup() {
       navigate('/');
       // }
     } catch (error) {
-      // Manejar errores aquí
-      // console.error(error.response.data.message);
-      await Swal.fire({
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
         icon: 'error',
-        title: 'Datos incorrectos',
-        confirmButtonText: 'Aceptar'
+        text: errorText
       });
     }
   }
@@ -125,8 +122,6 @@ function LoginSignup() {
       });
 
       setErrors(validationErrors);
-      // console.log("Aquí hupo algo")
-      // console.error(validationResult.error);
       return;
     }
 
@@ -153,10 +148,11 @@ function LoginSignup() {
       auth(response.data.user, response.data.token)
       navigate('/');
     } catch (error) {
-      await Swal.fire({
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
         icon: 'error',
-        title: error.response.data.message,
-        confirmButtonText: 'Aceptar'
+        text: errorText
       });
     }
 

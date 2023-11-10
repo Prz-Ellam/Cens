@@ -402,10 +402,6 @@ GROUP BY
 ORDER BY
   c.name,
   o.text;
-
-
-
-
 SELECT
   options.text AS option_text,
   COALESCE(c.name, 'Unknown') AS country_name,
@@ -424,11 +420,14 @@ GROUP BY
   options.text,
   country_name,
   user_username;
-
-
 SELECT
   IFNULL(country.name, 'Desconocido') AS country,
-  IFNULL(CAST(100 * COUNT(users.id) / SUM(COUNT(users.id)) OVER(PARTITION BY votes.poll_id) AS FLOAT), 0) as percentage
+  IFNULL(
+    CAST(
+      100 * COUNT(users.id) / SUM(COUNT(users.id)) OVER(PARTITION BY votes.poll_id) AS FLOAT
+    ),
+    0
+  ) as percentage
 FROM
   votes
   INNER JOIN users ON votes.user_id = users.id
@@ -437,3 +436,66 @@ WHERE
   votes.poll_id = 1
 GROUP BY
   country.name;
+SELECT
+  c.name AS country_name,
+  COUNT(u.id) AS number_of_participants,
+  (COUNT(u.id) / total.total_participants) * 100 AS participation_percentage
+FROM
+  votes AS v
+  INNER JOIN users AS u ON v.user_id = u.id
+  LEFT JOIN country AS c ON u.country_id = c.id
+  JOIN (
+    SELECT
+      COUNT(DISTINCT user_id) AS total_participants
+    FROM
+      votes
+    WHERE
+      poll_id = 1
+  ) AS total
+WHERE
+  v.poll_id = 1
+GROUP BY
+  c.name;
+SELECT
+  COUNT(m.`id`)
+FROM
+  `message` m
+WHERE
+  m.`conversation_id` = 1
+  AND m.`sender_id` != 1
+  AND NOT EXISTS (
+    SELECT
+      1
+    FROM
+      `message_view` mv
+    WHERE
+      mv.`message_id` = m.`id`
+      AND mv.`user_id` = 1
+  )
+
+
+
+
+
+INSERT INTO
+  `message_view`(
+    `message_id`,
+    `user_id`
+  )
+SELECT
+  m.`id`,
+  1
+FROM
+  `message` m
+WHERE
+  m.`conversation_id` = 1
+  AND m.`sender_id` != 1
+  AND NOT EXISTS (
+    SELECT
+      1
+    FROM
+      `message_view` mv
+    WHERE
+      mv.`message_id` = m.`id`
+      AND mv.`user_id` = 1
+  );

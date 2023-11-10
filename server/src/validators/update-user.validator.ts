@@ -8,6 +8,18 @@ const countries: [string, ...string[]] = [
     ...allCountries.slice(1),
 ];
 
+const calculateAge = (birthDate: Date): boolean => {
+    const today = new Date();
+    const eighteenYearsAgo = new Date(today);
+    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+
+    if (eighteenYearsAgo.getTime() <= birthDate.getTime()) {
+        return false;
+    }
+
+    return true;
+};
+
 const updateUserValidator = z.object({
     email: z
         .string({
@@ -25,7 +37,15 @@ const updateUserValidator = z.object({
         .min(1, 'Es requerido al menos 1 caracter')
         .max(255, 'Maximo de 255 caracteres')
         .optional(),
-    birthDate: z.coerce.date().optional().or(z.literal('')).or(z.literal(null)),
+    birthDate: z.coerce
+        .date()
+        .refine((value) => {
+            if (!value) return true;
+            return calculateAge(value);
+        }, 'Debes ser mayor de 18 años para registrarte')
+        .optional()
+        .or(z.literal(''))
+        .or(z.literal(null)),
     country: z.enum(countries).optional().or(z.literal('')).or(z.literal(null)),
     gender: z
         .enum(['masculino', 'femenino', 'otro'])

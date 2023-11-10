@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import axios from '@/services/api';
 import z from 'zod';
@@ -6,7 +7,13 @@ import ErrorList from './ErrorList';
 import getErrors from '@/utils/error-format';
 import { ToastTopEnd } from '../utils/toast';
 
-function CreatePoll() {
+/**
+ * Formulario para crear encuestas
+ * @param {object} params
+ * @param {function} params.onCreate - Evento cuando se ha creado una encuesta
+ * @returns 
+ */
+function CreatePoll({ onCreate = () => {} }) {
   const formValidator = z.object({
     question: z
       .string({
@@ -41,14 +48,8 @@ function CreatePoll() {
     description: '',
     options: ['', '']
   });
-
   const [formErrors, setFormErrors] = useState({});
 
-  /**
-   *
-   * @param {Event} event
-   * @returns
-   */
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -65,10 +66,32 @@ function CreatePoll() {
         ...formErrors,
         [name]: errors[name]
       });
+      return;
+    }
 
-      ToastTopEnd.fire({
-        title: 'Formulario no válido',
-        icon: 'error'
+    const updatedFormErrors = formErrors;
+    delete updatedFormErrors[name];
+    setFormErrors(updatedFormErrors);
+  };
+
+  const handleOptionChange = (index, event) => {
+    const { name, value } = event.target;
+
+    const newOptions = [...formData.options];
+    newOptions[index] = value;
+
+    const updatedFormData = {
+      ...formData,
+      options: newOptions
+    };
+    setFormData(updatedFormData);
+
+    const result = formValidator.safeParse(updatedFormData);
+    if (!result.success) {
+      const errors = getErrors(result.error);
+      setFormErrors({
+        ...formErrors,
+        [name]: errors[name]
       });
       return;
     }
@@ -78,54 +101,27 @@ function CreatePoll() {
     setFormErrors(updatedFormErrors);
   };
 
-
-  // Function to handle changes in input values
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-
-    const newOptions = [...formData.options];
-    newOptions[index] = event.target.value;
-    setFormData({ ...formData, options: newOptions });
-
-    const validationResult =
-    formValidator.shape.question.safeParse(value);
-    if (validationResult.error) {
-      const lerrors = [];
-      console.log(validationResult.error.issues);
-
-      validationResult.error.issues.forEach((validationError) => {
-        const message = validationError.message;
-
-        lerrors.push(message);
+  const handleAddOption = () => {
+    if (formData.options.length >= 5) {
+      ToastTopEnd.fire({
+        title: 'Máximo 5 opciones',
+        icon: 'error'
       });
-
-      console.log(lerrors);
-
-      setFormErrors({
-        ...formErrors,
-        [name]: lerrors
-      });
-
       return;
     }
 
-    setFormErrors({
-      ...formErrors,
-      [name]: ''
+    setFormData({
+      ...formData,
+      options: [...formData.options, '']
     });
   };
 
-  const handleAddInput = () => {
-    if (formData.options.length < 5) {
-      setFormData({
-        ...formData,
-        options: [...formData.options, '']
-      });
-    }
-  };
-
-  const handleDelete = (indexToDelete) => {
+  const handleDeleteOption = (indexToDelete) => {
     if (formData.options.length <= 2) {
+      ToastTopEnd.fire({
+        title: 'Mínimo 2 opciones',
+        icon: 'error'
+      });
       return;
     }
 
@@ -139,10 +135,6 @@ function CreatePoll() {
     });
   };
 
-  /**
-   *
-   * @param {Event} event
-   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -161,16 +153,27 @@ function CreatePoll() {
     try {
       const response = await axios.post('/polls', formData);
 
-      await Swal.fire({
+      Swal.fire({
         title: 'Operación éxitosa',
         icon: 'success',
         text: response.data.message
       });
+
+      const updatedFormData = {
+        question: '',
+        description: '',
+        options: ['', '']
+      }
+      setFormData(updatedFormData);
+      setFormErrors({});
+
+      onCreate();
     } catch (error) {
-      await Swal.fire({
-        title: 'Ocurrio un error',
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };
@@ -190,9 +193,10 @@ function CreatePoll() {
           type="text"
           name="question"
           placeholder="Pregunta"
+          value={formData.question}
           onChange={handleChange}
         />
-        {formErrors['question'] && <ErrorList errors={formErrors.question} />}
+        {formErrors.question && <ErrorList errors={formErrors.question} />}
       </div>
 
       <div className="mb-5">
@@ -210,9 +214,10 @@ function CreatePoll() {
           rows="3"
           name="description"
           placeholder="Descripción"
+          value={formData.description}
           onChange={handleChange}
         ></textarea>
-        {formErrors['description'] && <ErrorList errors={formErrors.description} />}
+        {formErrors.description && <ErrorList errors={formErrors.description} />}
       </div>
 
       <label className="block text-gray-300 text-sm font-bold mb-2 cursor-pointer">
@@ -221,21 +226,19 @@ function CreatePoll() {
       <div>
         {formData.options.map((value, index) => (
           <div key={index} className="mb-4">
-            <div className="relative flex flex-wrap items-stretch">
+            <div className="flex flex-wrap items-stretch">
               <input
                 type="text"
                 className="bg-accent shadow hover:shadow-md appearance-none rounded-l relative m-0 block w-[1px] min-w-0 flex-auto border-solid border-neutral-300 bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-gray-300 outline-none transition duration-200 ease-in-out focus:z-[3]"
                 placeholder={`Opción ${index + 1}`}
                 value={value}
                 name={`options.${index}`}
-                onChange={(event) => handleInputChange(index, event)}
+                onChange={(event) => handleOptionChange(index, event)}
               />
               <button
                 type="button"
                 className="bg-red-500 text-gray-300 flex items-center whitespace-nowrap rounded-r border border-l-0 border-solid border-red-500 px-3 py-[0.25rem] text-center text-base font-normal leading-[1.6]"
-                onClick={() => {
-                  handleDelete(index);
-                }}
+                onClick={() => handleDeleteOption(index)}
               >
                 &times;
               </button>
@@ -248,7 +251,7 @@ function CreatePoll() {
         <button
           type="button"
           className="mb-3 text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg text-[0.9rem] px-5 py-2 text-center transition duration-150 ease-out hover:ease-in"
-          onClick={handleAddInput}
+          onClick={handleAddOption}
         >
           Añadir opción
         </button>
@@ -262,6 +265,10 @@ function CreatePoll() {
       </button>
     </form>
   );
+}
+
+CreatePoll.propTypes = {
+  onCreate: PropTypes.func,
 }
 
 export default CreatePoll;

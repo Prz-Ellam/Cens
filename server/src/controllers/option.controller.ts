@@ -52,7 +52,7 @@ class OptionController {
 
         const results = await connection
             .createQueryBuilder()
-            .select('options.text', 'option')
+            .select('o.text', 'option')
             .addSelect(
                 `CAST(IFNULL(SUM(CASE WHEN TIMESTAMPDIFF(YEAR, u.birth_date, CURDATE()) BETWEEN 18 AND 24 THEN 1 ELSE 0 END) / COUNT(v.id) * 100, 0) AS FLOAT)`,
                 '18-24',
@@ -81,12 +81,11 @@ class OptionController {
                 `CAST(IFNULL(SUM(CASE WHEN u.birth_date IS NULL THEN 1 ELSE 0 END) / COUNT(v.id) * 100, 0) AS FLOAT)`,
                 'Unknown',
             )
-            .from('votes', 'v')
-            .innerJoin('options', 'options', 'v.option_id = options.id')
-            .leftJoin('polls', 'p', 'v.poll_id = p.id')
+            .from(Option, 'o')
+            .leftJoin('votes', 'v', 'o.id = v.option_id')
             .leftJoin('users', 'u', 'v.user_id = u.id')
-            .where('v.poll_id = :pollId', { pollId: 1 })
-            .groupBy('options.id, options.text')
+            .where('o.poll_id = :pollId', { pollId })
+            .groupBy('o.id')
             .getRawMany();
 
         return res.json(results);

@@ -4,6 +4,7 @@ import { formatDate } from '@/utils/format-date';
 import Modal from './Modal';
 import { useCallback, useEffect, useState } from 'react';
 import axios from '@/services/api';
+import Swal from 'sweetalert2';
 
 /**
  * Componente que representa la lista de contactos de un usuario.
@@ -13,14 +14,25 @@ import axios from '@/services/api';
  * @param {function} params.onSelect - Lista de contactos del usuario
  * @returns
  */
-function ChatList({ contacts, onSelect, onUpdate }) {
+function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
   const [closeModal, setCloseModal] = useState(true);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
 
   const fetchUsers = useCallback(async () => {
-    const response = await axios.get(`/users?username=${search}`);
-    setUsers(response.data.users);
+    try {
+      const response = await axios.get(`/users?username=${search}`);
+      setUsers(response.data.users);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   }, [search]);
 
   const createConversation = async (userId) => {
@@ -54,7 +66,7 @@ function ChatList({ contacts, onSelect, onUpdate }) {
               username={contact.username}
               lastMessage={contact.lastMessage}
               date={formatDate(contact.lastMessageCreatedAt)}
-              pending={0}
+              pending={contact.pending}
               onSelect={(contact) => onSelect(contact)}
             />
           ))}

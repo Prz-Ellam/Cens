@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
 import FollowSuggestions from '../components/FollowSuggestions';
 import Pagination from '../components/Pagination';
+import Swal from 'sweetalert2';
 
 /**
  * Página principal con el feed y las recomendaciones de usuarios
@@ -29,7 +30,12 @@ function Home() {
       setPollsTotalPages(response.data.totalPages);
       setPollsPage(page);
     } catch (error) {
-      console.error('Error fetching polls:', error);
+      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -90,7 +96,7 @@ function Home() {
         close={close}
         setClose={setClose}
         title={'Crear encuesta'}
-        bodySlot={<CreatePoll />}
+        bodySlot={<CreatePoll onCreate={() => setClose(true) } />}
       ></Modal>
     </section>
   );
