@@ -1,6 +1,5 @@
 import multer from 'multer';
 import path from 'path';
-// import { fromBuffer } from 'file-type';
 
 const storage = multer.diskStorage({
     destination: function (_req, _file, cb) {

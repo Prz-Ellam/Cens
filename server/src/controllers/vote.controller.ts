@@ -14,6 +14,13 @@ class VoteController {
      */
     async create(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const pollId = Number.parseInt(req.params.pollId);
             const idResult = validateId(pollId);
             if (!idResult.status) {
@@ -119,6 +126,13 @@ class VoteController {
      */
     async update(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const voteId = Number.parseInt(req.params.voteId);
             const idResult = validateId(voteId);
             if (!idResult.status) {

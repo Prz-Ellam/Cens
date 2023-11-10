@@ -23,9 +23,6 @@ import Conversation from '@/models/conversation.model';
 const unlinkAsync = promisify(fs.unlink);
 
 class UserController {
-    /**
-     * Creates an user.
-     */
     async register(req: Request, res: Response): Promise<Response> {
         try {
             const contentType = req.get('content-type');
@@ -461,7 +458,6 @@ class UserController {
         }
     }
 
-    // TODO: El usuario se puede seguir a si mismo
     async followUser(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const userId = Number.parseInt(req.params.userId) || -1;

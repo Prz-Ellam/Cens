@@ -14,6 +14,13 @@ class MessageController {
      */
     async create(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const chatId = Number.parseInt(req.params.conversationId) || -1;
             const conversation = await Conversation.findOneBy({
                 id: chatId,
@@ -61,6 +68,13 @@ class MessageController {
 
     async update(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const messageId = Number.parseInt(req.params.messageId) || -1;
             const idResult = validateId(messageId);
             if (!idResult.status) {

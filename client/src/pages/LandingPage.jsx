@@ -37,27 +37,25 @@ function LandingPage() {
 
   return (
     <div className="mybody-landingPage">
-      <header className="landing-header">
-        <a href="#" className="logo">
-          <img
-            src="../src/assets/img/Cens_Logo2.png"
-            alt="Logo de tu página"
-            width="250"
-            height="150"
-          />
-        </a>
+      <header className="landing-header absolute w-full flex items-center">
+        <img
+          src="../src/assets/img/Cens_Logo2.png"
+          alt="Logo de tu página"
+          width="250"
+          height="150"
+        />
       </header>
       <section className="landing-section">
         <img src="../src/assets/img/stars1.png" id="stars" alt="Estrellas" />
         <img src="../src/assets/img/moon.png" id="moon" alt="Luna" />
         <img src="../src/assets/img/sea1.png" id="sea" alt="Mar" />
         <img src="../src/assets/img/sea2.png" id="sea2" alt="Mar 2" />
-        <h2 id="text">Bienvenido a Cens</h2>
-        <Link to="/login" id="btn">
-          Iniciar sesión
+        <h2 id="text" className="absolute text-gray-300 font-bold whitespace-nowrap text-[3.5vw] z-[9]">Bienvenido a Cens</h2>
+        <Link to="/login" id="btn" className="bg-gray-300 text-[#2b1055] py-2 px-8">
+          Iniciar sesión o Registrate
         </Link>
       </section>
-      <div className="sec" id="sec">
+      <div className="relative bg-[#1c0522] p-[100px]">
         <h2 className="text-gray-300 text-5xl py-3 text-center font-bold">Explora Opiniones</h2>
         <p className="text-gray-300 text-2xl py-4">
           Cens es una propuesta de plataforma en línea que une a personas de

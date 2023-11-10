@@ -54,7 +54,6 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
         </button>
       </div>
 
-      {/* TODO: PENDING DE LOS MENSAJES */}
       <hr className="mb-2 bg-gray-300" />
       <div className="overflow-auto">
         {contacts &&

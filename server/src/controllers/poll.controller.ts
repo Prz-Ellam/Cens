@@ -14,6 +14,13 @@ class PollController {
      * Create a new poll.
      */
     async create(req: AuthRequest, res: Response): Promise<Response> {
+        const contentType = req.get('content-type');
+        if (!contentType?.includes('application/json')) {
+            return res.status(415).json({
+                message: 'Tipo de contenido invalido',
+            });
+        }
+
         const result = validateCreatePoll(req.body);
         if (!result.status) {
             return res.status(422).json({

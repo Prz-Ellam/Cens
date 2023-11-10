@@ -1,2 +1,1 @@
-- Scroll extraño en la pagina de perfiles
-- Que se muestre el comentario creado
+npx ts-node -r tsconfig-paths/register database/seeder/countries.ts

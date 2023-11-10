@@ -10,14 +10,14 @@ import { z } from 'zod';
 
 class CommentController {
     async create(req: AuthRequest, res: Response): Promise<Response> {
-        // const contentType = req.get('content-type');
-        // if (!contentType!.includes('application/json')) {
-        //     return res.status(415).json({
-        //         message: 'Tipo de contenido invalido',
-        //     });
-        // }
-
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const pollId = Number.parseInt(req.params.pollId) || -1;
             const idResult = validateId(pollId);
             if (!idResult.status) {
@@ -64,6 +64,13 @@ class CommentController {
 
     async update(req: AuthRequest, res: Response): Promise<Response> {
         try {
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
             const commentId = Number.parseInt(req.params.commentId) || -1;
             const idResult = validateId(commentId);
             if (!idResult.status) {

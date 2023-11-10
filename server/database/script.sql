@@ -473,10 +473,6 @@ WHERE
       AND mv.`user_id` = 1
   )
 
-
-
-
-
 INSERT INTO
   `message_view`(
     `message_id`,
@@ -499,3 +495,6 @@ WHERE
       mv.`message_id` = m.`id`
       AND mv.`user_id` = 1
   );
+
+
+DELETE FROM country WHERE id > 250;
