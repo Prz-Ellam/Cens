@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import Comment from '@/components/Comment';
-import SurveyForm from '@/components/SurveyForm';
+import PollCard from '@/components/PollCard';
 import { useCallback, useEffect, useState } from 'react';
 import axios from '@/services/api';
 
@@ -54,7 +54,7 @@ function Survey() {
   return (
     <div className="h-full overflow-auto">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
-        <SurveyForm
+        <PollCard
           id={poll.id}
           question={poll.question}
           description={poll.description}

@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import className from 'classnames';
 import { useAuth } from '@/hooks/useAuth';
 
-// const dateTimeRegex = /^\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}$/;
-
 /**
  * Componente que representa un contacto en el chat.
  *
@@ -31,7 +29,9 @@ function ChatContact({
   return (
     <article
       className="flex justify-between p-2 hover:bg-gray-500 rounded-lg cursor-pointer transition duration-150 ease-out hover:ease-in"
-      onClick={() => onSelect({ chatId, avatar, username, lastMessage, date, pending })}
+      onClick={() =>
+        onSelect({ chatId, avatar, username, lastMessage, date, pending })
+      }
     >
       <div className="flex items-center gap-3 overflow-hidden">
         <img
@@ -48,7 +48,7 @@ function ChatContact({
               'text-gray-400': pending <= 0
             })}
           >
-            {user.id === lastMessageCreatedBy ? 'Tu' : username }: {lastMessage}
+            {user.id === lastMessageCreatedBy ? 'Tú' : username}: {lastMessage}
           </p>
         </div>
       </div>

@@ -161,6 +161,33 @@ class UserController {
             }
 
             const { email, username, birthDate, gender, country } = req.body;
+
+            const existingUserEmail = await User.findOne({
+                where: {
+                    email,
+                    id: Not(userId),
+                },
+            });
+            if (existingUserEmail) {
+                return res.status(409).json({
+                    message:
+                        'El correo electrónico está siendo utilizado por alguien más',
+                });
+            }
+
+            const existingUserUsername = await User.findOne({
+                where: {
+                    username,
+                    id: Not(userId),
+                },
+            });
+            if (existingUserUsername) {
+                return res.status(409).json({
+                    message:
+                        'El nombre de usuario está siendo utilizado por alguien más',
+                });
+            }
+
             user.username = username ?? user.username;
             user.email = email ?? user.email;
             user.birthDate = birthDate ?? user.birthDate;

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import axios from '@/services/api';
 import { useEffect, useRef, useState } from 'react';
+import Swal from 'sweetalert2';
 
 /**
  * Componente que representa un mensaje en la caja de conversación
@@ -34,17 +35,40 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
     };
   }, []);
 
+  // TODO: Boton de confirmar borrado
   const deleteMessage = async () => {
-    await axios.delete(`/messages/${id}`);
-    setIsMenuOpen(false);
-    onUpdate();
+    try {
+      setIsMenuOpen(false);
+      await axios.delete(`/messages/${id}`);
+      onUpdate();
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   };
 
   const updateMessageFunc = async () => {
-    await axios.put(`/messages/${id}`, { text: updateMessage });
-    setIsUpdate(false);
-    onUpdate();
-  }
+    try {
+      await axios.put(`/messages/${id}`, { text: updateMessage });
+      setIsUpdate(false);
+      onUpdate();
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
+  };
 
   return (
     <article
@@ -86,7 +110,11 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
                 <a
                   href="#"
                   className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  onClick={() => { setUpdateMessage(message); setIsMenuOpen(false); setIsUpdate(true) }}
+                  onClick={() => {
+                    setUpdateMessage(message);
+                    setIsMenuOpen(false);
+                    setIsUpdate(true);
+                  }}
                 >
                   Editar
                 </a>

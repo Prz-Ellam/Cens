@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import Comment from '@/components/Comment';
-import SurveyForm from '@/components/SurveyForm';
+import PollCard from '@/components/PollCard';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from '@/services/api';
 import Swal from 'sweetalert2';
@@ -170,7 +170,7 @@ function CommentsPage() {
   return (
     <div className="h-full mt-5">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
-        {poll ? <SurveyForm poll={poll} onUpdate={() => fetchPoll()} /> : <></>}
+        {poll ? <PollCard poll={poll} onUpdate={() => fetchPoll()} /> : <></>}
 
         <div className="bg-accent mb-4 p-3 rounded-lg">
           <form

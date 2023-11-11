@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import SurveyForm from '@/components/SurveyForm';
+import PollCard from '@/components/PollCard';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
@@ -58,7 +58,14 @@ function Profile() {
         setPollsTotalPages(response.data.totalPages);
         setPollsPage(page);
       } catch (error) {
-        console.error(error.response.data.message);
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
       }
     },
     [userId]
@@ -75,7 +82,14 @@ function Profile() {
         setFollowersTotalPages(response.data.totalPages);
         setFollowersPage(page);
       } catch (error) {
-        console.error(error.response.data.message);
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
       }
     },
     [userId]
@@ -92,7 +106,14 @@ function Profile() {
         setFollowingTotalPages(response.data.totalPages);
         setFollowingPage(page);
       } catch (error) {
-        console.error(error.response.data.message);
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
       }
     },
     [userId]
@@ -110,7 +131,14 @@ function Profile() {
 
       fetchFollowing();
     } catch (error) {
-      console.error(error.response.data.message);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -207,56 +235,29 @@ function Profile() {
 
         <div className="md:w-9/12 w-11/12 flex flex-col gap-4 mx-auto mb-5">
           {selectedTab === TABS.POSTS && (
-              <>
-                {polls.length > 0 ? (
-                  <>
-                    {polls.map((poll, index) => (
-                      <SurveyForm
-                        key={index}
-                        poll={poll}
-                        onDelete={async (pollId) => {
-                          try {
-                            const newPolls = polls.filter(
-                              (poll) => poll.id !== pollId
-                            );
-                            setPolls(newPolls);
-                          } catch (error) {
-                            console.error('Error deleting poll:', error);
-                          }
-                        }}
-                        onUpdate={async (pollId) => {
-                          try {
-                            const response = await axios.get(
-                              `/polls/${pollId}`
-                            );
-
-                            // console.log(response.data);
-                            const newPoll = response.data;
-                            console.log(newPoll);
-                            const newPolls = polls.map((poll) =>
-                              poll.id === pollId ? newPoll : poll
-                            );
-                            setPolls(newPolls);
-                            console.log(newPolls);
-                          } catch (error) {
-                            console.log('error');
-                          }
-                        }}
-                      />
-                    ))}
-                    <Pagination
-                      page={pollsPage}
-                      totalPages={pollsTotalPages}
-                      onSelect={(page) => fetchUserPolls(page)}
+            <>
+              {polls.length > 0 ? (
+                <>
+                  {polls.map((poll, index) => (
+                    <PollCard
+                      key={index}
+                      poll={poll}
+                      onUpdate={() => fetchUserPolls(pollsPage)}
                     />
-                  </>
-                ) : (
-                  <p className="text-gray-300 text-2xl text-center font-bold">
-                    Está cuenta no tiene ninguna actividad...
-                  </p>
-                )}
-              </>
-            )}
+                  ))}
+                  <Pagination
+                    page={pollsPage}
+                    totalPages={pollsTotalPages}
+                    onSelect={(page) => fetchUserPolls(page)}
+                  />
+                </>
+              ) : (
+                <p className="text-gray-300 text-2xl text-center font-bold">
+                  Está cuenta no tiene ninguna actividad...
+                </p>
+              )}
+            </>
+          )}
 
           {selectedTab === TABS.FOLLOWERS && (
             <>

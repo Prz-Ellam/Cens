@@ -6,10 +6,9 @@ import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
 // import { ToastTopEnd } from '../utils/toast';
 
-function SurveyForm({
+function PollCard({
   poll,
-  onUpdate,
-  onDelete
+  onUpdate
 }) {
   const {
     id,
@@ -85,9 +84,24 @@ function SurveyForm({
 
   const submitDeletePoll = async (pollId) => {
     try {
+      setOpen(false);
+
+      const result = await Swal.fire({
+        title: '¿Estas seguro que deseas borrar la encuesta?',
+        text: 'No podrás recuperarla después',
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: 'Eliminar',
+        denyButtonText: `Cancelar`
+      });
+  
+      if (result.isDenied) {
+        return;
+      }
+
       await axios.delete(`/polls/${pollId}`);
 
-      onDelete(pollId);
+      onUpdate(pollId);
     } catch (error) {
       const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
       Swal.fire({
@@ -312,9 +326,8 @@ function SurveyForm({
   );
 }
 
-SurveyForm.propTypes = {
+PollCard.propTypes = {
   onUpdate: PropTypes.func,
-  onDelete: PropTypes.func,
   poll: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
@@ -337,4 +350,4 @@ SurveyForm.propTypes = {
   }).isRequired
 };
 
-export default SurveyForm;
+export default PollCard;

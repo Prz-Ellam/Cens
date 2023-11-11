@@ -7,7 +7,6 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 function MoonAnimation() {
   const sceneContainer = useRef();
   useEffect(() => {
-    console.log('a');
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(
@@ -16,18 +15,12 @@ function MoonAnimation() {
       0.1,
       1000
     );
-    /*const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);*/
 
     let animationMixer = [];
     const clock = new THREE.Clock(); //Agregamos una constante clock para la variable deltaTime
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -38,8 +31,7 @@ function MoonAnimation() {
 
     let fbx;
     let fbxSpaceRocks;
-    rocketFly();
-    spaceRocks();
+    loadBoth();
 
     const ambientLight = new THREE.AmbientLight(0x3b285c, 0.6); // Color blanco, intensidad 0.5
     scene.add(ambientLight);
@@ -66,17 +58,9 @@ function MoonAnimation() {
     const animate = () => {
       const deltaTime = clock.getDelta();
       controls.update(); // Actualizar los controles del mouse
-      //sphere.rotation.x += 0.01;
 
       if (fbxSpaceRocks) fbxSpaceRocks.rotation.y += 0.0002;
 
-      //  // Calcular la rotación en radianes para un ángulo de 45 grados
-      // const angle = Math.PI / 4; // 45 grados en radianes
-      // // Rotar el cohete alrededor de la esfera (luna)
-      // if (rocketGroup) {
-      //   rocketGroup.rotation.z += angle * 0.0035; // Ajustar la velocidad de rotación
-      // }
-      // sphere.rotation.y += 0.0035;
       for (let i = 0; i < animationMixer.length; i++) {
         animationMixer[i].update(deltaTime);
       }
@@ -86,83 +70,54 @@ function MoonAnimation() {
 
     animate();
 
-    function rocketFly() {
-      const loader = new FBXLoader();
-      loader.setPath('src/assets/3dmodels/');
-      loader.load(
-        'mMoonRocket.fbx',
-        (loadedfbx) => {
-          fbx = loadedfbx;
-          fbx.scale.setScalar(0.1);
-         
-          fbx.traverse((c) => {
-   
-            c.castShadow = true;
-          });
-          fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
-
-          const animLoader = new FBXLoader();
-          animLoader.setPath('src/assets/3dmodels/');
-          animLoader.load('mMoonRocket.fbx', (anim) => {
-            const mixer = new THREE.AnimationMixer(fbx);
-            animationMixer.push(mixer);
-
-            if (anim.animations.length > 0) {
-              // Configura y reproduce la animación aquí
-              const idleAction = mixer.clipAction(anim.animations[0]);
-              idleAction.play();
-            } else {
-              console.error('No se encontraron animaciones en el modelo FBX.');
-            }
-
-            animate();
-          });
-
-          scene.add(fbx);
-        },
-        undefined,
-        (error) => {
-          console.error('Error cargando el modelo FBX:', error);
-        }
-      );
+    async function loadBoth() {
+      const promises = [];
+      promises.push(rocketFly());
+      promises.push(spaceRocks());
+      await Promise.all(promises);
     }
 
-    function spaceRocks() {
+    async function rocketFly() {
       const loader = new FBXLoader();
       loader.setPath('src/assets/3dmodels/');
-      loader.load(
-        'spacerocks.fbx',
-        (loadedfbx2) => {
-          fbxSpaceRocks = loadedfbx2;
-          fbxSpaceRocks.scale.setScalar(0.06);
-          fbxSpaceRocks.traverse((c) => {
-            c.castShadow = true;
-          });
-          fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
 
-          // const animLoader = new FBXLoader();
-          // animLoader.setPath("src/assets/3dmodels/");
-          // animLoader.load("spacerocks.fbx", (anim) => {
-          //   const mixer = new THREE.AnimationMixer(fbxSpaceRocks);
-          //   animationMixer.push(mixer);
+      const loadedfbx = await loader.loadAsync('mMoonRocket.fbx');
+      fbx = loadedfbx;
+      fbx.scale.setScalar(0.1);
 
-          //   if (anim.animations.length > 0) {
-          //     // Configura y reproduce la animación aquí
-          //     const idleAction = mixer.clipAction(anim.animations[0]);
-          //     idleAction.play();
-          //   } else {
-          //     console.error("No se encontraron animaciones en el modelo FBX.");
-          //   }
-          //   animate();
-          // });
+      fbx.traverse((c) => {
+        c.castShadow = true;
+      });
+      fbx.position.copy(new THREE.Vector3(0, -0.5, 0));
 
-          scene.add(fbxSpaceRocks);
-        },
-        undefined,
-        (error) => {
-          console.error('Error cargando el modelo FBX:', error);
-        }
-      );
+      const mixer = new THREE.AnimationMixer(fbx);
+      animationMixer.push(mixer);
+
+      if (fbx.animations.length > 0) {
+        const idleAction = mixer.clipAction(fbx.animations[0]);
+        idleAction.play();
+      } else {
+        console.error('No se encontraron animaciones en el modelo FBX.');
+      }
+
+      animate();
+
+      scene.add(fbx);
+    }
+
+    async function spaceRocks() {
+      const loader = new FBXLoader();
+      loader.setPath('src/assets/3dmodels/');
+
+      const loadedfbx2 = await loader.loadAsync('spacerocks.fbx');
+
+      fbxSpaceRocks = loadedfbx2;
+      fbxSpaceRocks.scale.setScalar(0.06);
+      fbxSpaceRocks.traverse((c) => {
+        c.castShadow = true;
+      });
+      fbxSpaceRocks.position.copy(new THREE.Vector3(0, 0, 0));
+      scene.add(fbxSpaceRocks);
     }
 
     // Esta función se ejecutará cada vez que se redimensione la ventana del navegador
@@ -180,7 +135,6 @@ function MoonAnimation() {
     }
 
     // Agrega un evento 'resize' para llamar a la función cuando cambie el tamaño de la ventana
-    // TODO: Memory Leak
     window.addEventListener('resize', onWindowResize);
 
     // Llama a la función una vez para establecer el tamaño inicial correctamente

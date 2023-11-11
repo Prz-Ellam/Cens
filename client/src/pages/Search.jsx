@@ -1,4 +1,4 @@
-import SurveyForm from '@/components/SurveyForm';
+import PollCard from '@/components/PollCard';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import axios from '@/services/api';
@@ -44,7 +44,7 @@ function Search() {
         <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
           {polls &&
             polls.map((poll, index) => (
-              <SurveyForm
+              <PollCard
                 key={index}
                 poll={poll}
                 onDelete={() => fetchPolls(pollsPage)}

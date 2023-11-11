@@ -51,7 +51,7 @@ function ProfileEdit() {
         invalid_type_error: 'El nombre de usuario debe ser una cadena de texto'
       })
       .trim()
-      .min(1, 'Es requerido al menos 1 caracter')
+      .min(2, 'Es requerido al menos 2 caracteres')
       .max(255, 'Maximo de 255 caracteres')
       .optional(),
     birthDate: z.coerce
@@ -126,7 +126,14 @@ function ProfileEdit() {
 
       update(response.data.user);
     } catch (error) {
-      console.error(error);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -150,7 +157,14 @@ function ProfileEdit() {
         text: response.data.message
       });
     } catch (error) {
-      console.error(error);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 

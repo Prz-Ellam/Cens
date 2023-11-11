@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Modal from '@/components/Modal';
-import SurveyForm from '@/components/SurveyForm';
+import PollCard from '@/components/PollCard';
 import CreatePoll from '@/components/CreatePoll';
 import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
@@ -76,7 +76,7 @@ function Home() {
 
         <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
           {polls.map((poll, index) => (
-            <SurveyForm
+            <PollCard
               key={index}
               poll={poll}
               onUpdate={() => fetchPolls(pollsPage)}
