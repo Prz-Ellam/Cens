@@ -1,0 +1,44 @@
+version: '3'
+services:
+  mysql:
+    image: mariadb:10.4.28
+    container_name: cens-db
+    networks:
+      - cens-network
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./database/dump:/docker-entrypoint-initdb.d
+      - ./database/data:/var/lib/mysql
+    hostname: censdatabase
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  frontend:
+    image: cens-frontend
+    container_name: cens-frontend
+    networks:
+      - cens-network
+    ports:
+      - "3000:8080"
+    hostname: censfrontend
+
+  backend:
+    image: cens-backend
+    container_name: cens-backend
+    networks:
+      - cens-network
+    ports:
+      - "8080:8080"
+    hostname: censbackend
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+networks:
+  cens-network:
+    driver: bridge

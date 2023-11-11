@@ -9,6 +9,7 @@ uploads/
 coverage/
 
 .env
+.env.dev
 .env.test
 
 .idea
