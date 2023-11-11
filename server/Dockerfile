@@ -1,6 +1,6 @@
 FROM node:16.17-alpine as BUILD
 
-WORKDIR /app/cest
+WORKDIR /app/cens
 
 COPY package*.json .
 
