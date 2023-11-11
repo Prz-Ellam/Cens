@@ -4,6 +4,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
+import mMoonRocket from '../assets/3dmodels/mMoonRocket.fbx';
+import SpaceRocks from '../assets/3dmodels/spacerocks.fbx';
+
 function MoonAnimation() {
   const sceneContainer = useRef();
   useEffect(() => {
@@ -79,9 +82,7 @@ function MoonAnimation() {
 
     async function rocketFly() {
       const loader = new FBXLoader();
-      loader.setPath('src/assets/3dmodels/');
-
-      const loadedfbx = await loader.loadAsync('mMoonRocket.fbx');
+      const loadedfbx = await loader.loadAsync(mMoonRocket);
       fbx = loadedfbx;
       fbx.scale.setScalar(0.1);
 
@@ -107,9 +108,7 @@ function MoonAnimation() {
 
     async function spaceRocks() {
       const loader = new FBXLoader();
-      loader.setPath('src/assets/3dmodels/');
-
-      const loadedfbx2 = await loader.loadAsync('spacerocks.fbx');
+      const loadedfbx2 = await loader.loadAsync(SpaceRocks);
 
       fbxSpaceRocks = loadedfbx2;
       fbxSpaceRocks.scale.setScalar(0.06);

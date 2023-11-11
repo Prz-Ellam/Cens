@@ -12,7 +12,7 @@ function Navbar() {
       <div className="w-full flex items-center justify-between px-8">
         <Link to="/" className="flex float-left ">
           <img
-            src="https://raw.githubusercontent.com/Prz-Ellam/Cens/main/client/src/assets/img/Cens_Logo2.png"
+            src="../src/assets/img/Cens_Logo.png"
             className="h-14 mr-3"
             alt="Avatar"
           />

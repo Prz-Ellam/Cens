@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { useNavigate, useParams } from 'react-router-dom';
 import { allCountries } from '../utils/countries';
+import Swal from 'sweetalert2';
 
 ChartJS.register(
   CategoryScale,
@@ -65,14 +66,14 @@ function Analytics() {
       responsive: true,
       plugins: {
         legend: {
-          position: 'top',
+          position: 'top'
         },
         title: {
           display: true,
           text: 'Pos paises'
         }
       }
-    },
+    }
   };
 
   const colours = [
@@ -108,18 +109,51 @@ function Analytics() {
   }, [pollId, navigate]);
 
   const fetchByGender = useCallback(async () => {
-    const response = await axios.get(`/options/gender/${pollId}`);
-    setGender(response.data);
+    try {
+      const response = await axios.get(`/options/gender/${pollId}`);
+      setGender(response.data);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   }, [pollId]);
 
   const fetchByAge = useCallback(async () => {
-    const response = await axios.get(`/options/age/${pollId}`);
-    setAges(response.data);
+    try {
+      const response = await axios.get(`/options/age/${pollId}`);
+      setAges(response.data);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   }, [pollId]);
 
   const fetchByCountry = useCallback(async () => {
-    const response = await axios.get(`/options/country/${pollId}`);
-    setCountries(response.data);
+    try {
+      const response = await axios.get(`/options/country/${pollId}`);
+      setCountries(response.data);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   }, [pollId]);
 
   const genderLabels = gender.map((item) => item.option);
@@ -162,14 +196,16 @@ function Analytics() {
     datasets: ageDatasets
   };
 
-  const countryLabels = countries.map(({ country }) => allCountries[country] ?? 'Desconocido');
+  const countryLabels = countries.map(
+    ({ country }) => allCountries[country] ?? 'Desconocido'
+  );
   const countryData = {
     labels: countryLabels,
     datasets: [
       {
         label: 'Paises',
         data: countries.map(({ percentage }) => percentage),
-        backgroundColor: colours.map((colour) => colour),
+        backgroundColor: colours.map((colour) => colour)
       }
     ]
   };

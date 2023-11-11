@@ -2,6 +2,12 @@ import { useEffect } from 'react';
 import '../assets/css/styleLanding.css';
 import { Link } from 'react-router-dom';
 
+import CensLogo from '../assets/img/Cens_Logo.png';
+import Stars from '../assets/img/stars.png';
+import Moon from '../assets/img/moon.png';
+import Sea1 from '../assets/img/sea1.png';
+import Sea2 from '../assets/img/sea2.png';
+
 function LandingPage() {
   useEffect(() => {
     const stars = document.getElementById('stars');
@@ -39,17 +45,17 @@ function LandingPage() {
     <div className="mybody-landingPage">
       <header className="landing-header absolute w-full flex items-center">
         <img
-          src="../src/assets/img/Cens_Logo2.png"
+          src={CensLogo}
           alt="Logo de tu página"
           width="250"
           height="150"
         />
       </header>
       <section className="landing-section">
-        <img src="../src/assets/img/stars1.png" id="stars" alt="Estrellas" />
-        <img src="../src/assets/img/moon.png" id="moon" alt="Luna" />
-        <img src="../src/assets/img/sea1.png" id="sea" alt="Mar" />
-        <img src="../src/assets/img/sea2.png" id="sea2" alt="Mar 2" />
+        <img src={Stars} id="stars" alt="Estrellas" />
+        <img src={Moon} id="moon" alt="Luna" />
+        <img src={Sea1} id="sea" alt="Mar" />
+        <img src={Sea2} id="sea2" alt="Mar 2" />
         <h2 id="text" className="absolute text-gray-300 font-bold whitespace-nowrap text-[3.5vw] z-[9]">Bienvenido a Cens</h2>
         <Link to="/login" id="btn" className="bg-gray-300 text-[#2b1055] py-2 px-8">
           Iniciar sesión o Registrate

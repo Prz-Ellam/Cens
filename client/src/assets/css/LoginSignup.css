@@ -1,6 +1,5 @@
 .mybody-loginsignup {
     background: linear-gradient(to bottom, #5e38a5, #07040e);
-    background-color: white;
 }
 
 .main-container {
@@ -52,7 +51,6 @@
     display: none;
 }
 
-
 .login-label {
     color: #fff;
     font-size: 2.3em !important;
@@ -64,7 +62,6 @@
     transition: .5s ease-in-out;
 }
 
-
 .login-input, .registerBtn {
     width: 60%;
     /* height: 20px; */
@@ -75,7 +72,6 @@
     padding: 10px;
     border: none;
 }
-
 
 .loginBtn, .registerBtn {
     height: 40px;
@@ -102,8 +98,6 @@
 .loginBtn:hover {
     background: #6d44b8;
 }
-
-
 
 .signup .login-label {
     color: #573b8a;
@@ -135,8 +129,6 @@
 .error-message {
     color: #ff0000;
     text-align: center;
-    /* display: block; */
-    /* margin-top: 5px; */
     position: absolute;
     bottom: -20px;
     left: 0;
@@ -164,15 +156,11 @@
 
 .link-style {
     color: white;
-    /* Color blanco */
     text-decoration: none;
-    /* Elimina el subrayado predeterminado */
-    /* Otros estilos, si es necesario */
 }
 
 .btnBack:hover {
     background-color: darkred;
-    /* Cambiamos el color al pasar el mouse sobre el botón */
 }
 
 /* Media query para centrar horizontalmente en pantallas más anchas */
