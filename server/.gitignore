@@ -3,7 +3,8 @@ database/olds
 dist/
 node_modules/
 logs/
-uploads/
+uploads/*
+!uploads/.gitkeep
 
 .tmp/
 coverage/
