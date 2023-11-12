@@ -1,33 +1,51 @@
 import PollCard from '@/components/PollCard';
 import { useCallback, useEffect, useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
-import Pagination from '../components/Pagination';
+import Pagination from '@/components/Pagination';
 import { useSearchParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 /**
  * Buscador de encuestas con filtro por pregunta o descripcion
- * @returns 
+ *
+ * @returns {JSX.Element} Componente de las busquedas.
  */
 function Search() {
   const { user } = useAuth();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [polls, setPolls] = useState([]);
-  const [pollsPage, setPollsPage] = useState(1);
+  const pollsPage = Number.parseInt(searchParams.get('page')) || 1;
   const [pollsTotalPages, setPollsTotalPages] = useState(0);
+  const search = searchParams.get('search') ?? '';
 
-  const [searchParams, ] = useSearchParams();
-
-  const fetchPolls = useCallback(async (page) => {
-    try {
-      const response = await axios(`/polls?page=${page}&limit=5&search=${searchParams.get('search')}`);
-      setPolls(response.data.polls);
-      setPollsTotalPages(response.data.totalPages);
-      setPollsPage(page)
-    } catch (error) {
-      console.error('Error fetching polls:', error);
-    }
-  }, [searchParams]);
+  const fetchPolls = useCallback(
+    async (page) => {
+      try {
+        const response = await axios(
+          `/polls?page=${page}&limit=5&search=${search}`
+        );
+        setPolls(response.data.polls);
+        setPollsTotalPages(response.data.totalPages);
+        if (page != pollsPage) {
+          searchParams.set('page', page);
+          setSearchParams(searchParams);
+        }
+      } catch (error) {
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
+      }
+    },
+    [searchParams, pollsPage, setSearchParams, search]
+  );
 
   useEffect(() => {
     if (user) {
@@ -47,15 +65,14 @@ function Search() {
               <PollCard
                 key={index}
                 poll={poll}
-                onDelete={() => fetchPolls(pollsPage)}
                 onUpdate={() => fetchPolls(pollsPage)}
               />
             ))}
-            <Pagination
-              page={pollsPage}
-              totalPages={pollsTotalPages}
-              onSelect={(page) => fetchPolls(page)}
-            />
+          <Pagination
+            page={pollsPage}
+            totalPages={pollsTotalPages}
+            onSelect={(page) => fetchPolls(page)}
+          />
         </section>
       </div>
     </section>

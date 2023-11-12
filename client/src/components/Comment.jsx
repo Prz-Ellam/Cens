@@ -1,5 +1,6 @@
 import axios from '@/services/api';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import { ToastTopEnd } from '../utils/toast';
@@ -18,14 +19,7 @@ import { formatDate } from '../utils/format-date';
  * @param {function} props.onUpdate - Verifica si el comentario le pertenece al usuario autenticado.
  * @returns {JSX.Element} - El elemento JSX del comentario.
  */
-function Comment({
-  comment,
-  userId,
-  username,
-  avatar,
-  isAuthUser,
-  onChange
-}) {
+function Comment({ comment, userId, username, avatar, isAuthUser, onChange }) {
   const [open, setOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [updateText, setUpdateText] = useState(comment.text);
@@ -62,12 +56,14 @@ function Comment({
 
       setIsUpdate(false);
     } catch (error) {
-      ToastTopEnd.fire({
-        title: 'Ocurrio un error',
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
-      console.error('Error:', error.response.data.message);
     }
   };
 
@@ -98,7 +94,14 @@ function Comment({
 
       // setIsUpdate(false);
     } catch (error) {
-      console.log(error.response.data.message);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -135,8 +138,13 @@ function Comment({
               </button>
             )}
             <div
-              className={`z-10 w-36 bg-dark rounded divide-y divide-gray-100 shadow right-0
-          ${open ? 'absolute' : 'hidden'}`}
+              className={classNames(
+                'z-10 w-36 bg-dark rounded divide-y divide-gray-100 shadow right-0',
+                {
+                  absolute: open,
+                  hidden: !open
+                }
+              )}
             >
               <ul
                 className="py-1 text-sm text-gray-700 dark:text-gray-200"

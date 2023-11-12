@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 import CommentsPage from './pages/CommentsPage';
 import { useAuth } from './hooks/useAuth';
 import isEmpty from './utils/is-empty';
-import ProfileEdit from './components/ProfileEdit';
+import ProfileEdit from './pages/ProfileEdit';
 import Search from './pages/Search';
 import Analytics from './pages/Analytics';
 
@@ -32,11 +32,19 @@ function App() {
         <Route element={<MainLayout />}>
           {!isEmptyUser && <Route path="/" element={<Home />} />}
           {!isEmptyUser && <Route path="/chat" element={<Chat />} />}
-          {!isEmptyUser && <Route path="/profile/:userId" element={<Profile key={Date.now()} />} />}
-          {!isEmptyUser && <Route path="/profileEdit" element={<ProfileEdit />} />}
-          {!isEmptyUser && <Route path="/survey/:pollId" element={<CommentsPage />} />}
+          {!isEmptyUser && (
+            <Route path="/profile/:userId" element={<Profile />} />
+          )}
+          {!isEmptyUser && (
+            <Route path="/profileEdit" element={<ProfileEdit />} />
+          )}
+          {!isEmptyUser && (
+            <Route path="/survey/:pollId" element={<CommentsPage />} />
+          )}
           {!isEmptyUser && <Route path="/search" element={<Search />} />}
-          {!isEmptyUser && <Route path="/analytics/:pollId" element={<Analytics />} />}
+          {!isEmptyUser && (
+            <Route path="/analytics/:pollId" element={<Analytics />} />
+          )}
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

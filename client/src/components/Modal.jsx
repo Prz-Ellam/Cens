@@ -1,10 +1,17 @@
-// eslint-disable-next-line react/prop-types
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
+
+/**
+ * Componente para crear modales
+ * @param {object} params
+ * @returns 
+ */
 function Modal({ title, close, setClose, bodySlot }) {
   return (
     <div
-      className={`fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-50 w-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 ${
-        close ? 'hidden' : ''
-      }`}
+      className={classNames('fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center z-50 w-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0', {
+        'hidden': close
+      })}
     >
       <div
         className="modal-overlay absolute inset-0 bg-black opacity-50"
@@ -44,5 +51,12 @@ function Modal({ title, close, setClose, bodySlot }) {
     </div>
   );
 }
+
+Modal.propTypes = {
+  title: PropTypes.string.isRequired,
+  close: PropTypes.bool.isRequired,
+  setClose: PropTypes.func.isRequired,
+  bodySlot: PropTypes.any.isRequired
+};
 
 export default Modal;

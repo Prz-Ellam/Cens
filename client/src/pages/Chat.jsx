@@ -5,6 +5,8 @@ import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
 import { ToastTopEnd } from '@/utils/toast';
 import z from 'zod';
+import Swal from 'sweetalert2';
+import className from 'classnames';
 // import getErrors from '../utils/error-format';
 
 function Chat() {
@@ -31,7 +33,6 @@ function Chat() {
     try {
       const response = await axios.get(`/conversations/${chatId}/messages`);
 
-      // console.log(response.data);
       setMessages(response.data);
       setTimeout(() => {
         messageBox.current.scrollTo({
@@ -40,7 +41,14 @@ function Chat() {
         });
       }, 0);
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -50,18 +58,24 @@ function Chat() {
 
       setContacts(response.data);
     } catch (error) {
-      console.error('Error fetching contacts:', error);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   }, [user.id]);
 
   const handleMessage = async (chatId) => {
-
     const result = formValidator.safeParse({
       text: message
     });
     if (!result.success) {
       // const errors = getErrors(result.error);
-      
+
       ToastTopEnd.fire({
         title: 'Formulario no válido',
         icon: 'error'
@@ -91,7 +105,14 @@ function Chat() {
         });
       }, 0);
     } catch (error) {
-      console.error('Error sending message:', error);
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
     }
   };
 
@@ -105,9 +126,10 @@ function Chat() {
   return (
     <section className="h-full flex justify-between gap-3 p-4">
       <div
-        className={`flex-shrink-0 w-full md:w-1/2 lg:w-1/4 ${
-          isChatDrawerFocus ? 'block' : 'hidden'
-        }`}
+        className={className('flex-shrink-0 w-full md:w-1/2 lg:w-1/4', {
+          'block': isChatDrawerFocus,
+          'hidden': !isChatDrawerFocus
+        })}
       >
         <ChatList
           contacts={contacts}
@@ -130,16 +152,16 @@ function Chat() {
                   <i className="bi fa-solid fa-chevron-left"></i>
                 </button>
                 <img
-                  className={`min-h-[2.5rem] h-10 w-10 img-fluid rounded-full ms-3 ${
-                    !selectedContact?.username ? 'invisible' : ''
-                  }`}
+                  className={className('min-h-[2.5rem] h-10 w-10 img-fluid rounded-full ms-3', {
+                    'invisible': !selectedContact?.username
+                  })}
                   src={selectedContact?.avatar}
                   alt="Perfil"
                 />
                 <span
-                  className={`text-xl md:text-lg ms-3 text-gray-300 font-bold ${
-                    !selectedContact?.username ? 'invisible' : ''
-                  }`}
+                  className={className('text-xl md:text-lg ms-3 text-gray-300 font-bold', {
+                    'invisible': !selectedContact?.username
+                  })}
                 >
                   {selectedContact?.username || 'Secret message'}
                 </span>

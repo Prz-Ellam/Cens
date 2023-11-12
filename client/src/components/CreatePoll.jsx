@@ -9,9 +9,10 @@ import { ToastTopEnd } from '../utils/toast';
 
 /**
  * Formulario para crear encuestas
- * @param {object} params
- * @param {function} params.onCreate - Evento cuando se ha creado una encuesta
- * @returns 
+ * 
+ * @param {object} props
+ * @param {function} props.onCreate - Evento cuando se ha creado una encuesta
+ * @returns {JSX.Element} Componente formulario para crear encuestas. 
  */
 function CreatePoll({ onCreate = () => {} }) {
   const formValidator = z.object({

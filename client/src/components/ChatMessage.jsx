@@ -72,7 +72,7 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
 
   return (
     <article
-      className={classNames('flex', 'gap-2', 'my-4', {
+      className={classNames('flex gap-2 my-4', {
         'justify-end': own,
         'justify-start': !own
       })}
@@ -84,28 +84,24 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
       ) : (
         <div className="relative my-auto" ref={menuRef}>
           <button
-            className={classNames(
-              'text-gray-300',
-              'rounded-full',
-              'font-bold',
-              {
-                invisible: !isHovered || isUpdate
-              }
-            )}
+            className={classNames('text-gray-300 rounded-full font-bold', {
+              invisible: !isHovered || isUpdate
+            })}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <i className="bx bx-dots-vertical-rounded hover:bg-gray-500 rounded-full py-1 px-1"></i>
           </button>
 
           <div
-            className={`z-10 w-36 bg-dark rounded divide-y divide-gray-100 shadow right-0 ${
-              isMenuOpen ? 'absolute' : 'hidden'
-            }`}
+            className={classNames(
+              'z-10 w-36 bg-dark rounded divide-y divide-gray-100 shadow right-0',
+              {
+                absolute: isMenuOpen,
+                hidden: !isMenuOpen
+              }
+            )}
           >
-            <ul
-              className="py-1 text-sm text-gray-700 dark:text-gray-200"
-              aria-labelledby="dropdownMenuIconHorizontalButton"
-            >
+            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
               <li>
                 <a
                   href="#"
@@ -160,11 +156,7 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
       ) : (
         <p
           className={classNames(
-            'text-sm',
-            'p-2',
-            'rounded-2xl',
-            'max-w-[85%]',
-            'text-gray-300',
+            'text-sm p-2 rounded-2xl max-w-[85%] text-gray-300',
             {
               'bg-purple': own,
               'bg-dark': !own,

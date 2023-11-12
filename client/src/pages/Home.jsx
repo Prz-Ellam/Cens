@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
 
 /**
  * Página principal con el feed y las recomendaciones de usuarios
- * @returns
+ *
+ * @returns {JSX.Element} Componente de la página de inicio
  */
 function Home() {
   const { user } = useAuth();
@@ -30,7 +31,9 @@ function Home() {
       setPollsTotalPages(response.data.totalPages);
       setPollsPage(page);
     } catch (error) {
-      const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
       Swal.fire({
         title: 'Error',
         icon: 'error',
@@ -90,13 +93,14 @@ function Home() {
           />
         </section>
       </div>
-      <FollowSuggestions />
+      <FollowSuggestions onUpdate={() => fetchPolls(pollsPage)} />
+
       <Modal
         question="Crear encuesta"
         close={close}
         setClose={setClose}
         title={'Crear encuesta'}
-        bodySlot={<CreatePoll onCreate={() => setClose(true) } />}
+        bodySlot={<CreatePoll onCreate={() => setClose(true)} />}
       ></Modal>
     </section>
   );

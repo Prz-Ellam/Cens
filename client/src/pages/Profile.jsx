@@ -5,6 +5,7 @@ import axios from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination';
+import className from 'classnames';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -128,8 +129,6 @@ function Profile() {
         icon: 'success',
         text: response.data.message
       });
-
-      fetchFollowing();
     } catch (error) {
       const errorText = axios.isAxiosError(error)
         ? error.response.data.message
@@ -208,25 +207,25 @@ function Profile() {
 
         <div className="grid grid-flow-col justify-stretch mb-5">
           <button
-            className={`${
-              selectedTab === TABS.POSTS ? 'bg-purple-800' : ''
-            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
+            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
+              'bg-purple-800': selectedTab === TABS.POSTS
+            })}
             onClick={() => setSelectedTab(TABS.POSTS)}
           >
             Actividad
           </button>
           <button
-            className={`${
-              selectedTab === TABS.FOLLOWERS ? 'bg-purple-800' : ''
-            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
+            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
+              'bg-purple-800': selectedTab === TABS.FOLLOWERS
+            })}
             onClick={() => setSelectedTab(TABS.FOLLOWERS)}
           >
             Seguidores
           </button>
           <button
-            className={`${
-              selectedTab === TABS.FOLLOWING ? 'bg-purple-800' : ''
-            } sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in`}
+            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
+              'bg-purple-800': selectedTab === TABS.FOLLOWING
+            })}
             onClick={() => setSelectedTab(TABS.FOLLOWING)}
           >
             Seguidos
@@ -326,10 +325,13 @@ function Profile() {
                           {follow.followedUser.email}
                         </p>
                       </div>
-                      {authUser.id === userId && (
+                      {authUser.id == userId && (
                         <button
                           className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
-                          onClick={() => unfollowUser(follow.followedUser.id)}
+                          onClick={async () => { 
+                            await unfollowUser(follow.followedUser.id);
+                            fetchFollowing(followingPage);
+                          }}
                         >
                           Eliminar
                         </button>

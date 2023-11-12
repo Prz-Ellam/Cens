@@ -1,6 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
+import censLogo from '../assets/img/Cens_Logo.png';
+
+/**
+ * Cabecera principal de las pantallas
+ * 
+ * @returns {JSX.Element} Componente del navbar.
+ */ 
 function Navbar() {
   const { logout } = useAuth();
   const { user } = useAuth();
@@ -8,11 +15,11 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <nav className="border-gray-200 bg-gradient-to-r from-secondary to-primary h-14 shadow-md">
-      <div className="w-full flex items-center justify-between px-8">
+    <header className="border-gray-200 bg-gradient-to-r from-secondary to-primary h-14 shadow-md">
+      <nav className="w-full flex items-center justify-between px-8">
         <Link to="/" className="flex float-left ">
           <img
-            src="../src/assets/img/Cens_Logo.png"
+            src={censLogo}
             className="h-14 mr-3"
             alt="Avatar"
           />
@@ -73,8 +80,8 @@ function Navbar() {
             </li>
           </ul>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
 

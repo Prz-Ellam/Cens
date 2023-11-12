@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
  * @param {object} params
  * @param {object[]} params.contacts - Lista de contactos del usuario
  * @param {function} params.onSelect - Lista de contactos del usuario
- * @returns
+ * @returns {JSX.Element} Componente de la lista de contactos.
  */
 function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
   const [closeModal, setCloseModal] = useState(true);
@@ -36,7 +36,18 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
   }, [search]);
 
   const createConversation = async (userId) => {
-    /* const response = */ await axios.post(`users/${userId}/conversations`);
+    try {
+      /* const response = */ await axios.post(`users/${userId}/conversations`);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
   };
 
   useEffect(() => {

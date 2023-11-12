@@ -2,14 +2,18 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 
+/**
+ * Estructura general de la pagina web
+ * @returns 
+ */
 function MainLayout() {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-r from-primary to-secondary">
       <Navbar className="flex-grow flex-shrink-0" />
       <div className="flex flex-col md:flex-row-reverse flex-grow flex-shrink overflow-hidden">
-        <div className="flex-grow flex-shrink md:overflow-auto overflow-hidden">
+        <main className="flex-grow flex-shrink md:overflow-auto overflow-hidden">
           <Outlet />
-        </div>
+        </main>
         <Sidebar className="flex flex-grow-0 flex-shrink" />
       </div>
     </div>

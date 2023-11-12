@@ -28,7 +28,8 @@ ChartJS.register(
 
 /**
  * Página con las analiticas de cada encuesta
- * @returns
+ * 
+ * @returns {JSX.Element} Componente de analiticas.
  */
 function Analytics() {
   const { pollId } = useParams();

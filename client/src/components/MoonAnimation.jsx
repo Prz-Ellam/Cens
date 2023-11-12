@@ -7,6 +7,11 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import mMoonRocket from '../assets/3dmodels/mMoonRocket.fbx';
 import SpaceRocks from '../assets/3dmodels/spacerocks.fbx';
 
+/**
+ * Componente de escena 3D con la luna y el cohete.
+ * 
+ * @returns {JSX.Element} Componente de animación de luna.
+ */
 function MoonAnimation() {
   const sceneContainer = useRef();
   useEffect(() => {

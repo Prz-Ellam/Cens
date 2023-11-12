@@ -9,7 +9,8 @@ import { ToastTopEnd } from '../utils/toast';
 
 /**
  * El componente PasswordEdition es una interfaz de usuario para permitir a los usuarios cambiar su contraseña.
- * @returns
+ * 
+ * @returns {JSX.Element} Componente del formulario para editar contraseña
  */
 function PasswordEdition() {
   const { user } = useAuth();
@@ -124,10 +125,13 @@ function PasswordEdition() {
         text: response.data.message
       });
     } catch (error) {
-      await Swal.fire({
-        title: 'Ocurrio un error',
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
         icon: 'error',
-        text: error.response.data.message
+        text: errorText
       });
     }
   };

@@ -9,6 +9,10 @@ import { ToastTopEnd } from '../utils/toast';
 import getErrors from '@/utils/error-format';
 import ErrorList from '../components/ErrorList';
 
+/**
+ * Página del registro e inicio de sesión
+ * @returns 
+ */
 function LoginSignup() {
   const { auth } = useAuth();
 
@@ -218,9 +222,9 @@ function LoginSignup() {
   return (
     <div className="row mybody-loginsignup">
       <MoonAnimation />
-      <div className="main-container">
+      <div className="flex justify-center items-center h-screen">
         <div className="login-register">
-          <Link to="/" className="btnBack link-style">
+          <Link to="/" className="btnBack link-style text-decorations-none absolute top-0 right-0 bg-[#A94639] hover:bg-[#8b0000]">
             X
           </Link>
           <input type="checkbox" id="chk" aria-hidden="true"></input>
@@ -229,7 +233,7 @@ function LoginSignup() {
               <label
                 htmlFor="chk"
                 aria-hidden="true"
-                className="login-label mb-10"
+                className="login-label mb-4"
               >
                 Inicia sesión
               </label>

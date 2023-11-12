@@ -170,7 +170,7 @@ function CommentsPage() {
   return (
     <div className="h-full mt-5">
       <div className="w-9/12 flex flex-col gap-4 mx-auto">
-        {poll ? <PollCard poll={poll} onUpdate={() => fetchPoll()} /> : <></>}
+        {poll && <PollCard poll={poll} onUpdate={() => fetchPoll()} />}
 
         <div className="bg-accent mb-4 p-3 rounded-lg">
           <form
@@ -204,7 +204,7 @@ function CommentsPage() {
           </form>
 
           {/* 121px por cada comentario className={`min-h-[${121 * limit}px]`} */}
-          <section>
+          <section className='mb-4'>
             {comments &&
               comments.map((comment, index) => (
                 <Comment

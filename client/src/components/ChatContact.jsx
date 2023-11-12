@@ -12,8 +12,8 @@ import { useAuth } from '@/hooks/useAuth';
  * @param {string} props.lastMessage - El último mensaje del contacto.
  * @param {string} props.date - La fecha del último mensaje.
  * @param {number} props.pending - El número de mensajes pendientes.
- * @param {function} props.onSelect - Evento si se da click al contacto
- * @returns {JSX.Element} - El elemento JSX del contacto.
+ * @param {function} props.onSelect - Evento si se da click al contacto.
+ * @returns {JSX.Element} Componente del contacto.
  */
 function ChatContact({
   chatId,
@@ -42,7 +42,7 @@ function ChatContact({
         <div className="truncate">
           <p className="text-base text-gray-300 truncate">{username}</p>
           <p
-            className={className('text-sm', 'truncate', {
+            className={className('text-sm truncate', {
               'font-bold': pending > 0,
               'text-gray-300': pending > 0,
               'text-gray-400': pending <= 0

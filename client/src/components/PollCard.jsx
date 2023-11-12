@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import axios from '@/services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -6,6 +7,11 @@ import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
 // import { ToastTopEnd } from '../utils/toast';
 
+/**
+ * Card para ver una encuesta, sus opciones, votos y acceder a comentarios
+ * @param {*} param0 
+ * @returns 
+ */
 function PollCard({
   poll,
   onUpdate
@@ -134,11 +140,10 @@ function PollCard({
    */
   const createReaction = async (pollId, isLike) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `/polls/${pollId}/reactions`,
         { isLike }
       );
-      console.log(response.data);
       onUpdate(id);
     } catch (error) {
       const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
@@ -152,13 +157,11 @@ function PollCard({
 
   const updateReaction = async (reactionId, isLike) => {
     try {
-      console.log('Update', reactionId);
-      const response = await axios.put(
+      await axios.put(
         `/reactions/${reactionId}`,
         { isLike }
       );
 
-      console.log(response.data);
       onUpdate(id);
     } catch (error) {
       const errorText = (axios.isAxiosError(error)) ? error.response.data.message : 'Error inesperado';
@@ -172,7 +175,6 @@ function PollCard({
 
   const deleteReaction = async (reactionId) => {
     try {
-      console.log('Delete', reactionId);
       await axios.delete(`/reactions/${reactionId}`);
       onUpdate(id);
     } catch (error) {
@@ -213,9 +215,10 @@ function PollCard({
               <i className="bx bx-dots-vertical-rounded"></i>
             </button>
             <div
-              className={`z-10 w-36 divide-y divide-gray-100 shadow bg-dark right-0 rounded-lg ${
-                open ? 'absolute' : 'hidden'
-              }`}
+              className={classNames('z-10 w-36 divide-y divide-gray-100 shadow bg-dark right-0 rounded-lg', {
+                'absolute': open,
+                'hidden': !open
+              })}
             >
               <ul className="py-1 text-sm">
                 <li className="py-2 px-4 hover:bg-gray-600 cursor-pointer" onClick={() => navigate(`/analytics/${id}`)}>
@@ -261,9 +264,10 @@ function PollCard({
           <div className="grow">
             <div className="relative w-full rounded-lg h-8 outline outline-gray-600 outline-2">
               <div
-                className={`bg-purple h-8 ${
-                  option.percentage !== 100 ? 'rounded-l-lg' : 'rounded-lg'
-                }`}
+                className={classNames('bg-purple h-8', {
+                  'rounded-l-lg': option.percentage !== 100,
+                  'rounded-lg': option.percentage === 100
+                })}
                 style={{ width: `${option.percentage}%` }}
               ></div>
               <label
@@ -281,9 +285,9 @@ function PollCard({
       ))}
       <footer className="flex gap-5 mt-3">
         <button
-          className={`flex content-center gap-1 cursor-pointer hover:text-green-400 transition duration-150 ease-out hover:ease-in ${
-            hasLiked ? 'text-green-400' : ''
-          }`}
+          className={classNames('flex content-center gap-1 cursor-pointer hover:text-green-400 transition duration-150 ease-out hover:ease-in', {
+            'text-green-400': hasLiked
+          })}
           onClick={async () => {
             if (!hasLiked && !hasDisliked) {
               createReaction(id, true);
@@ -298,9 +302,9 @@ function PollCard({
           <span>{reactions.likes}</span>
         </button>
         <button
-          className={`flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in ${
-            hasDisliked ? 'text-red-400' : ''
-          }`}
+          className={classNames('flex content-center gap-1 cursor-pointer hover:text-red-400 transition duration-150 ease-out hover:ease-in', {
+            'text-red-400': hasDisliked
+          })}
           onClick={async () => {
             if (!hasLiked && !hasDisliked) {
               createReaction(id, false);
