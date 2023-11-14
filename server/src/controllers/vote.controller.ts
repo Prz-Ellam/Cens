@@ -89,9 +89,7 @@ class VoteController {
             const { optionId } = req.body;
 
             const option = await Option.findOne({
-                where: {
-                    id: optionId,
-                },
+                where: { id: optionId },
                 relations: ['poll'],
             });
             if (!option) {

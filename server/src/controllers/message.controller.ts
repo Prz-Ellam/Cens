@@ -112,9 +112,7 @@ class MessageController {
                 });
             }
 
-            const message = await Message.findOneBy({
-                id: messageId,
-            });
+            const message = await Message.findOneBy({ id: messageId });
             if (!message) {
                 return res.status(404).json({
                     message: 'La conversación no fue encontrada',
@@ -169,9 +167,7 @@ class MessageController {
                 });
             }
 
-            const message = await Message.findOneBy({
-                id: messageId,
-            });
+            const message = await Message.findOneBy({ id: messageId });
             if (!message) {
                 return res.status(404).json({
                     message: 'La conversación no fue encontrada',

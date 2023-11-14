@@ -40,17 +40,13 @@ export default class PollService {
         }
 
         const comments = await Comment.count({
-            where: {
-                poll: { id: poll.id },
-            },
+            where: { poll: { id: poll.id } },
         });
 
         const options = await connection
             .getRepository(OptionWithPercentage)
             .find({
-                where: {
-                    poll_id: poll.id,
-                },
+                where: { poll_id: poll.id },
             });
 
         const hasDisliked = await Reaction.countBy({
@@ -86,9 +82,7 @@ export default class PollService {
         });
 
         const voteCount = await Vote.countBy({
-            poll: {
-                id: poll.id,
-            },
+            poll: { id: poll.id },
         });
 
         const reaction = await Reaction.findOneBy({
@@ -132,6 +126,10 @@ export default class PollService {
             .getManyAndCount();
 
         for (let i = 0; i < polls.length; i++) {
+            if (!polls[i].user) {
+                continue;
+            }
+
             const reactionsResult = await connection
                 .getRepository(Reaction)
                 .createQueryBuilder('reaction')

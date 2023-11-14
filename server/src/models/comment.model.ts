@@ -33,7 +33,7 @@ export default class Comment extends BaseEntity {
     @Exclude({ toPlainOnly: true })
     deletedAt: Date;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     user: User;
 
     @ManyToOne(() => Poll, (poll) => poll.id)

@@ -17,7 +17,7 @@ export default class MessageView extends BaseEntity {
     @ManyToOne(() => Message, (message) => message.id)
     message: Message;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     user: User;
 
     @CreateDateColumn()

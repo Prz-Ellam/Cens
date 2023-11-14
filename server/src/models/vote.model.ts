@@ -20,7 +20,7 @@ export default class Vote extends BaseEntity {
     @ManyToOne(() => Poll, (poll) => poll.id)
     poll: Poll;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     user: User;
 
     @ManyToOne(() => Option, (option) => option.id)

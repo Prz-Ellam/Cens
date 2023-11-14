@@ -16,10 +16,10 @@ export default class Follower extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     followedUser: User;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     followerUser: User;
 
     @CreateDateColumn()

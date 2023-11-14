@@ -143,7 +143,8 @@ class ReactionController {
                 });
             }
 
-            if (reaction.user.id !== req.user.id) {
+            const authUser = req.user;
+            if (reaction.user.id !== authUser.id) {
                 return res.status(401).json({
                     message: 'No autorizado',
                 });
@@ -204,7 +205,8 @@ class ReactionController {
                 });
             }
 
-            if (reaction.user.id !== req.user.id) {
+            const authUser = req.user;
+            if (reaction.user.id !== authUser.id) {
                 return res.status(401).json({
                     message: 'No autorizado',
                 });
@@ -224,6 +226,7 @@ class ReactionController {
 
     /**
      * Retrieve all reactions associated with a specific poll.
+     * ¿Se sigue utilizando?
      */
     async findAllByPoll(req: AuthRequest, res: Response): Promise<Response> {
         try {
@@ -237,17 +240,17 @@ class ReactionController {
 
             const reactionRepository = connection.getRepository(Reaction);
             const result = await reactionRepository
-                .createQueryBuilder('vote')
-                .select('vote.poll_id', 'pollId')
+                .createQueryBuilder('reaction')
+                .select('reaction.poll_id', 'pollId')
                 .addSelect(
-                    'SUM(CASE WHEN vote.isLike = 1 THEN 1 ELSE 0 END)',
+                    'SUM(CASE WHEN reaction.isLike = 1 THEN 1 ELSE 0 END)',
                     'likes',
                 )
                 .addSelect(
-                    'SUM(CASE WHEN vote.isLike = 0 THEN 1 ELSE 0 END)',
+                    'SUM(CASE WHEN reaction.isLike = 0 THEN 1 ELSE 0 END)',
                     'dislikes',
                 )
-                .groupBy('vote.poll_id')
+                .groupBy('reaction.poll_id')
                 .getRawOne();
 
             const { likes, dislikes } = result;

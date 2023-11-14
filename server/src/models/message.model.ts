@@ -23,7 +23,7 @@ export default class Message extends BaseEntity {
     @ManyToOne(() => Conversation, (conversation) => conversation.id)
     conversation: Conversation;
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
     sender: User;
 
     @CreateDateColumn()

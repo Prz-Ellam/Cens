@@ -12,6 +12,8 @@ class ConversationController {
     async create(req: AuthRequest, res: Response): Promise<Response> {
         const queryRunner = connection.createQueryRunner();
         try {
+            await queryRunner.startTransaction();
+
             const userId = Number.parseInt(req.params.userId) || -1;
             const idResult = validateId(userId);
             if (!idResult.status) {
@@ -29,7 +31,8 @@ class ConversationController {
             const userTwo = req.user;
 
             // Validar que los dos no tengan ya un chat
-            const chatRepository = connection.getRepository(Conversation);
+            const chatRepository =
+                queryRunner.manager.connection.getRepository(Conversation);
             const requestedConversation = await chatRepository
                 .createQueryBuilder('chat')
                 .innerJoin('chat.participants', 'p')
@@ -48,7 +51,6 @@ class ConversationController {
                 });
             }
 
-            await queryRunner.startTransaction();
             const conversation = new Conversation();
             await queryRunner.manager.save(Conversation, conversation);
 

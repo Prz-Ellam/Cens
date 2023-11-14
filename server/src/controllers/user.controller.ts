@@ -366,8 +366,6 @@ class UserController {
                 return;
             }
 
-            console.log(env.get('server.uploads_dir'));
-
             res.sendFile(path.join(env.get('server.uploads_dir'), user.avatar));
         } catch (error) {
             res.sendFile(
@@ -389,7 +387,19 @@ class UserController {
                 });
             }
 
-            const user = await User.findOneBy({ id: userId });
+            const user = await User.findOne({
+                where: { id: userId },
+                relations: [
+                    'polls',
+                    'reactions',
+                    'comments',
+                    'votes',
+                    'messages',
+                    'followers',
+                    'followed',
+                    'participants',
+                ],
+            });
             if (!user) {
                 return res.status(404).json({
                     message: 'El usuario solicitado no fue encontrado',
@@ -409,10 +419,7 @@ class UserController {
                 message: 'La cuenta fue eliminada éxitosamente',
             });
         } catch (error) {
-            logger.error(`
-                Error durante una suspensión de cuenta: 
-                ${error as string}
-            `);
+            logger.error(`${error as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });
@@ -424,7 +431,7 @@ class UserController {
         const authUser = req.user;
         const username = (req.query.username as string) ?? '';
 
-        const query = connection
+        const subQuery = connection
             .getRepository(Conversation)
             .createQueryBuilder('conversation')
             .innerJoin('conversation.participants', 'participants')
@@ -438,16 +445,16 @@ class UserController {
             .innerJoin('conversation.participants', 'participants')
             .innerJoin('participants.user', 'user')
             .select(['user.id'])
-            .where(`conversation.id IN (${query})`)
+            .where(`conversation.id IN (${subQuery})`)
             .andWhere('user.id != :userId', { userId: authUser.id })
             .getRawMany();
 
-        const userIDs = usersWithoutConversation.map((user) => user.user_id);
-        userIDs.push(authUser.id);
+        const userIds = usersWithoutConversation.map((user) => user.user_id);
+        userIds.push(authUser.id);
 
         const users = await User.find({
             where: {
-                id: Not(In(userIDs)),
+                id: Not(In(userIds)),
                 username: Like(`%${username}%`),
             },
         });
@@ -458,14 +465,21 @@ class UserController {
     }
 
     async findNotChatUsers(req: Request, res: Response): Promise<Response> {
-        const users = await User.find();
+        try {
+            const users = await User.find();
 
-        const conversations = await Conversation.find();
+            const conversations = await Conversation.find();
 
-        return res.json({
-            users,
-            conversations,
-        });
+            return res.json({
+                users,
+                conversations,
+            });
+        } catch (error) {
+            logger.error(`${error as string}`);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
     }
 
     async findOne(req: AuthRequest, res: Response): Promise<Response> {
@@ -489,10 +503,7 @@ class UserController {
                 user,
             });
         } catch (error) {
-            logger.error(`
-                Error buscando un usuario: 
-                ${error as string}
-            `);
+            logger.error(`${error as string}`);
             return res.status(500).json({
                 message: 'Ocurrio un error en el servidor',
             });

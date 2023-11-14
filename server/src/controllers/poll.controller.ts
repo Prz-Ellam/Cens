@@ -8,32 +8,34 @@ import { validateCreatePoll } from '@/validators/create-poll.validator';
 import { validateId } from '@/validators/id.validator';
 import logger from '@/config/logger';
 import User from '@/models/user.model';
+import z from 'zod';
+import { formatErrors } from '@/utils/format-error';
 
 class PollController {
     /**
      * Create a new poll.
      */
     async create(req: AuthRequest, res: Response): Promise<Response> {
-        const contentType = req.get('content-type');
-        if (!contentType?.includes('application/json')) {
-            return res.status(415).json({
-                message: 'Tipo de contenido invalido',
-            });
-        }
-
-        const result = validateCreatePoll(req.body);
-        if (!result.status) {
-            return res.status(422).json({
-                message: result.errors,
-            });
-        }
-
-        const { question, description, options } = req.body;
-        const authUser = req.user;
-
         const queryRunner = connection.createQueryRunner();
         try {
             await queryRunner.startTransaction();
+
+            const contentType = req.get('content-type');
+            if (!contentType?.includes('application/json')) {
+                return res.status(415).json({
+                    message: 'Tipo de contenido invalido',
+                });
+            }
+
+            const result = validateCreatePoll(req.body);
+            if (!result.status) {
+                return res.status(422).json({
+                    message: result.errors,
+                });
+            }
+
+            const { question, description, options } = req.body;
+            const authUser = req.user;
 
             const poll = new Poll();
             poll.question = question;
@@ -90,9 +92,7 @@ class PollController {
             }
 
             const poll = await Poll.findOne({
-                where: {
-                    id: pollId,
-                },
+                where: { id: pollId },
                 relations: ['user'],
             });
             if (!poll) {
@@ -101,8 +101,8 @@ class PollController {
                 });
             }
 
-            const user = req.user;
-            if (poll.user.id !== user.id) {
+            const authUser = req.user;
+            if (poll.user.id !== authUser.id) {
                 return res.status(401).json({
                     message: 'No autorizado',
                 });
@@ -133,8 +133,8 @@ class PollController {
                 });
             }
 
-            const user = req.user;
-            const poll = await PollService.findOneById(pollId, user.id);
+            const authUser = req.user;
+            const poll = await PollService.findOneById(pollId, authUser.id);
             if (!poll) {
                 return res.status(404).json({
                     message: 'No se encontró la encuesta solicitada',
@@ -155,32 +155,21 @@ class PollController {
 
             const search = (req.query.search as string) ?? '';
 
-            const maxLimitValue = Math.pow(2, 32);
             const pageQueryParam = req.query.page as string;
             const limitQueryParam = req.query.limit as string;
 
             const page = Number.parseInt(pageQueryParam) || 1;
             const limit = Number.parseInt(limitQueryParam) || 5;
 
-            if (
-                isNaN(page) ||
-                !Number.isInteger(page) ||
-                page < 1 ||
-                page > maxLimitValue
-            ) {
+            const queryValidator = z.object({
+                page: z.number().int().min(1).max(2147483647),
+                limit: z.number().int().min(1).max(2147483647),
+            });
+            const result = queryValidator.safeParse({ page, limit });
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
                 return res.status(422).json({
-                    message: 'Pagina no valido',
-                });
-            }
-
-            if (
-                isNaN(limit) ||
-                !Number.isInteger(limit) ||
-                limit < 1 ||
-                limit > maxLimitValue
-            ) {
-                return res.status(422).json({
-                    message: 'Límite no valido',
+                    message: formattedErrors,
                 });
             }
 
@@ -211,8 +200,23 @@ class PollController {
         try {
             const user = req.user;
 
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
+
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
+
+            const queryValidator = z.object({
+                page: z.number().int().min(1).max(2147483647),
+                limit: z.number().int().min(1).max(2147483647),
+            });
+            const result = queryValidator.safeParse({ page, limit });
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
+                });
+            }
 
             const [polls, total] = await PollService.findByFollowed(
                 user.id,
@@ -245,34 +249,21 @@ class PollController {
 
             const authUser = req.user;
 
-            // TODO: Validar
-            const maxLimitValue = Math.pow(2, 32);
             const pageQueryParam = req.query.page as string;
             const limitQueryParam = req.query.limit as string;
 
             const page = Number.parseInt(pageQueryParam) || 1;
             const limit = Number.parseInt(limitQueryParam) || 5;
 
-            if (
-                isNaN(page) ||
-                !Number.isInteger(page) ||
-                page < 1 ||
-                page > maxLimitValue
-            ) {
+            const queryValidator = z.object({
+                page: z.number().int().min(1).max(2147483647),
+                limit: z.number().int().min(1).max(2147483647),
+            });
+            const result = queryValidator.safeParse({ page, limit });
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
                 return res.status(422).json({
-                    message: 'Pagina no valido',
-                });
-            }
-
-            // Validate limit
-            if (
-                isNaN(limit) ||
-                !Number.isInteger(limit) ||
-                limit < 1 ||
-                limit > maxLimitValue
-            ) {
-                return res.status(422).json({
-                    message: 'Límite no valido',
+                    message: formattedErrors,
                 });
             }
 

@@ -2,11 +2,11 @@ import logger from '@/config/logger';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Comment from '@/models/comment.model';
 import Poll from '@/models/poll.model';
-import CommentService from '@/services/comment.service';
-import { validateCreateComment } from '@/validators/create-comment.validator';
+import { formatErrors } from '@/utils/format-error';
+import { validateComment } from '@/validators/create-comment.validator';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
-import { z } from 'zod';
+import z from 'zod';
 
 class CommentController {
     async create(req: AuthRequest, res: Response): Promise<Response> {
@@ -26,7 +26,7 @@ class CommentController {
                 });
             }
 
-            const validationResult = validateCreateComment(req.body);
+            const validationResult = validateComment(req.body);
             if (!validationResult.status) {
                 const { errors } = validationResult;
                 return res.status(422).json({
@@ -79,41 +79,31 @@ class CommentController {
                 });
             }
 
-            const comment = await CommentService.findOneById(commentId);
+            const comment = await Comment.findOne({
+                where: { id: commentId },
+                relations: ['user'],
+            });
             if (!comment) {
                 return res.status(404).json({
                     message: 'El comentario solicitado no existe',
                 });
             }
 
-            const user = req.user;
-            if (comment.user.id !== user.id) {
+            const authUser = req.user;
+            if (comment.user.id !== authUser.id) {
                 return res.status(401).json({
                     message: 'No autorizado',
                 });
             }
 
-            const validateComment = z.object({
-                text: z
-                    .string({
-                        invalid_type_error:
-                            'El texto debe ser una cadena de texto',
-                    })
-                    .min(1, 'Es requerido al menos 1 caracter')
-                    .max(255, 'Maximo de 255 caracteres permitidos'),
-            });
-            const result = validateComment.safeParse(req.body);
-            if (!result.success) {
-                const formattedErrors = result.error.issues.map((issue) => ({
-                    field: issue.path.join('.'),
-                    message: issue.message,
-                }));
+            const validationResult = validateComment(req.body);
+            if (!validationResult.status) {
+                const { errors } = validationResult;
                 return res.status(422).json({
-                    message: formattedErrors,
+                    message: errors,
                 });
             }
 
-            // Validar la entrada del texto
             const { text } = req.body;
 
             comment.text = text;
@@ -140,17 +130,20 @@ class CommentController {
                 });
             }
 
-            const comment = await CommentService.findOneById(commentId);
+            const comment = await Comment.findOne({
+                where: { id: commentId },
+                relations: ['user'],
+            });
             if (!comment) {
                 return res.status(404).json({
                     message: 'El comentario solicitado no existe',
                 });
             }
 
-            const user = req.user;
-            if (comment.user.id !== user.id) {
+            const authUser = req.user;
+            if (comment.user.id !== authUser.id) {
                 return res.status(401).json({
-                    message: 'El comentario no le pertenece a este usuario',
+                    message: 'No autorizado',
                 });
             }
 
@@ -177,9 +170,7 @@ class CommentController {
             }
 
             const comment = await Comment.findOne({
-                where: {
-                    id: commentId,
-                },
+                where: { id: commentId },
                 relations: ['user'],
             });
             if (!comment) {
@@ -214,32 +205,21 @@ class CommentController {
                 });
             }
 
-            const maxLimitValue = Math.pow(2, 32);
             const pageQueryParam = req.query.page as string;
             const limitQueryParam = req.query.limit as string;
 
             const page = Number.parseInt(pageQueryParam) || 1;
             const limit = Number.parseInt(limitQueryParam) || 5;
 
-            if (
-                isNaN(page) ||
-                !Number.isInteger(page) ||
-                page < 1 ||
-                page > maxLimitValue
-            ) {
+            const queryValidator = z.object({
+                page: z.number().int().min(1).max(2147483647),
+                limit: z.number().int().min(1).max(2147483647),
+            });
+            const result = queryValidator.safeParse({ page, limit });
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
                 return res.status(422).json({
-                    message: 'Pagina no valido',
-                });
-            }
-
-            if (
-                isNaN(limit) ||
-                !Number.isInteger(limit) ||
-                limit < 1 ||
-                limit > maxLimitValue
-            ) {
-                return res.status(422).json({
-                    message: 'Límite no valido',
+                    message: formattedErrors,
                 });
             }
 
