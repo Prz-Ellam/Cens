@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { ToastTopEnd } from '../utils/toast';
+import { ToastTopEnd } from '@/utils/toast';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../utils/format-date';
+import { formatDate } from '@/utils/format-date';
 
 /**
  * Componente que representa un comentario, se encarga de actualizar o eliminar dicho comentario.
@@ -17,7 +17,7 @@ import { formatDate } from '../utils/format-date';
  * @param {string} props.username - El nombre de usuario que hizo el comentario.
  * @param {boolean} props.isAuthUser - Verifica si el comentario le pertenece al usuario autenticado.
  * @param {function} props.onUpdate - Verifica si el comentario le pertenece al usuario autenticado.
- * @returns {JSX.Element} - El elemento JSX del comentario.
+ * @returns {JSX.Element} Componente del comentario.
  */
 function Comment({ comment, userId, username, avatar, isAuthUser, onChange }) {
   const [open, setOpen] = useState(false);

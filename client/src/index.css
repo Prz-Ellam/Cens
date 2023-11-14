@@ -91,3 +91,12 @@ body::-webkit-scrollbar-track {
 .colored-toast .swal2-html-container {
   color: white;
 }
+
+
+progress::-moz-progress-bar { 
+  background: #573b8a; 
+}
+
+progress::-webkit-progress-value { 
+  background: #573b8a; 
+}

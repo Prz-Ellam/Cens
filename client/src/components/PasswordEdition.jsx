@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import axios from '@/services/api';
 import { useAuth } from '../hooks/useAuth';
-import z from 'zod';
+import validator from '@/validators/password-edition';
 import getErrors from '@/utils/error-format';
 import ErrorList from './ErrorList';
 import Swal from 'sweetalert2';
-import { ToastTopEnd } from '../utils/toast';
+import { ToastTopEnd } from '@/utils/toast';
 
 /**
- * El componente PasswordEdition es una interfaz de usuario para permitir a los usuarios cambiar su contraseña.
- * 
+ * Componente de usuario para permitir a los usuarios cambiar su contraseña.
+ *
  * @returns {JSX.Element} Componente del formulario para editar contraseña
  */
 function PasswordEdition() {
@@ -29,44 +29,8 @@ function PasswordEdition() {
     confirmNewPassword: 'Confirmar nueva contraseña'
   });
 
-  const formValidator = z
-    .object({
-      currentPassword: z
-        .string({
-          invalid_type_error: 'La contraseña debe ser una cadena de texto'
-        })
-        .trim()
-        .min(1, 'Es requerido al menos 1 caracter')
-        .max(255, 'Maximo de 255 caracteres'),
-      newPassword: z
-        .string({
-          invalid_type_error: 'La contraseña debe ser una cadena de texto'
-        })
-        .trim()
-        .min(8, 'Es requerido un mínimo de 8 caracteres')
-        .max(255, 'Maximo de 255 caracteres')
-        .regex(/[A-Z]/, 'Es requerido al menos una mayuscula')
-        .regex(/[a-z]/, 'Es requerido al menos una minuscula')
-        .regex(/[0-9]/, 'Es requerido al menos un número')
-        .regex(
-          /([°|¬!"#$%&/()=?¡'¿¨*\]´+}~`{[^;:_,.\-<>@])/,
-          'Es requerido al menos un caracter especial'
-        ),
-      confirmNewPassword: z
-        .string({
-          invalid_type_error:
-            'La confirmación de contraseña debe ser una cadena de texto'
-        })
-        .trim()
-        .min(1, 'Es requerido al menos 1 caracter')
-        .max(255, 'Maximo de 255 caracteres')
-    })
-    .refine((data) => data.newPassword === data.confirmNewPassword, {
-      message: 'Las contraseñas no coinciden',
-      path: ['confirmNewPassword']
-    });
-
   /**
+   * Evento si se actualiza un input
    *
    * @param {Event} event
    */
@@ -80,7 +44,7 @@ function PasswordEdition() {
     setFormData(updatedFormData);
 
     // Pasamos updatedFormData en lugar de formData porque tiene un delay con los caracteres
-    const result = formValidator.safeParse(updatedFormData);
+    const result = validator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors({
@@ -96,14 +60,14 @@ function PasswordEdition() {
   };
 
   /**
-   *
+   * Evento al mandar el formulario
+   * 
    * @param {Event} event
    */
-  const handlePasswordSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Validaciones de frontend
-    const result = formValidator.safeParse(formData);
+    const result = validator.safeParse(formData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);
@@ -119,11 +83,17 @@ function PasswordEdition() {
     try {
       const response = await axios.put(`/users/${user.id}/password`, formData);
 
-      await Swal.fire({
+      Swal.fire({
         title: 'Operación éxitosa',
         icon: 'success',
         text: response.data.message
       });
+
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      })
     } catch (error) {
       const errorText = axios.isAxiosError(error)
         ? error.response.data.message
@@ -137,12 +107,12 @@ function PasswordEdition() {
   };
 
   return (
-    <form onSubmit={handlePasswordSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate>
       <h2 className="text-2xl text-center font-semibold mb-4 text-gray-300">
         Cambiar Contraseña
       </h2>
-      {Object.entries(formData).map(([key, value]) => (
-        <div className="mb-4" key={key}>
+      {Object.entries(formData).map(([key, value], index) => (
+        <div className="mb-4" key={index}>
           <label
             className="block text-gray-300 text-md font-medium mb-2 cursor-pointer"
             htmlFor={key}
@@ -154,7 +124,7 @@ function PasswordEdition() {
             type="password"
             id={key}
             name={key}
-            defaultValue={value}
+            value={value}
             onChange={handleChange}
           />
           {formErrors[key] && <ErrorList errors={formErrors[key]} />}

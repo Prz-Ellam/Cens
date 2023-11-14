@@ -154,8 +154,35 @@ class PollController {
             const user = req.user;
 
             const search = (req.query.search as string) ?? '';
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+
+            const maxLimitValue = Math.pow(2, 32);
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
+
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
+
+            if (
+                isNaN(page) ||
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Pagina no valido',
+                });
+            }
+
+            if (
+                isNaN(limit) ||
+                !Number.isInteger(limit) ||
+                limit < 1 ||
+                limit > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Límite no valido',
+                });
+            }
 
             const [polls, total] = await PollService.findMany(
                 user.id,
@@ -219,8 +246,35 @@ class PollController {
             const authUser = req.user;
 
             // TODO: Validar
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+            const maxLimitValue = Math.pow(2, 32);
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
+
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
+
+            if (
+                isNaN(page) ||
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Pagina no valido',
+                });
+            }
+
+            // Validate limit
+            if (
+                isNaN(limit) ||
+                !Number.isInteger(limit) ||
+                limit < 1 ||
+                limit > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Límite no valido',
+                });
+            }
 
             const user = await User.findOneBy({ id: userId });
             if (!user) {

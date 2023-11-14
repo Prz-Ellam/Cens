@@ -94,7 +94,13 @@ class CommentController {
             }
 
             const validateComment = z.object({
-                text: z.string().min(1).max(255),
+                text: z
+                    .string({
+                        invalid_type_error:
+                            'El texto debe ser una cadena de texto',
+                    })
+                    .min(1, 'Es requerido al menos 1 caracter')
+                    .max(255, 'Maximo de 255 caracteres permitidos'),
             });
             const result = validateComment.safeParse(req.body);
             if (!result.success) {
@@ -109,10 +115,8 @@ class CommentController {
 
             // Validar la entrada del texto
             const { text } = req.body;
-            // logger.info(text);
 
             comment.text = text;
-            // logger.info(comment.text);
 
             await comment.save();
 
@@ -210,16 +214,32 @@ class CommentController {
                 });
             }
 
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+            const maxLimitValue = Math.pow(2, 32);
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
 
-            // Solo pueden medir lo de un int
-            // No poner numeros negativos
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
 
-            // TODO: Validar page y limit
-            if (isNaN(page) || isNaN(limit)) {
+            if (
+                isNaN(page) ||
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > maxLimitValue
+            ) {
                 return res.status(422).json({
-                    message: 'Pagina o limite no valido',
+                    message: 'Pagina no valido',
+                });
+            }
+
+            if (
+                isNaN(limit) ||
+                !Number.isInteger(limit) ||
+                limit < 1 ||
+                limit > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Límite no valido',
                 });
             }
 

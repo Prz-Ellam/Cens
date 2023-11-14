@@ -15,7 +15,8 @@ const TABS = Object.freeze({
 
 /**
  * Página del perfil de usuario con encuestas, seguidores y seguidos
- * @returns
+ * 
+ * @returns {JSX.Element} Componente del perfil de usuario.
  */
 function Profile() {
   const authUser = useAuth().user;
@@ -247,7 +248,7 @@ function Profile() {
                   <Pagination
                     page={pollsPage}
                     totalPages={pollsTotalPages}
-                    onSelect={(page) => fetchUserPolls(page)}
+                    onPageChange={(page) => fetchUserPolls(page)}
                   />
                 </>
               ) : (
@@ -289,7 +290,7 @@ function Profile() {
                   <Pagination
                     page={followersPage}
                     totalPages={followersTotalPages}
-                    onSelect={(page) => fetchFollowers(page)}
+                    onPageChange={(page) => fetchFollowers(page)}
                   />
                 </>
               ) : (
@@ -342,7 +343,7 @@ function Profile() {
                   <Pagination
                     page={followingPage}
                     totalPages={followingTotalPages}
-                    onSelect={(page) => fetchFollowing(page)}
+                    onPageChange={(page) => fetchFollowing(page)}
                   />
                 </>
               ) : (

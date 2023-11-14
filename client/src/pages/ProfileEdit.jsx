@@ -1,6 +1,6 @@
-import PasswordEdition from '../components/PasswordEdition';
-import ProfilePicture from '../components/ProfilePicture';
-import ProfileEditInfo from '../components/ProfileEditInfo';
+import PasswordEdition from '@/components/PasswordEdition';
+import ProfileEditInfo from '@/components/ProfileEditInfo';
+import ProfilePicture from '@/components/ProfilePicture';
 
 /**
  * Formulario para editar datos básicos del usuario.

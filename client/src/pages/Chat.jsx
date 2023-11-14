@@ -9,6 +9,10 @@ import Swal from 'sweetalert2';
 import className from 'classnames';
 // import getErrors from '../utils/error-format';
 
+/**
+ * 
+ * @returns {JSX.Element} Página de chat.
+ */
 function Chat() {
   const { user } = useAuth();
   const [contacts, setContacts] = useState([]);

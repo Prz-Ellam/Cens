@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 
 /**
- * Componente con las sugerencias de seguidores
+ * Componente con las sugerencias de seguidores.
  * 
  * @param {object} props - Las propiedades del componente.
  * @param {function} props.onUpdate - Evento si se actualiza las sugerencias.
@@ -18,6 +18,9 @@ function FollowSuggestions({ onUpdate = () => {} }) {
 
   const [recomendations, setRecomendations] = useState([]);
 
+  /**
+   * Obtiene usuarios que el usuario autenticado no sigue.
+   */
   const fetchRecomendations = useCallback(async () => {
     try {
       const response = await axios(`/users/${user.id}/notFollowing`);
@@ -34,6 +37,11 @@ function FollowSuggestions({ onUpdate = () => {} }) {
     }
   }, [user.id]);
 
+  /**
+   * Hace que el usuario actual siga al usuario seleccionado.
+   * 
+   * @param {number} userId - El identificador del usuario a seguir.
+   */
   const createFollowing = async (userId) => {
     try {
       const response = await axios.post(`/users/${userId}/followers`);

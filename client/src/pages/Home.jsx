@@ -4,8 +4,8 @@ import PollCard from '@/components/PollCard';
 import CreatePoll from '@/components/CreatePoll';
 import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
-import FollowSuggestions from '../components/FollowSuggestions';
-import Pagination from '../components/Pagination';
+import FollowSuggestions from '@/components/FollowSuggestions';
+import Pagination from '@/components/Pagination';
 import Swal from 'sweetalert2';
 
 /**
@@ -89,7 +89,7 @@ function Home() {
           <Pagination
             page={pollsPage}
             totalPages={pollsTotalPages}
-            onSelect={(page) => fetchPolls(page)}
+            onPageChange={(page) => fetchPolls(page)}
           />
         </section>
       </div>

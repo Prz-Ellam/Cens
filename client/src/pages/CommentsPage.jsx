@@ -5,15 +5,16 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import axios from '@/services/api';
 import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
-import z from 'zod';
-import { ToastTopEnd } from '../utils/toast';
-import ErrorList from '../components/ErrorList';
+import { ToastTopEnd } from '@/utils/toast';
+import ErrorList from '@/components/ErrorList';
 import getErrors from '@/utils/error-format';
-import Pagination from '../components/Pagination';
+import Pagination from '@/components/Pagination';
+import createCommentValidator from '@/validators/create-comment';
 
 /**
- * Pagina con los comentarios de una encuesta
- * @returns
+ * Pagina con los comentarios de una encuesta.
+ *
+ * @returns {JSX.Element} Componente de la página de comentarios.
  */
 function CommentsPage() {
   const { user } = useAuth();
@@ -36,16 +37,6 @@ function CommentsPage() {
 
   const limit = 5;
 
-  const formValidator = z.object({
-    text: z
-      .string({
-        invalid_type_error: 'El texto debe ser una cadena de texto'
-      })
-      .trim()
-      .min(1, 'Es requerido al menos 1 caracter')
-      .max(255, 'Maximo de 255 caracteres')
-  });
-
   /**
    * Recupera la encuesta de la pagina
    */
@@ -60,12 +51,39 @@ function CommentsPage() {
   }, [navigate, pollId]);
 
   /**
+   * Recupera todos los comentarios de una encuesta
+   * @param {number} page - Pagina de la que se desea extraer los comentarios
+   */
+  const fetchComments = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `/polls/${pollId}/comments?page=${page}&limit=${limit}`
+        );
+        setComments(response.data.comments);
+        setTotalPages(response.data.totalPages);
+        setPage(page);
+      } catch (error) {
+        const errorText = axios.isAxiosError(error)
+          ? error.response.data.message
+          : 'Error inesperado';
+        Swal.fire({
+          title: 'Error',
+          icon: 'error',
+          text: errorText
+        });
+      }
+    },
+    [pollId]
+  );
+
+  /**
    * Crear un comentario
    */
-  const handleComment = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const result = formValidator.safeParse(formData);
+    const result = createCommentValidator.safeParse(formData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);
@@ -117,7 +135,7 @@ function CommentsPage() {
     };
     setFormData(updatedFormData);
 
-    const result = formValidator.safeParse(updatedFormData);
+    const result = createCommentValidator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors({
@@ -131,33 +149,6 @@ function CommentsPage() {
     delete updatedFormErrors[name];
     setFormErrors(updatedFormErrors);
   };
-
-  /**
-   * Recupera todos los comentarios de una encuesta
-   * @param {number} page - Pagina de la que se desea extraer los comentarios
-   */
-  const fetchComments = useCallback(
-    async (page) => {
-      try {
-        const response = await axios.get(
-          `/polls/${pollId}/comments?page=${page}&limit=${limit}`
-        );
-        setComments(response.data.comments);
-        setTotalPages(response.data.totalPages);
-        setPage(page);
-      } catch (error) {
-        const errorText = axios.isAxiosError(error)
-          ? error.response.data.message
-          : 'Error inesperado';
-        Swal.fire({
-          title: 'Error',
-          icon: 'error',
-          text: errorText
-        });
-      }
-    },
-    [pollId]
-  );
 
   useEffect(() => {
     fetchPoll();
@@ -176,7 +167,7 @@ function CommentsPage() {
           <form
             className="mb-6 py-2 px-4 rounded-lg rounded-t-lg"
             noValidate
-            onSubmit={handleComment}
+            onSubmit={handleSubmit}
           >
             <label
               htmlFor="comment"
@@ -203,8 +194,7 @@ function CommentsPage() {
             </button>
           </form>
 
-          {/* 121px por cada comentario className={`min-h-[${121 * limit}px]`} */}
-          <section className='mb-4'>
+          <section className="mb-4">
             {comments &&
               comments.map((comment, index) => (
                 <Comment
@@ -225,7 +215,7 @@ function CommentsPage() {
           <Pagination
             page={page}
             totalPages={totalPages}
-            onSelect={(page) => fetchComments(page)}
+            onPageChange={(page) => fetchComments(page)}
           />
         </div>
       </div>

@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
-import '../assets/css/LoginSignup.css';
+import '@/assets/css/LoginSignup.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 
-import mMoonRocket from '../assets/3dmodels/mMoonRocket.fbx';
-import SpaceRocks from '../assets/3dmodels/spacerocks.fbx';
+import mMoonRocket from '@/assets/3dmodels/mMoonRocket.fbx';
+import SpaceRocks from '@/assets/3dmodels/spacerocks.fbx';
 
 /**
  * Componente de escena 3D con la luna y el cohete.

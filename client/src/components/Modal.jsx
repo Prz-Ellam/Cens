@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 /**
- * Componente para crear modales
- * @param {object} params
+ * Componente para crear modales.
+ * 
+ * @param {object} props
  * @returns 
  */
 function Modal({ title, close, setClose, bodySlot }) {

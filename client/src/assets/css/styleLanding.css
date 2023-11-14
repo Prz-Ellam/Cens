@@ -26,10 +26,6 @@
   pointer-events: none;
 }
 
-.landing-section img#moon {
-  mix-blend-mode: screen;
-}
-
 #btn {
   text-decoration: none;
   display: inline-block;

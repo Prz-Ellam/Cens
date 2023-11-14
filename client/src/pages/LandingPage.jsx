@@ -1,16 +1,16 @@
 import { useEffect, useRef } from 'react';
-import '../assets/css/styleLanding.css';
+import '@/assets/css/styleLanding.css';
 import { Link } from 'react-router-dom';
 
-import CensLogo from '../assets/img/Cens_Logo.png';
-import Stars from '../assets/img/stars.png';
-import Moon from '../assets/img/moon.png';
-import Sea1 from '../assets/img/sea1.png';
-import Sea2 from '../assets/img/sea2.png';
+import CensLogo from '@/assets/img/Cens_Logo.png';
+import Stars from '@/assets/img/stars.png';
+import Moon from '@/assets/img/moon.png';
+import Sea1 from '@/assets/img/sea1.png';
+import Sea2 from '@/assets/img/sea2.png';
 
 /**
  * Landing page
- * 
+ *
  * @returns {JSX.Element} Componente de la landing page
  */
 function LandingPage() {
@@ -55,7 +55,7 @@ function LandingPage() {
       </header>
       <section className="landing-section p-[100px] relative w-full h-screen flex justify-center items-center overflow-hidden">
         <img src={Stars} ref={stars} alt="Estrellas" />
-        <img src={Moon} ref={moon} alt="Luna" />
+        <img src={Moon} ref={moon} alt="Luna" className="mix-blend-screen" />
         <img src={Sea1} ref={sea} alt="Mar" className="z-[10]" />
         <img src={Sea2} ref={sea2} alt="Mar 2" className="z-[9]" />
         <h2

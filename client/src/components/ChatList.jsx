@@ -9,9 +9,9 @@ import Swal from 'sweetalert2';
 /**
  * Componente que representa la lista de contactos de un usuario.
  *
- * @param {object} params
- * @param {object[]} params.contacts - Lista de contactos del usuario
- * @param {function} params.onSelect - Lista de contactos del usuario
+ * @param {object} props
+ * @param {object[]} props.contacts - Lista de contactos del usuario.
+ * @param {function} props.onSelect - Lista de contactos del usuario.
  * @returns {JSX.Element} Componente de la lista de contactos.
  */
 function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {

@@ -4,9 +4,11 @@ import Option from '@/models/option.model';
 import { OptionWithPercentage } from '@/models/options-with-percentage.model';
 import Poll from '@/models/poll.model';
 import Vote from '@/models/vote.model';
+import { formatErrors } from '@/utils/format-error';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
 import { IsNull, Not } from 'typeorm';
+import z from 'zod';
 
 class VoteController {
     /**
@@ -56,6 +58,31 @@ class VoteController {
             if (existingVote) {
                 return res.status(409).json({
                     message: 'Ya votaste en esta encuesta',
+                });
+            }
+
+            // TODO: Validar
+            const validateVote = z.object({
+                optionId: z
+                    .number({
+                        invalid_type_error:
+                            'El id de la opción debe ser un número',
+                    })
+                    .int('El id de la opción debe ser un número entero')
+                    .min(
+                        1,
+                        'El id de la opción debe ser un número entero positivo',
+                    )
+                    .max(
+                        2147483647,
+                        'El id de la opción no debe exceder 2147483647',
+                    ),
+            });
+            const result = validateVote.safeParse(req.body);
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
                 });
             }
 
@@ -156,6 +183,31 @@ class VoteController {
             if (vote.user.id !== req.user.id) {
                 return res.status(401).json({
                     message: 'No autorizado',
+                });
+            }
+
+            // TODO: Validar
+            const validateVote = z.object({
+                optionId: z
+                    .number({
+                        invalid_type_error:
+                            'El id de la opción debe ser un número',
+                    })
+                    .int('El id de la opción debe ser un número entero')
+                    .min(
+                        1,
+                        'El id de la opción debe ser un número entero positivo',
+                    )
+                    .max(
+                        2147483647,
+                        'El id de la opción no debe exceder 2147483647',
+                    ),
+            });
+            const result = validateVote.safeParse(req.body);
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
                 });
             }
 

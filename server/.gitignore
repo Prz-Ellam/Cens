@@ -5,6 +5,7 @@ node_modules/
 logs/
 uploads/*
 !uploads/.gitkeep
+!uploads/default-profile-picture.png
 
 .tmp/
 coverage/

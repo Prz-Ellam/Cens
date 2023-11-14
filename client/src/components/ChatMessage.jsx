@@ -35,10 +35,23 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
     };
   }, []);
 
-  // TODO: Boton de confirmar borrado
   const deleteMessage = async () => {
     try {
       setIsMenuOpen(false);
+
+      const result = await Swal.fire({
+        title: '¿Estas seguro que deseas borrar la encuesta?',
+        text: 'No podrás recuperarla después',
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: 'Eliminar',
+        denyButtonText: `Cancelar`
+      });
+  
+      if (result.isDenied) {
+        return;
+      }
+
       await axios.delete(`/messages/${id}`);
       onUpdate();
     } catch (error) {

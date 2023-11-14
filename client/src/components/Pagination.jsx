@@ -8,10 +8,10 @@ import className from 'classnames';
  * @param {number} props.page - Pagina actual.
  * @param {number} props.totalPages - Total de paginas.
  * @param {number} props.limit - Total de elementos por pagina.
- * @param {function} props.onSelect - Evento al seleccionar una pagina.
+ * @param {function} props.onPageChange - Evento al seleccionar una pagina.
  * @returns {JSX.Element} Componente de paginación.
  */
-function Pagination({ page, totalPages, limit = 5, onSelect = () => {} }) {
+function Pagination({ page, totalPages, limit = 5, onPageChange = () => {} }) {
   /**
    * Encontrar el rango actual donde se encuentra la paginacion ej. [1-5, 6-10]
    * @param {number} number
@@ -31,7 +31,7 @@ function Pagination({ page, totalPages, limit = 5, onSelect = () => {} }) {
         <li>
           <button
             disabled={page <= 1}
-            onClick={() => page > 1 && onSelect(page - 1)}
+            onClick={() => page > 1 && onPageChange(page - 1)}
             className={className(
               'px-4 h-10 bg-dark rounded-l-lg transition duration-150 ease-out hover:ease-in',
               {
@@ -46,7 +46,7 @@ function Pagination({ page, totalPages, limit = 5, onSelect = () => {} }) {
         {paginationSection.map((value, index) => (
           <li key={index}>
             <button
-              onClick={() => onSelect(value)}
+              onClick={() => onPageChange(value)}
               className={className(
                 'px-4 h-10 text-gray-300 cursor-pointer transition duration-150 ease-out hover:ease-in',
                 {
@@ -62,7 +62,7 @@ function Pagination({ page, totalPages, limit = 5, onSelect = () => {} }) {
         <li>
           <button
             disabled={page >= totalPages}
-            onClick={() => page < totalPages && onSelect(page + 1)}
+            onClick={() => page < totalPages && onPageChange(page + 1)}
             className={className(
               'px-4 h-10 bg-dark rounded-r-lg transition duration-150 ease-out hover:ease-in',
               {
@@ -83,7 +83,7 @@ Pagination.propTypes = {
   page: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
   limit: PropTypes.number,
-  onSelect: PropTypes.func
+  onPageChange: PropTypes.func
 };
 
 export default Pagination;

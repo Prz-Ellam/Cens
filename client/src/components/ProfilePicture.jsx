@@ -1,13 +1,18 @@
 import { useState } from 'react';
-import { ToastTopEnd } from '../utils/toast';
-import { useAuth } from '../hooks/useAuth';
+import { ToastTopEnd } from '@/utils/toast';
+import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
 import Swal from 'sweetalert2';
 
+/**
+ * Componente para editar fotos de perfil
+ * 
+ * @returns {JSX.Element} Componente de la edicion de foto de perfil.
+ */
 function ProfilePicture() {
   const { user } = useAuth();
 
-  const handleAvatarSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       // Envía los datos del formulario para cambiar la contraseña
@@ -95,7 +100,7 @@ function ProfilePicture() {
   };
 
   return (
-    <form noValidate onSubmit={handleAvatarSubmit}>
+    <form noValidate onSubmit={handleSubmit}>
       <h2 className="text-2xl text-center font-semibold mb-4 text-gray-300">
         Editar foto de perfil
       </h2>

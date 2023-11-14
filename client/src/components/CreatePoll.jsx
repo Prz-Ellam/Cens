@@ -5,7 +5,7 @@ import z from 'zod';
 import Swal from 'sweetalert2';
 import ErrorList from './ErrorList';
 import getErrors from '@/utils/error-format';
-import { ToastTopEnd } from '../utils/toast';
+import { ToastTopEnd } from '@/utils/toast';
 
 /**
  * Formulario para crear encuestas

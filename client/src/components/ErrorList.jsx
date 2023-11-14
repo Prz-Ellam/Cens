@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 /**
- * Componente que muestra errores en inputs
+ * Componente que muestra errores en inputs.
  *
  * @param {object} props - Las propiedades del componente.
  * @param {string[]} props.errors - Lista de errores.
@@ -13,8 +13,8 @@ function ErrorList({ errors = [] }) {
   }
 
   return (
-    <ul className="text-sm font-bold text-red-500">
-      {errors?.map((error, index) => (
+    <ul className="font-bold text-sm text-red-500">
+      {errors.map((error, index) => (
         <li key={index}>{error}</li>
       ))}
     </ul>

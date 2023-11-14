@@ -19,6 +19,7 @@ import { promisify } from 'util';
 import path from 'path';
 import { connection } from '@/config/database';
 import Conversation from '@/models/conversation.model';
+import env from '@/config/env';
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -250,8 +251,6 @@ class UserController {
                 });
             }
 
-            const { currentPassword, newPassword } = req.body;
-
             const validationResult = await validateUpdatePassword(req.body);
             if (!validationResult.status) {
                 const { errors } = validationResult;
@@ -259,6 +258,8 @@ class UserController {
                     message: errors,
                 });
             }
+
+            const { currentPassword, newPassword } = req.body;
 
             const checkPassword = await bcrypt.compare(
                 currentPassword,
@@ -322,10 +323,15 @@ class UserController {
             }
 
             const oldAvatar = user.avatar;
-            user.avatar = req.file.path;
+            user.avatar = req.file.filename;
 
+            // TODO: Errores si no existe
             if (oldAvatar) {
-                await unlinkAsync(oldAvatar);
+                try {
+                    await unlinkAsync(oldAvatar);
+                } catch (error) {
+                    logger.info(`No existe la imagen ${oldAvatar}`);
+                }
             }
 
             await user.save();
@@ -359,9 +365,17 @@ class UserController {
                 });
                 return;
             }
-            res.sendFile(user.avatar);
+
+            console.log(env.get('server.uploads_dir'));
+
+            res.sendFile(path.join(env.get('server.uploads_dir'), user.avatar));
         } catch (error) {
-            res.sendFile(path.join(__dirname, 'default-profile-picture.png'));
+            res.sendFile(
+                path.join(
+                    env.get('server.uploads_dir'),
+                    'default-profile-picture.png',
+                ),
+            );
         }
     }
 
@@ -408,7 +422,7 @@ class UserController {
     // TODO: PUEDE SER MEJOR
     async findAll(req: AuthRequest, res: Response): Promise<Response> {
         const authUser = req.user;
-        const username = req.query.username ?? '';
+        const username = (req.query.username as string) ?? '';
 
         const query = connection
             .getRepository(Conversation)
@@ -434,7 +448,7 @@ class UserController {
         const users = await User.find({
             where: {
                 id: Not(In(userIDs)),
-                username: Like(`%${username as string}%`),
+                username: Like(`%${username}%`),
             },
         });
 
@@ -485,6 +499,7 @@ class UserController {
         }
     }
 
+    // TODO: Follower controller
     async followUser(req: AuthRequest, res: Response): Promise<Response> {
         try {
             const userId = Number.parseInt(req.params.userId) || -1;
@@ -612,8 +627,34 @@ class UserController {
 
             // const authUser = req.user;
 
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+            const maxLimitValue = Math.pow(2, 32);
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
+
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
+
+            if (
+                isNaN(page) ||
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Pagina no valido',
+                });
+            }
+
+            if (
+                isNaN(limit) ||
+                !Number.isInteger(limit) ||
+                limit < 1 ||
+                limit > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Límite no valido',
+                });
+            }
 
             const [followers, total] = await Follower.findAndCount({
                 where: {
@@ -660,8 +701,34 @@ class UserController {
                 });
             }
 
-            const page = Number.parseInt(req.query.page as string) || 1;
-            const limit = Number.parseInt(req.query.limit as string) || 5;
+            const maxLimitValue = Math.pow(2, 32);
+            const pageQueryParam = req.query.page as string;
+            const limitQueryParam = req.query.limit as string;
+
+            const page = Number.parseInt(pageQueryParam) || 1;
+            const limit = Number.parseInt(limitQueryParam) || 5;
+
+            if (
+                isNaN(page) ||
+                !Number.isInteger(page) ||
+                page < 1 ||
+                page > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Pagina no valido',
+                });
+            }
+
+            if (
+                isNaN(limit) ||
+                !Number.isInteger(limit) ||
+                limit < 1 ||
+                limit > maxLimitValue
+            ) {
+                return res.status(422).json({
+                    message: 'Límite no valido',
+                });
+            }
 
             // const authUser = req.user;
 

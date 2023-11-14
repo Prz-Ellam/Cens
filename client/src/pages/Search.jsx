@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 /**
- * Buscador de encuestas con filtro por pregunta o descripcion
+ * Buscador de encuestas con filtro por pregunta o descripcion.
  *
  * @returns {JSX.Element} Componente de las busquedas.
  */
@@ -21,6 +21,9 @@ function Search() {
   const [pollsTotalPages, setPollsTotalPages] = useState(0);
   const search = searchParams.get('search') ?? '';
 
+  /**
+   * Obtiene encuestas de acuerdo a la pagina y a la busqueda seleccionada.
+   */
   const fetchPolls = useCallback(
     async (page) => {
       try {
@@ -71,7 +74,7 @@ function Search() {
           <Pagination
             page={pollsPage}
             totalPages={pollsTotalPages}
-            onSelect={(page) => fetchPolls(page)}
+            onPageChange={(page) => fetchPolls(page)}
           />
         </section>
       </div>

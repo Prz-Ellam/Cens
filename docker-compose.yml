@@ -1,6 +1,7 @@
 version: '3'
 services:
   mysql:
+    restart: unless-stopped
     image: mariadb:10.4.28
     container_name: cens-db
     networks:
@@ -19,8 +20,12 @@ services:
       retries: 10
 
   frontend:
+    restart: unless-stopped
     image: cens-frontend
     container_name: cens-frontend
+    build:
+      context: ./client
+      dockerfile: Dockerfile
     networks:
       - cens-network
     ports:
@@ -28,8 +33,12 @@ services:
     hostname: censfrontend
 
   backend:
+    restart: unless-stopped
     image: cens-backend
     container_name: cens-backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     networks:
       - cens-network
     ports:

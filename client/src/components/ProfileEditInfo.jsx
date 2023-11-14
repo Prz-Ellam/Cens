@@ -1,12 +1,12 @@
 import Swal from 'sweetalert2';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import axios from '@/services/api';
 import { useState } from 'react';
-import ErrorList from '../components/ErrorList';
+import ErrorList from '@/components/ErrorList';
 import getErrors from '@/utils/error-format';
-import z from 'zod';
-import { allCountries } from '../utils/countries';
-import { ToastTopEnd } from '../utils/toast';
+import { allCountries } from '@/utils/countries';
+import { ToastTopEnd } from '@/utils/toast';
+import validator from '@/validators/profile-info';
 
 /**
  * Componente de la edición de información del perfil
@@ -14,18 +14,6 @@ import { ToastTopEnd } from '../utils/toast';
  * @returns {JSX.Element} Componente de la edicion de perfil.
  */
 function ProfileEditInfo() {
-  const calculateAge = (birthDate) => {
-    const today = new Date();
-    const eighteenYearsAgo = new Date(today);
-    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
-
-    if (eighteenYearsAgo.getTime() <= birthDate.getTime()) {
-      return false;
-    }
-
-    return true;
-  };
-
   const { user, update } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -37,42 +25,11 @@ function ProfileEditInfo() {
   });
   const [formErrors, setFormErrors] = useState({});
 
-  const formValidator = z.object({
-    email: z
-      .string({
-        invalid_type_error: 'El correo electrónico debe ser una cadena de texto'
-      })
-      .email('Es requerido que sea un email')
-      .optional(),
-    username: z
-      .string({
-        invalid_type_error: 'El nombre de usuario debe ser una cadena de texto'
-      })
-      .trim()
-      .min(2, 'Es requerido al menos 2 caracteres')
-      .max(255, 'Maximo de 255 caracteres')
-      .optional(),
-    birthDate: z.coerce
-      .date()
-      .refine((value) => {
-        if (!value) return true;
-        return calculateAge(value);
-      }, 'Debes ser mayor de 18 años para registrarte')
-      .optional()
-      .or(z.literal(''))
-      .or(z.literal(null)),
-    country: z
-      .enum(Object.keys(allCountries))
-      .optional()
-      .or(z.literal(''))
-      .or(z.literal(null)),
-    gender: z
-      .enum(['masculino', 'femenino', 'otro'])
-      .optional()
-      .or(z.literal(''))
-      .or(z.literal(null))
-  });
-
+  /**
+   * Evento si se actualiza un input
+   *
+   * @param {Event} event
+   */
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -82,7 +39,7 @@ function ProfileEditInfo() {
     };
     setFormData(updatedFormData);
 
-    const result = formValidator.safeParse(updatedFormData);
+    const result = validator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors({
@@ -97,10 +54,15 @@ function ProfileEditInfo() {
     setFormErrors(updatedFormErrors);
   };
 
+  /**
+   * Evento al mandar el formulario
+   * 
+   * @param {Event} event
+   */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const result = formValidator.safeParse(formData);
+    const result = validator.safeParse(formData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);

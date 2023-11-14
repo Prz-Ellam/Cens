@@ -13,7 +13,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { useNavigate, useParams } from 'react-router-dom';
-import { allCountries } from '../utils/countries';
+import { allCountries } from '@/utils/countries';
 import Swal from 'sweetalert2';
 
 ChartJS.register(

@@ -2,6 +2,7 @@ import { connection } from '@/config/database';
 import type { AuthRequest } from '@/middlewares/auth.middleware';
 import Poll from '@/models/poll.model';
 import Reaction from '@/models/reaction.model';
+import { formatErrors } from '@/utils/format-error';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
 import { IsNull, Not } from 'typeorm';
@@ -28,10 +29,12 @@ class ReactionController {
                 });
             }
 
-            const validateVote = z.object({
-                isLike: z.boolean(),
+            const validateReaction = z.object({
+                isLike: z.boolean({
+                    invalid_type_error: 'El texto debe ser un booleano',
+                }),
             });
-            const result = validateVote.safeParse(req.body);
+            const result = validateReaction.safeParse(req.body);
             if (!result.success) {
                 const formattedErrors = result.error.issues.map((issue) => ({
                     field: issue.path.join('.'),
@@ -146,6 +149,20 @@ class ReactionController {
                 });
             }
 
+            // TODO: Validar
+            const validateReaction = z.object({
+                isLike: z.boolean({
+                    invalid_type_error: 'El texto debe ser un booleano',
+                }),
+            });
+            const result = validateReaction.safeParse(req.body);
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
+                });
+            }
+
             const { isLike } = req.body;
 
             reaction.isLike = isLike;
@@ -219,7 +236,6 @@ class ReactionController {
             }
 
             const reactionRepository = connection.getRepository(Reaction);
-
             const result = await reactionRepository
                 .createQueryBuilder('vote')
                 .select('vote.poll_id', 'pollId')

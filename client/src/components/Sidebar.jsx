@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 /**
  * Barra lateral izquierda con enlaces a otras páginas
- * @returns 
+ * @returns {JSX.Element} Componente del sidebar.
  */
 function Sidebar() {
   return (

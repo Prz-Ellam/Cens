@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import convict from 'convict';
+import path from 'path';
 
 dotenv.config({
     path: process.env.NODE_ENV === 'testing' ? '.env.test' : '.env',
@@ -18,6 +19,12 @@ const env = convict({
             format: String,
             default: 'development',
             env: 'NODE_ENV',
+        },
+        uploads_dir: {
+            doc: 'Path of the uploads dir',
+            format: String,
+            default: path.resolve(__dirname, '..', '..', 'uploads'),
+            env: 'UPLOADS_DIR',
         },
     },
     db: {

@@ -5,8 +5,10 @@ import Conversation from '@/models/conversation.model';
 import MessageView from '@/models/message-view.model';
 import Message from '@/models/message.model';
 import Participant from '@/models/participant.model';
+import { formatErrors } from '@/utils/format-error';
 import { validateId } from '@/validators/id.validator';
 import type { Response } from 'express';
+import z from 'zod';
 
 class MessageController {
     /**
@@ -22,6 +24,13 @@ class MessageController {
             }
 
             const chatId = Number.parseInt(req.params.conversationId) || -1;
+            const idResult = validateId(chatId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
             const conversation = await Conversation.findOneBy({
                 id: chatId,
             });
@@ -48,6 +57,26 @@ class MessageController {
             }
 
             const user = req.user;
+
+            // TODO: Validar
+            const validateMessage = z.object({
+                text: z
+                    .string({
+                        invalid_type_error:
+                            'El texto debe ser una cadena de texto',
+                    })
+                    .trim()
+                    .min(1, 'Es requerido al menos 1 caracter')
+                    .max(255, 'Maximo de 255 caracteres permitidos'),
+            });
+            const result = validateMessage.safeParse(req.body);
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
+                });
+            }
+
             const { text } = req.body;
 
             const message = new Message();
@@ -93,6 +122,24 @@ class MessageController {
             }
 
             // TODO: Validar
+            const validateMessage = z.object({
+                text: z
+                    .string({
+                        invalid_type_error:
+                            'El texto debe ser una cadena de texto',
+                    })
+                    .trim()
+                    .min(1, 'Es requerido al menos 1 caracter')
+                    .max(255, 'Maximo de 255 caracteres permitidos'),
+            });
+            const result = validateMessage.safeParse(req.body);
+            if (!result.success) {
+                const formattedErrors = formatErrors(result.error);
+                return res.status(422).json({
+                    message: formattedErrors,
+                });
+            }
+
             const { text } = req.body;
 
             message.text = text;
