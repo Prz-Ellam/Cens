@@ -33,7 +33,7 @@ function Chat() {
       .max(255, 'Maximo de 255 caracteres permitidos')
   });
 
-  const fetchMessages = async (chatId) => {
+  const fetchMessages = useCallback(async (chatId) => {
     try {
       const response = await axios.get(`/conversations/${chatId}/messages`);
 
@@ -53,8 +53,9 @@ function Chat() {
         icon: 'error',
         text: errorText
       });
+      setChatId(-1);
     }
-  };
+  }, []);
 
   const fetchContacts = useCallback(async () => {
     try {
@@ -117,6 +118,18 @@ function Chat() {
       fetchContacts();
     }
   }, [user, fetchContacts]);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await fetchContacts();
+      if (chatId !== -1)
+        await fetchMessages(chatId);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [chatId, fetchContacts, fetchMessages]);
 
   const isChatDrawerFocus = true;
   return (

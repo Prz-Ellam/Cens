@@ -45,11 +45,13 @@ const consoleTransport = new winston.transports.Console({
     ),
     silent: process.argv.includes('--silent'),
 });
-
+/*
 const transports =
     env.get('server.env') === 'development'
         ? [consoleTransport]
         : [fileRotateTransport, consoleTransport];
+*/
+const transports = [fileRotateTransport, consoleTransport];
 
 const logger = winston.createLogger({
     transports,
