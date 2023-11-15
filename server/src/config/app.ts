@@ -13,9 +13,12 @@ import helmet from 'helmet';
 import { trim_all } from 'request_trimmer';
 import morganMiddleware from '@config/morgan';
 import reactionRouter from '@/routes/reaction.routes';
+import cors from 'cors';
 
 const app = express();
 app.set('port', env.get('server.port'));
+
+app.use(cors());
 
 app.use(express.json({ limit: '1kb' }));
 app.use(morganMiddleware);
