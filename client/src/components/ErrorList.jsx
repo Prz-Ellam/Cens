@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 
 /**
- * Componente que muestra errores en inputs.
+ * Componente que muestra errores en inputs de formularios.
  *
  * @param {object} props - Las propiedades del componente.
  * @param {string[]} props.errors - Lista de errores.
  * @returns {JSX.Element} Componente de lista de errores.
  */
 function ErrorList({ errors = [] }) {
-  if (!Array.isArray(errors)) {
+  if (!Array.isArray(errors) || !errors.every((error) => typeof error === 'string')) {
+    console.error('La propiedad "errors" debe ser un array de strings.');
     return <></>;
   }
 

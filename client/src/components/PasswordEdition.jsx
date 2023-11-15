@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from '@/services/api';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import validator from '@/validators/password-edition';
 import getErrors from '@/utils/error-format';
 import ErrorList from './ErrorList';

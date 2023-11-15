@@ -77,7 +77,7 @@ function Home() {
           </button>
         </div>
 
-        <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
+        <section className="flex flex-col gap-4 rounded-lg overflow-y-auto">
           {polls.map((poll, index) => (
             <PollCard
               key={index}

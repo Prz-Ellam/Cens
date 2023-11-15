@@ -26,7 +26,7 @@ function Pagination({ page, totalPages, limit = 5, onPageChange = () => {} }) {
   const paginationSection = calculatePaginationRange(page);
 
   return (
-    <nav className="text-center">
+    <nav className="text-center overflow-y-hidden">
       <ul className="inline-flex h-10">
         <li>
           <button

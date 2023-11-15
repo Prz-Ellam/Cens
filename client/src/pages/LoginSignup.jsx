@@ -4,7 +4,7 @@ import Register from '@/components/Register';
 import Login from '@/components/Login';
 
 /**
- * Página del registro e inicio de sesión
+ * Página del registro e inicio de sesión.
  * 
  * @returns {JSX.Element} Página del registro e inicio de sesión.
  */

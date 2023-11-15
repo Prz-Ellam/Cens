@@ -45,6 +45,7 @@ services:
       - "8080:8080"
     volumes:
       - ./server/uploads:/app/cens/uploads
+      - ./server/logs:/app/cens/logs
     hostname: censbackend
     depends_on:
       mysql:

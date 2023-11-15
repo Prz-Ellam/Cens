@@ -30,7 +30,7 @@ function Chat() {
       })
       .trim()
       .min(1, 'Es requerido al menos 1 caracter')
-      .max(255, 'Maximo de 255 caracteres')
+      .max(255, 'Maximo de 255 caracteres permitidos')
   });
 
   const fetchMessages = async (chatId) => {
@@ -88,19 +88,11 @@ function Chat() {
       return;
     }
 
-    if (!message) {
-      await ToastTopEnd.fire({
-        icon: 'error',
-        title: 'Hubo un error'
-      });
-      return;
-    }
     try {
-      const response = await axios.post(`/conversations/${chatId}/messages`, {
+      /* const response = */ await axios.post(`/conversations/${chatId}/messages`, {
         text: message
       });
 
-      console.log(response.data);
       await fetchMessages(chatId);
       setTimeout(() => {
         messageBox.current.scrollTo({

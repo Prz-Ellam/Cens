@@ -105,7 +105,7 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
               />
             </div>
 
-            <section className="h-[320px] overflow-scroll">
+            <section className="h-[320px] overflow-y-auto">
               {users.map((user, index) => (
                 <article
                   key={index}
