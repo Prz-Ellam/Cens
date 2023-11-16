@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://178.16.140.16:3000/api/v1/';
+axios.defaults.baseURL = '/api/v1/';
 
 axios.interceptors.request.use(
   (config) => {
