@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import '@/assets/css/styleLanding.css';
 import { Link } from 'react-router-dom';
-
 import CensLogo from '@/assets/img/Cens_Logo.png';
 import Stars from '@/assets/img/stars.png';
 import Moon from '@/assets/img/moon.png';
@@ -14,6 +13,7 @@ import Sea2 from '@/assets/img/sea2.png';
  * @returns {JSX.Element} Componente de la landing page.
  */
 function LandingPage() {
+  alert('Disclaimer: Pagina de prueba, no pongas informacion personal real');
   const stars = useRef();
   const moon = useRef();
   const sea = useRef();
