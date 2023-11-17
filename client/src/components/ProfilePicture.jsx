@@ -5,8 +5,8 @@ import axios from '@/services/api';
 import Swal from 'sweetalert2';
 
 /**
- * Componente para editar fotos de perfil
- * 
+ * Componente para editar fotos de perfil.
+ *
  * @returns {JSX.Element} Componente de la edicion de foto de perfil.
  */
 function ProfilePicture() {
@@ -15,7 +15,6 @@ function ProfilePicture() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Envía los datos del formulario para cambiar la contraseña
       if (!imageFile) {
         ToastTopEnd.fire({
           title: 'La imagen ya se encuentra actualizada',

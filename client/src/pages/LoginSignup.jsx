@@ -5,7 +5,7 @@ import Login from '@/components/Login';
 
 /**
  * Página del registro e inicio de sesión.
- * 
+ *
  * @returns {JSX.Element} Página del registro e inicio de sesión.
  */
 function LoginSignup() {
@@ -14,7 +14,10 @@ function LoginSignup() {
       <MoonAnimation />
       <div className="flex justify-center items-center h-screen">
         <div className="login-register">
-          <Link to="/" className="btnBack link-style text-decorations-none absolute top-0 right-0 bg-[#A94639] hover:bg-[#8b0000]">
+          <Link
+            to="/"
+            className="btnBack link-style text-decorations-none absolute top-0 right-0 bg-[#A94639] hover:bg-[#8b0000]"
+          >
             X
           </Link>
           <input type="checkbox" id="chk" aria-hidden="true"></input>

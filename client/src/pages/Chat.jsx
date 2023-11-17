@@ -7,10 +7,10 @@ import { ToastTopEnd } from '@/utils/toast';
 import z from 'zod';
 import Swal from 'sweetalert2';
 import className from 'classnames';
-// import getErrors from '../utils/error-format';
 
 /**
- * 
+ * Página principal del chat.
+ *
  * @returns {JSX.Element} Página de chat.
  */
 function Chat() {
@@ -90,9 +90,12 @@ function Chat() {
     }
 
     try {
-      /* const response = */ await axios.post(`/conversations/${chatId}/messages`, {
-        text: message
-      });
+      /* const response = */ await axios.post(
+        `/conversations/${chatId}/messages`,
+        {
+          text: message
+        }
+      );
 
       await fetchMessages(chatId);
       setTimeout(() => {
@@ -122,8 +125,7 @@ function Chat() {
   useEffect(() => {
     const interval = setInterval(async () => {
       await fetchContacts();
-      if (chatId !== -1)
-        await fetchMessages(chatId);
+      if (chatId !== -1) await fetchMessages(chatId);
     }, 5000);
 
     return () => {
@@ -136,8 +138,8 @@ function Chat() {
     <section className="h-full flex justify-between gap-3 p-4">
       <div
         className={className('flex-shrink-0 w-full md:w-1/2 lg:w-1/4', {
-          'block': isChatDrawerFocus,
-          'hidden': !isChatDrawerFocus
+          block: isChatDrawerFocus,
+          hidden: !isChatDrawerFocus
         })}
       >
         <ChatList
@@ -161,16 +163,22 @@ function Chat() {
                   <i className="bi fa-solid fa-chevron-left"></i>
                 </button>
                 <img
-                  className={className('min-h-[2.5rem] h-10 w-10 img-fluid rounded-full ms-3', {
-                    'invisible': !selectedContact?.username
-                  })}
+                  className={className(
+                    'min-h-[2.5rem] h-10 w-10 img-fluid rounded-full ms-3',
+                    {
+                      invisible: !selectedContact?.username
+                    }
+                  )}
                   src={selectedContact?.avatar}
                   alt="Perfil"
                 />
                 <span
-                  className={className('text-xl md:text-lg ms-3 text-gray-300 font-bold', {
-                    'invisible': !selectedContact?.username
-                  })}
+                  className={className(
+                    'text-xl md:text-lg ms-3 text-gray-300 font-bold',
+                    {
+                      invisible: !selectedContact?.username
+                    }
+                  )}
                 >
                   {selectedContact?.username || 'Secret message'}
                 </span>

@@ -9,9 +9,9 @@ import Sea1 from '@/assets/img/sea1.png';
 import Sea2 from '@/assets/img/sea2.png';
 
 /**
- * Landing page
+ * Landing page.
  *
- * @returns {JSX.Element} Componente de la landing page
+ * @returns {JSX.Element} Componente de la landing page.
  */
 function LandingPage() {
   const stars = useRef();

@@ -13,6 +13,11 @@ import ProfileEdit from './pages/ProfileEdit';
 import Search from './pages/Search';
 import Analytics from './pages/Analytics';
 
+/**
+ * Componente principal que enruta todas las páginas.
+ *
+ * @returns {JSX.Element} Componente principal App.
+ */
 function App() {
   const { user } = useAuth();
 

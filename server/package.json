@@ -7,6 +7,7 @@
   "scripts": {
     "build": "npm run clean && npm run transpile",
     "clean": "rimraf dist",
+    "countries": "ts-node -r tsconfig-paths/register database/seeder/countries.ts",
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register --respawn src/index.ts",
     "lint": "eslint --ignore-path .gitignore . --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",

@@ -5,7 +5,7 @@ import classNames from 'classnames';
  * Componente para crear modales.
  * 
  * @param {object} props
- * @returns 
+ * @returns {JSX.Element} Componente de modal.
  */
 function Modal({ title, close, setClose, bodySlot }) {
   return (

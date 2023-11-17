@@ -16,24 +16,24 @@ const calculateAge = (birthDate) => {
 const validator = z.object({
   email: z
     .string({
-      invalid_type_error: 'El correo electrónico debe ser una cadena de texto'
+      invalid_type_error: 'El correo electrónico debe ser una cadena de texto.'
     })
-    .email('Es requerido que sea un email')
+    .email('El correo electrónico no tiene el formato requerido.')
     .optional(),
   username: z
     .string({
-      invalid_type_error: 'El nombre de usuario debe ser una cadena de texto'
+      invalid_type_error: 'El nombre de usuario debe ser una cadena de texto.'
     })
     .trim()
-    .min(2, 'Es requerido al menos 2 caracteres')
-    .max(255, 'Maximo de 255 caracteres')
+    .min(2, 'Es requerido al menos 2 caracteres.')
+    .max(255, 'Maximo de 255 caracteres permitidos.')
     .optional(),
   birthDate: z.coerce
     .date()
     .refine((value) => {
       if (!value) return true;
       return calculateAge(value);
-    }, 'Debes ser mayor de 18 años para registrarte')
+    }, 'Debes ser mayor de 18 años para registrarte.')
     .optional()
     .or(z.literal(''))
     .or(z.literal(null)),

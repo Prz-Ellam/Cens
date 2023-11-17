@@ -8,6 +8,11 @@ import getErrors from '@/utils/error-format';
 import ErrorList from '@/components/ErrorList';
 import loginValidator from '@/validators/login';
 
+/**
+ * Formulario para poder iniciar sesión con una cuenta.
+ *
+ * @returns {JSX.Element} Componente del formulario de inicio de sesión.
+ */
 function Login() {
   const { auth } = useAuth();
 

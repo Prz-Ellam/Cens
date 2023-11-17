@@ -14,8 +14,8 @@ const TABS = Object.freeze({
 });
 
 /**
- * Página del perfil de usuario con encuestas, seguidores y seguidos
- * 
+ * Página del perfil de usuario con encuestas, seguidores y seguidos.
+ *
  * @returns {JSX.Element} Componente del perfil de usuario.
  */
 function Profile() {
@@ -208,25 +208,34 @@ function Profile() {
 
         <div className="grid grid-flow-col justify-stretch mb-5">
           <button
-            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
-              'bg-purple-800': selectedTab === TABS.POSTS
-            })}
+            className={className(
+              'sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in',
+              {
+                'bg-purple-800': selectedTab === TABS.POSTS
+              }
+            )}
             onClick={() => setSelectedTab(TABS.POSTS)}
           >
             Actividad
           </button>
           <button
-            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
-              'bg-purple-800': selectedTab === TABS.FOLLOWERS
-            })}
+            className={className(
+              'sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in',
+              {
+                'bg-purple-800': selectedTab === TABS.FOLLOWERS
+              }
+            )}
             onClick={() => setSelectedTab(TABS.FOLLOWERS)}
           >
             Seguidores
           </button>
           <button
-            className={className('sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in', {
-              'bg-purple-800': selectedTab === TABS.FOLLOWING
-            })}
+            className={className(
+              'sm:text-xl text-md text-gray-300 hover:bg-purple-900 text-bold py-3 transition duration-150 ease-out hover:ease-in',
+              {
+                'bg-purple-800': selectedTab === TABS.FOLLOWING
+              }
+            )}
             onClick={() => setSelectedTab(TABS.FOLLOWING)}
           >
             Seguidos
@@ -329,7 +338,7 @@ function Profile() {
                       {authUser.id == userId && (
                         <button
                           className="bg-red-500 text-gray-300 rounded-lg px-3 py-1"
-                          onClick={async () => { 
+                          onClick={async () => {
                             await unfollowUser(follow.followedUser.id);
                             fetchFollowing(followingPage);
                           }}

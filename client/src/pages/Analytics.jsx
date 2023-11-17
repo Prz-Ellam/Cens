@@ -27,8 +27,8 @@ ChartJS.register(
 );
 
 /**
- * Página con las analiticas de cada encuesta
- * 
+ * Página con las analiticas de cada encuesta.
+ *
  * @returns {JSX.Element} Componente de analiticas.
  */
 function Analytics() {

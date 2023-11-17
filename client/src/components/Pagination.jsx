@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import className from 'classnames';
 
 /**
- * Componente para paginar elementos
+ * Componente para paginar elementos.
  *
  * @param {object} props - Las propiedades del componente.
  * @param {number} props.page - Pagina actual.

@@ -10,7 +10,7 @@ import { ToastTopEnd } from '@/utils/toast';
 /**
  * Componente de usuario para permitir a los usuarios cambiar su contraseña.
  *
- * @returns {JSX.Element} Componente del formulario para editar contraseña
+ * @returns {JSX.Element} Componente del formulario para editar contraseña.
  */
 function PasswordEdition() {
   const { user } = useAuth();
@@ -61,7 +61,7 @@ function PasswordEdition() {
 
   /**
    * Evento al mandar el formulario
-   * 
+   *
    * @param {Event} event
    */
   const handleSubmit = async (event) => {
@@ -93,7 +93,7 @@ function PasswordEdition() {
         currentPassword: '',
         newPassword: '',
         confirmNewPassword: ''
-      })
+      });
     } catch (error) {
       const errorText = axios.isAxiosError(error)
         ? error.response.data.message

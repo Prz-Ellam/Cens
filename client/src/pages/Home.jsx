@@ -9,9 +9,9 @@ import Pagination from '@/components/Pagination';
 import Swal from 'sweetalert2';
 
 /**
- * Página principal con el feed y las recomendaciones de usuarios
+ * Página principal con el feed y las recomendaciones de usuarios.
  *
- * @returns {JSX.Element} Componente de la página de inicio
+ * @returns {JSX.Element} Componente de la página de inicio.
  */
 function Home() {
   const { user } = useAuth();
@@ -54,11 +54,7 @@ function Home() {
         <div className="rounded-lg bg-accent shadow-lg text-white mb-5">
           <div className="flex flex-row items-center p-4">
             <img
-              src={
-                user?.id
-                  ? `/api/v1/users/${user?.id}/avatar`
-                  : '/default-profile-picture.png'
-              }
+              src={`/api/v1/users/${user?.id}/avatar`}
               alt="Avatar"
               className="h-12 w-12 rounded-full object-cover"
             />

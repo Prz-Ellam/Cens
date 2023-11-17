@@ -1,10 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-
 import censLogo from '@/assets/img/Cens_Logo.png';
 
 /**
- * Cabecera principal de las pantallas
+ * Cabecera principal de las pantallas.
  * 
  * @returns {JSX.Element} Componente del navbar.
  */ 

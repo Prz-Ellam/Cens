@@ -1,49 +1,20 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import axios from '@/services/api';
-import z from 'zod';
 import Swal from 'sweetalert2';
 import ErrorList from './ErrorList';
 import getErrors from '@/utils/error-format';
 import { ToastTopEnd } from '@/utils/toast';
+import createPollValidator from '@/validators/create-poll';
 
 /**
- * Formulario para crear encuestas
+ * Formulario para crear encuestas.
  * 
  * @param {object} props
- * @param {function} props.onCreate - Evento cuando se ha creado una encuesta
+ * @param {function} props.onCreate - Evento cuando se ha creado una encuesta.
  * @returns {JSX.Element} Componente formulario para crear encuestas. 
  */
 function CreatePoll({ onCreate = () => {} }) {
-  const formValidator = z.object({
-    question: z
-      .string({
-        invalid_type_error: 'La pregunta debe ser una cadena de texto'
-      })
-      .trim()
-      .min(1, 'Es requerido al menos 1 caracter')
-      .max(255, 'Máximo de 255 caracteres'),
-    description: z
-      .string({
-        invalid_type_error: 'La descripción debe ser una cadena de texto'
-      })
-      .trim()
-      .min(1, 'Es requerido al menos 1 caracter')
-      .max(255, 'Máximo de 255 caracteres'),
-    options: z
-      .array(
-        z
-          .string({
-            invalid_type_error: 'La opción debe ser una cadena de texto'
-          })
-          .trim()
-          .min(1, 'Es requerido al menos 1 caracter')
-          .max(65, 'Máximo de 255 caracteres')
-      )
-      .min(2, 'Debe haber minimo 2 opciones')
-      .max(5, 'Debe haber máximo 5 opciones')
-  });
-
   const [formData, setFormData] = useState({
     question: '',
     description: '',
@@ -60,7 +31,7 @@ function CreatePoll({ onCreate = () => {} }) {
     };
     setFormData(updatedFormData);
 
-    const result = formValidator.safeParse(updatedFormData);
+    const result = createPollValidator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors({
@@ -87,7 +58,7 @@ function CreatePoll({ onCreate = () => {} }) {
     };
     setFormData(updatedFormData);
 
-    const result = formValidator.safeParse(updatedFormData);
+    const result = createPollValidator.safeParse(updatedFormData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors({
@@ -139,7 +110,7 @@ function CreatePoll({ onCreate = () => {} }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const result = formValidator.safeParse(formData);
+    const result = createPollValidator.safeParse(formData);
     if (!result.success) {
       const errors = getErrors(result.error);
       setFormErrors(errors);

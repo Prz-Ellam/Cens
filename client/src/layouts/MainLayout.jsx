@@ -3,8 +3,9 @@ import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 
 /**
- * Estructura general de la pagina web
- * @returns 
+ * Estructura general de las páginas web.
+ * 
+ * @returns {JSX.Element} Layout principal de la aplicación.
  */
 function MainLayout() {
   return (

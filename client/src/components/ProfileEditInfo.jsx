@@ -9,8 +9,8 @@ import { ToastTopEnd } from '@/utils/toast';
 import validator from '@/validators/profile-info';
 
 /**
- * Componente de la edición de información del perfil
- * 
+ * Componente de la edición de información del perfil.
+ *
  * @returns {JSX.Element} Componente de la edicion de perfil.
  */
 function ProfileEditInfo() {
@@ -56,7 +56,7 @@ function ProfileEditInfo() {
 
   /**
    * Evento al mandar el formulario
-   * 
+   *
    * @param {Event} event
    */
   const handleSubmit = async (event) => {

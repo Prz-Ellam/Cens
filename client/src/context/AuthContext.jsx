@@ -40,6 +40,11 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
   };
 
+  /**
+   * Función para actualizar la información del usuario autenticado.
+   * 
+   * @param {object} user - Datos del usuario autenticado. 
+   */
   const update = async (user) => {
     setUserData(user);
     setUser(user);

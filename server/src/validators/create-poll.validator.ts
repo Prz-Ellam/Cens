@@ -5,31 +5,31 @@ import { z } from 'zod';
 const createPollValidator = z.object({
     question: z
         .string({
-            invalid_type_error: 'La pregunta debe ser una cadena de texto',
+            invalid_type_error: 'La pregunta debe ser una cadena de texto.',
         })
         .trim()
-        .min(1, 'Es requerido al menos 1 caracter')
-        .max(255, 'Máximo de 255 caracteres'),
+        .min(1, 'Es requerido al menos 1 caracter.')
+        .max(255, 'Máximo de 255 caracteres permitidos.'),
     description: z
         .string({
-            invalid_type_error: 'La descripción debe ser una cadena de texto',
+            invalid_type_error: 'La descripción debe ser una cadena de texto.',
         })
         .trim()
-        .min(1, 'Es requerido al menos 1 caracter')
-        .max(255, 'Máximo de 255 caracteres'),
+        .min(1, 'Es requerido al menos 1 caracter.')
+        .max(255, 'Máximo de 255 caracteres permitidos.'),
     options: z
         .array(
             z
                 .string({
                     invalid_type_error:
-                        'La opción debe ser una cadena de texto',
+                        'La opción debe ser una cadena de texto.',
                 })
                 .trim()
-                .min(1, 'Es requerido al menos 1 caracter')
-                .max(65, 'Máximo de 255 caracteres'),
+                .min(1, 'Es requerido al menos 1 caracter.')
+                .max(65, 'Máximo de 255 caracteres permitidos.'),
         )
-        .min(2, 'Debe haber minimo 2 opciones')
-        .max(5, 'Debe haber máximo 5 opciones'),
+        .min(2, 'Debe haber minimo 2 opciones.')
+        .max(5, 'Debe haber máximo 5 opciones.'),
 });
 
 export function validateCreatePoll(model: unknown): ValidationStatus {
