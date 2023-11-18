@@ -114,7 +114,7 @@ function Login() {
           </div>
         )}
       </div>
-      <div className="mb-6">
+      <div className="mb-4">
         <label
           className="block text-gray-100 text-md font-medium mb-1 cursor-pointer"
           htmlFor="login-password"

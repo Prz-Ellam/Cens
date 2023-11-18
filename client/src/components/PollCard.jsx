@@ -274,13 +274,13 @@ function PollCard({ poll, onUpdate }) {
             />
           </div>
           <div className="grow relative w-full h-8 outline outline-2 outline-gray-600 rounded-lg">
-            <progress
+            <div
               className={classNames('h-8 bg-purple', {
                 'rounded-l-lg': option.percentage !== 100,
                 'rounded-lg': option.percentage === 100
               })}
               style={{ width: `${option.percentage}%` }}
-            ></progress>
+            ></div>
             <label
               htmlFor={`radio-${id}-${index}`}
               className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full flex justify-between truncate px-3 cursor-pointer"

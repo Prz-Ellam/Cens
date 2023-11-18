@@ -33,7 +33,7 @@
     border-bottom-right-radius: 0;
     
     transition: .8s ease-in-out;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #chk:checked~.signup {
