@@ -74,9 +74,9 @@ function Home() {
         </div>
 
         <section className="flex flex-col gap-4 rounded-lg overflow-y-auto">
-          {polls.map((poll, index) => (
+          {polls.map((poll) => (
             <PollCard
-              key={index}
+              key={poll.id}
               poll={poll}
               onUpdate={() => fetchPolls(pollsPage)}
               onDelete={() => fetchPolls(pollsPage)}
