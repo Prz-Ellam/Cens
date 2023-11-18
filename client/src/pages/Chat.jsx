@@ -189,9 +189,9 @@ function Chat() {
               className="overflow-auto px-4 py-2 h-full chat"
               ref={messageBox}
             >
-              {messages.map((message, index) => (
+              {messages.map((message) => (
                 <ChatMessage
-                  key={index}
+                  key={message.id}
                   id={message.id}
                   avatar={`/api/v1/users/${message.sender.id}/avatar`}
                   message={message.text}

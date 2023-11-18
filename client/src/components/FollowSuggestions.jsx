@@ -72,9 +72,9 @@ function FollowSuggestions({ onUpdate = () => {} }) {
     <section className="md:w-1/3 md:block hidden m-3">
       <div className="h-screen bg-accent text-gray-300 rounded-lg mb-5 p-3">
         <h2 className="text-lg font-bold my-2">¿A quién seguir?</h2>
-        {recomendations.map((user, index) => (
+        {recomendations.map((user) => (
           <Link
-            key={index}
+            key={user.id}
             className="flex items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
             to={`/profile/${user.id}`}
           >

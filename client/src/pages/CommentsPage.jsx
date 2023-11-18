@@ -196,9 +196,9 @@ function CommentsPage() {
 
           <section className="mb-4">
             {comments &&
-              comments.map((comment, index) => (
+              comments.map((comment) => (
                 <Comment
-                  key={index}
+                  key={comment.id}
                   comment={comment}
                   userId={comment.user.id}
                   username={comment.user.username}

@@ -247,9 +247,9 @@ function Profile() {
             <>
               {polls.length > 0 ? (
                 <>
-                  {polls.map((poll, index) => (
+                  {polls.map((poll) => (
                     <PollCard
-                      key={index}
+                      key={poll.id}
                       poll={poll}
                       onUpdate={() => fetchUserPolls(pollsPage)}
                     />
@@ -272,10 +272,10 @@ function Profile() {
             <>
               {followers.length > 0 ? (
                 <>
-                  {followers.map((follower, index) => (
+                  {followers.map((follower) => (
                     <div
                       className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                      key={index}
+                      key={follower.id}
                     >
                       <img
                         src={`/api/v1/users/${follower.followerUser.id}/avatar`}
@@ -314,10 +314,10 @@ function Profile() {
             <>
               {following.length > 0 ? (
                 <>
-                  {following.map((follow, index) => (
+                  {following.map((follow) => (
                     <div
                       className="flex flex-row items-center p-4 bg-accent rounded-lg"
-                      key={index}
+                      key={follow.id}
                     >
                       <img
                         src={`/api/v1/users/${follow.followedUser.id}/avatar`}

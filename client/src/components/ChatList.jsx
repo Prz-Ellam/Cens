@@ -68,9 +68,9 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
       <hr className="mb-2 bg-gray-300" />
       <div className="overflow-auto">
         {contacts &&
-          contacts.map((contact, index) => (
+          contacts.map((contact) => (
             <ChatContact
-              key={index}
+              key={contact.conversationId}
               chatId={contact.conversationId}
               avatar={`/api/v1/users/${contact.userId}/avatar`}
               username={contact.username}
@@ -106,9 +106,9 @@ function ChatList({ contacts, onSelect = () => {}, onUpdate = () => {} }) {
             </div>
 
             <section className="h-[320px] overflow-y-auto">
-              {users.map((user, index) => (
+              {users.map((user) => (
                 <article
-                  key={index}
+                  key={user.id}
                   className="flex flex-row items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
                   onClick={async () => {
                     await createConversation(user.id);
