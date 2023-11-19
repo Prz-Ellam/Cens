@@ -236,15 +236,15 @@ function Analytics() {
         <h1 className="text-4xl text-center font-semibold mb-4 text-gray-300">
           Analiticas
         </h1>
-        <div className="grid grid-cols-2 grid-rows-1 gap-4 p-4 h-100">
+        <div className="grid grid-cols-1 grid-rows-1 gap-4 p-4 h-100">
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={genderData} options={ageOptions} />
+            <Bar data={genderData} options={ageOptions} height={"360px"} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={ageData} options={genderOptions} />
+            <Bar data={ageData} options={genderOptions} height={"360px"} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            <Doughnut data={countryData} options={countryOptions} />
+            <Doughnut data={countryData} options={countryOptions} height={"360px"} />
           </div>
         </div>
       </div>
