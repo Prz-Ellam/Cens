@@ -138,7 +138,7 @@ function Chat() {
   return (
     <section className="h-full flex justify-between gap-3 p-4">
       <div
-        className={className('flex-shrink-0 w-full md:w-1/2 lg:w-1/4', {
+        className={className('flex-shrink-0 w-full md:w-1/2 lg:w-1/4 lg:block', {
           block: isChatDrawerFocus,
           hidden: !isChatDrawerFocus
         })}
