@@ -191,7 +191,7 @@ function ProfileEditInfo() {
           <option value="">Seleccionar</option>
           {Object.keys(allCountries).map((key) => (
             <option value={key} key={key}>
-              {allCountries[key]}
+              {Array.isArray(allCountries[key]) ? allCountries[key][0] : allCountries[key]}
             </option>
           ))}
         </select>

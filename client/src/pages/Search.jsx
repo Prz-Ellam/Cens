@@ -62,7 +62,7 @@ function Search() {
         <h1 className="text-4xl text-center font-semibold mb-4 text-gray-300">
           Busqueda
         </h1>
-        <section className="flex flex-col gap-4 rounded-lg overflow-y-scroll">
+        <section className="flex flex-col gap-4 rounded-lg overflow-y-auto">
           {polls &&
             polls.map((poll) => (
               <PollCard
