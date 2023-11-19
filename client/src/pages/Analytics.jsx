@@ -244,7 +244,7 @@ function Analytics() {
             <Bar data={ageData} options={genderOptions} height={"360px"} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            <Doughnut data={countryData} options={countryOptions} height={"360px"} />
+            <Doughnut data={countryData} options={countryOptions} height={"240px"} />
           </div>
         </div>
       </div>
