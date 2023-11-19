@@ -133,7 +133,8 @@ function Chat() {
     };
   }, [chatId, fetchContacts, fetchMessages]);
 
-  const isChatDrawerFocus = true;
+  const [isChatDrawerFocus, setIsChatDrawerFocus] = useState(true);
+
   return (
     <section className="h-full flex justify-between gap-3 p-4">
       <div
@@ -145,6 +146,7 @@ function Chat() {
         <ChatList
           contacts={contacts}
           onSelect={async (contact) => {
+            setIsChatDrawerFocus(false);
             await fetchMessages(contact.chatId);
             setChatId(contact.chatId);
             setSelectedContact(contact);
@@ -159,8 +161,11 @@ function Chat() {
           <div className="bg-accent flex flex-col w-full rounded-lg p-3 h-full shadow-lg">
             <div className="flex justify-between items-center mb-1 py-2 ">
               <div className="flex items-center">
-                <button className="btn border-0 px-1 md:px-2 md:hidden block">
-                  <i className="bi fa-solid fa-chevron-left"></i>
+                <button
+                  className="btn border-0 px-1 md:px-2 md:hidden block"
+                  onClick={() => setIsChatDrawerFocus(true)}
+                >
+                  <i className="bx-sm bx bx-chevron-left text-gray-300"></i>
                 </button>
                 <img
                   className={className(

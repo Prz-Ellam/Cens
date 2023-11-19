@@ -64,18 +64,15 @@ function Analytics() {
   };
 
   const countryOptions = {
-    type: 'doughnut',
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top'
-        },
-        title: {
-          display: true,
-          text: 'Pos paises'
-        }
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top'
+      },
+      title: {
+        display: true,
+        text: 'Pos paises'
       }
     }
   };
@@ -201,7 +198,10 @@ function Analytics() {
   };
 
   const countryLabels = countries.map(
-    ({ country }) => allCountries[country] ?? 'Desconocido'
+    ({ country }) =>
+      (Array.isArray(allCountries[country])
+        ? allCountries[country][0]
+        : allCountries[country]) ?? 'Desconocido'
   );
   const countryData = {
     labels: countryLabels,
@@ -236,15 +236,19 @@ function Analytics() {
         <h1 className="text-4xl text-center font-semibold mb-4 text-gray-300">
           Analiticas
         </h1>
-        <div className="grid grid-cols-1 grid-rows-1 gap-4 p-4 h-100">
+        <div className="grid grid-cols-1 grid-rows-1 gap-4 p-4 h-full w-full">
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={genderData} options={ageOptions} height={"360px"} />
+            <Bar data={genderData} options={ageOptions} height={'360px'} />
           </div>
           <div className="bg-white rounded shadow-md p-4">
-            <Bar data={ageData} options={genderOptions} height={"360px"} />
+            <Bar data={ageData} options={genderOptions} height={'360px'} />
           </div>
-          <div className="bg-white rounded shadow-md p-4 md:mx-24">
-            <Doughnut data={countryData} options={countryOptions} height={"240px"} />
+          <div className="bg-white rounded shadow-md p-4">
+            <Doughnut
+              data={countryData}
+              options={countryOptions}
+              height={'360px'}
+            />
           </div>
         </div>
       </div>
