@@ -37,6 +37,7 @@ function Analytics() {
 
   const ageOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top'
@@ -50,6 +51,7 @@ function Analytics() {
 
   const genderOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top'
@@ -65,6 +67,7 @@ function Analytics() {
     type: 'doughnut',
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: 'top'
