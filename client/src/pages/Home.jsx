@@ -56,7 +56,7 @@ function Home() {
 
   return (
     <>
-      <div className="flex items-center justify-center mt-3">
+      <div className="md:hidden flex items-center justify-center mt-3">
         <button
           className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
           onClick={toggleSection}
@@ -66,7 +66,7 @@ function Home() {
       </div>
       <section className="flex">
         <div
-          className={`md:w-2/3 w-full p-3 ${showPolls ? 'block' : 'hidden'}`}
+          className={`md:w-2/3 w-full md:block p-3 ${showPolls ? 'block' : 'hidden'}`}
         >
           <div className="rounded-lg bg-accent shadow-lg text-white mb-5">
             <div className="flex flex-row items-center p-4">
@@ -107,7 +107,7 @@ function Home() {
           </section>
         </div>
         <div
-          className={`md:w-1/3 w-full m-3 ${showPolls ? 'hidden' : 'block'}`}
+          className={`md:w-1/3 w-full md:block m-3 ${showPolls ? 'hidden' : 'block'}`}
         >
           <FollowSuggestions onUpdate={() => fetchPolls(pollsPage)} />
         </div>
