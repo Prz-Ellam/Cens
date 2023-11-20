@@ -26,7 +26,8 @@ function LandingPage() {
     const pageHeight =
       document.documentElement.scrollHeight - window.innerHeight;
 
-    window.addEventListener('scroll', function () {
+    // Función de manejo de desplazamiento
+    function handleScroll() {
       const value = window.scrollY;
 
       // Calcula la opacidad basada en el desplazamiento
@@ -42,7 +43,15 @@ function LandingPage() {
       text.current.style.marginRight = value * 8 + 'px';
       btn.current.style.marginTop = value * 1.0 + 'px';
       header.current.style.top = value * 0.5 + 'px';
-    });
+    }
+
+    // Agregar el event listener
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup: remover el event listener al desmontar el componente
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
