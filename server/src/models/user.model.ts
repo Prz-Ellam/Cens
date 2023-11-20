@@ -54,7 +54,7 @@ export default class User extends BaseEntity {
     avatar: string;
 
     @ManyToOne(() => Country, (country) => country.id)
-    country: Country;
+    country: Country | null;
 
     @OneToMany(() => Poll, (poll) => poll.user, { cascade: ['soft-remove'] })
     polls: Poll[];

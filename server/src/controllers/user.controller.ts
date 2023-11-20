@@ -195,13 +195,15 @@ class UserController {
                 birthDate === '' ? null : birthDate ?? user.birthDate;
             user.gender = gender === '' ? null : gender ?? user.gender;
 
-            if (country) {
+            if (country && country !== '') {
                 const selectedCountry = await Country.findOneBy({
                     name: country,
                 });
                 if (selectedCountry) {
                     user.country = selectedCountry;
                 }
+            } else {
+                user.country = null;
             }
 
             await user.save();
