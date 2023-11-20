@@ -14,7 +14,6 @@ class OptionController {
             });
         }
 
-        // TODO: Solo el dueño de la encuesta deberia ver esto
         const results = await connection
             .createQueryBuilder()
             .select('o.text', 'option')
@@ -27,15 +26,23 @@ class OptionController {
                 'female',
             )
             .addSelect(
-                'CAST(IFNULL(SUM(CASE WHEN u.gender IS NULL THEN 1 ELSE 0 END) / COUNT(v.id) * 100, 0) AS FLOAT)',
+                'CAST(IFNULL(SUM(CASE WHEN u.gender = :other THEN 1 ELSE 0 END) / COUNT(v.id) * 100, 0) AS FLOAT)',
                 'other',
+            )
+            .addSelect(
+                'CAST(IFNULL(SUM(CASE WHEN u.gender IS NULL THEN 1 ELSE 0 END) / COUNT(v.id) * 100, 0) AS FLOAT)',
+                'unknown',
             )
             .from(Option, 'o')
             .leftJoin('votes', 'v', 'o.id = v.option_id')
             .leftJoin('users', 'u', 'v.user_id = u.id')
             .where('o.poll_id = :pollId', { pollId })
             .groupBy('o.id')
-            .setParameters({ male: 'masculino', female: 'femenino' })
+            .setParameters({
+                male: 'masculino',
+                female: 'femenino',
+                other: 'otro',
+            })
             .getRawMany();
 
         return res.json(results);

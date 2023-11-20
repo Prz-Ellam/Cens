@@ -191,8 +191,9 @@ class UserController {
 
             user.username = username ?? user.username;
             user.email = email ?? user.email;
-            user.birthDate = birthDate ?? user.birthDate;
-            user.gender = gender ?? user.gender;
+            user.birthDate =
+                birthDate === '' ? null : birthDate ?? user.birthDate;
+            user.gender = gender === '' ? null : gender ?? user.gender;
 
             if (country) {
                 const selectedCountry = await Country.findOneBy({
