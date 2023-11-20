@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 
 /**
  * Componente con las sugerencias de seguidores.
- * 
+ *
  * @param {object} props - Las propiedades del componente.
  * @param {function} props.onUpdate - Evento si se actualiza las sugerencias.
  * @returns {JSX.Element} Componente del sugerencias.
@@ -39,7 +39,7 @@ function FollowSuggestions({ onUpdate = () => {} }) {
 
   /**
    * Hace que el usuario actual siga al usuario seleccionado.
-   * 
+   *
    * @param {number} userId - El identificador del usuario a seguir.
    */
   const createFollowing = async (userId) => {
@@ -69,38 +69,36 @@ function FollowSuggestions({ onUpdate = () => {} }) {
   }, [user, fetchRecomendations]);
 
   return (
-    <section className="md:w-1/3 md:block hidden m-3">
-      <div className="h-screen bg-accent text-gray-300 rounded-lg mb-5 p-3">
-        <h2 className="text-lg font-bold my-2">¿A quién seguir?</h2>
-        {recomendations.map((user) => (
-          <Link
-            key={user.id}
-            className="flex items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
-            to={`/profile/${user.id}`}
-          >
-            <img
-              src={`/api/v1/users/${user.id}/avatar`}
-              alt="Avatar"
-              className="h-12 w-12 rounded-full object-cover"
-            />
-            <div className="flex flex-grow justify-between items-center ml-3 truncate">
-              <p className="text-md font-bold">{user.username}</p>
-              <button
-                className="rounded-full bg-gray-300 hover:bg-gray-400 text-gray-900 px-3 py-1"
-                onClick={async (event) => {
-                  event.preventDefault();
-                  await createFollowing(user.id);
-                  await fetchRecomendations();
-                  onUpdate();
-                }}
-              >
-                Seguir
-              </button>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
+    <div className="h-screen bg-accent text-gray-300 rounded-lg mb-5 p-3">
+      <h2 className="text-lg font-bold my-2">¿A quién seguir?</h2>
+      {recomendations.map((user) => (
+        <Link
+          key={user.id}
+          className="flex items-center p-2 hover:bg-gray-500 rounded-lg cursor-pointer"
+          to={`/profile/${user.id}`}
+        >
+          <img
+            src={`/api/v1/users/${user.id}/avatar`}
+            alt="Avatar"
+            className="h-12 w-12 rounded-full object-cover"
+          />
+          <div className="flex flex-grow justify-between items-center ml-3 truncate">
+            <p className="text-md font-bold">{user.username}</p>
+            <button
+              className="rounded-full bg-gray-300 hover:bg-gray-400 text-gray-900 px-3 py-1"
+              onClick={async (event) => {
+                event.preventDefault();
+                await createFollowing(user.id);
+                await fetchRecomendations();
+                onUpdate();
+              }}
+            >
+              Seguir
+            </button>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
 

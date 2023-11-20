@@ -22,6 +22,8 @@ function Home() {
   const [pollsPage, setPollsPage] = useState(1);
   const [pollsTotalPages, setPollsTotalPages] = useState(0);
 
+  const [showPolls, setShowPolls] = useState(true);
+
   const fetchPolls = async (page) => {
     try {
       const response = await axios(
@@ -42,6 +44,10 @@ function Home() {
     }
   };
 
+  const toggleSection = () => {
+    setShowPolls(!showPolls);
+  };
+
   useEffect(() => {
     if (user) {
       fetchPolls(pollsPage);
@@ -49,56 +55,72 @@ function Home() {
   }, [user]);
 
   return (
-    <section className="flex">
-      <div className="md:w-2/3 w-full p-3">
-        <div className="rounded-lg bg-accent shadow-lg text-white mb-5">
-          <div className="flex flex-row items-center p-4">
-            <img
-              src={`/api/v1/users/${user?.id}/avatar`}
-              alt="Avatar"
-              className="h-12 w-12 rounded-full object-cover"
-            />
-            <div className="flex flex-col flex-grow ml-3 truncate">
-              <p className="font-bold">{user?.username}</p>
-              <p className="text-gray-300">¿Qué deseas compartir?</p>
+    <>
+      <div className="flex items-center justify-center mt-3">
+        <button
+          className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+          onClick={toggleSection}
+        >
+          {showPolls ? 'Recomendaciones' : 'Encuestas'}
+        </button>
+      </div>
+      <section className="flex">
+        <div
+          className={`md:w-2/3 w-full p-3 ${showPolls ? 'block' : 'hidden'}`}
+        >
+          <div className="rounded-lg bg-accent shadow-lg text-white mb-5">
+            <div className="flex flex-row items-center p-4">
+              <img
+                src={`/api/v1/users/${user?.id}/avatar`}
+                alt="Avatar"
+                className="h-12 w-12 rounded-full object-cover"
+              />
+              <div className="flex flex-col flex-grow ml-3 truncate">
+                <p className="font-bold">{user?.username}</p>
+                <p className="text-gray-300">¿Qué deseas compartir?</p>
+              </div>
             </div>
+            <hr className="mx-3 text-gray-600" />
+            <button
+              type="button"
+              className="ml-3 my-1 text-gray-300 hover:bg-gray-500 font-medium rounded-lg px-5 py-2.5 text-center"
+              onClick={() => setClose(false)}
+            >
+              Encuesta
+            </button>
           </div>
-          <hr className="mx-3 text-gray-600" />
-          <button
-            type="button"
-            className="ml-3 my-1 text-gray-300 hover:bg-gray-500 font-medium rounded-lg px-5 py-2.5 text-center"
-            onClick={() => setClose(false)}
-          >
-            Encuesta
-          </button>
+
+          <section className="flex flex-col gap-4 rounded-lg overflow-y-auto">
+            {polls.map((poll) => (
+              <PollCard
+                key={poll.id}
+                poll={poll}
+                onUpdate={() => fetchPolls(pollsPage)}
+                onDelete={() => fetchPolls(pollsPage)}
+              />
+            ))}
+            <Pagination
+              page={pollsPage}
+              totalPages={pollsTotalPages}
+              onPageChange={(page) => fetchPolls(page)}
+            />
+          </section>
+        </div>
+        <div
+          className={`md:w-1/3 w-full m-3 ${showPolls ? 'hidden' : 'block'}`}
+        >
+          <FollowSuggestions onUpdate={() => fetchPolls(pollsPage)} />
         </div>
 
-        <section className="flex flex-col gap-4 rounded-lg overflow-y-auto">
-          {polls.map((poll) => (
-            <PollCard
-              key={poll.id}
-              poll={poll}
-              onUpdate={() => fetchPolls(pollsPage)}
-              onDelete={() => fetchPolls(pollsPage)}
-            />
-          ))}
-          <Pagination
-            page={pollsPage}
-            totalPages={pollsTotalPages}
-            onPageChange={(page) => fetchPolls(page)}
-          />
-        </section>
-      </div>
-      <FollowSuggestions onUpdate={() => fetchPolls(pollsPage)} />
-
-      <Modal
-        question="Crear encuesta"
-        close={close}
-        setClose={setClose}
-        title={'Crear encuesta'}
-        bodySlot={<CreatePoll onCreate={() => setClose(true)} />}
-      ></Modal>
-    </section>
+        <Modal
+          question="Crear encuesta"
+          close={close}
+          setClose={setClose}
+          title={'Crear encuesta'}
+          bodySlot={<CreatePoll onCreate={() => setClose(true)} />}
+        ></Modal>
+      </section>
+    </>
   );
 }
 

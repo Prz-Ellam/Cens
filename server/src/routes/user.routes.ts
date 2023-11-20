@@ -36,6 +36,11 @@ userRouter.post(
     authMiddleware,
     UserController.followUser,
 );
+userRouter.get(
+    '/:userId/follower',
+    authMiddleware,
+    UserController.findFollower,
+);
 userRouter.delete(
     '/:userId/following',
     authMiddleware,

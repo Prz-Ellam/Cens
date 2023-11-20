@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination';
 import className from 'classnames';
+import { ToastTopEnd } from '@/utils/toast';
 
 const TABS = Object.freeze({
   POSTS: 'POSTS',
@@ -36,7 +37,25 @@ function Profile() {
   const [followingTotalPages, setFollowingTotalPages] = useState(0);
   const [followingPage, setFollowingPage] = useState(1);
 
+  const [isFollowingUser, setIsFollowingUser] = useState(false);
+
   const navigate = useNavigate();
+
+  const findFollower = useCallback(async (userId) => {
+    try {
+      const response = await axios.get(`/users/${userId}/follower`);
+      setIsFollowingUser(response.data);
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
+  }, []);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -125,10 +144,34 @@ function Profile() {
     try {
       const response = await axios.delete(`/users/${userId}/following`);
 
-      Swal.fire({
-        title: 'Operación éxitosa',
+      ToastTopEnd.fire({
         icon: 'success',
-        text: response.data.message
+        title: response.data.message
+      });
+    } catch (error) {
+      const errorText = axios.isAxiosError(error)
+        ? error.response.data.message
+        : 'Error inesperado';
+      Swal.fire({
+        title: 'Error',
+        icon: 'error',
+        text: errorText
+      });
+    }
+  };
+
+  /**
+   * Hace que el usuario actual siga al usuario seleccionado.
+   *
+   * @param {number} userId - El identificador del usuario a seguir.
+   */
+  const createFollowing = async (userId) => {
+    try {
+      const response = await axios.post(`/users/${userId}/followers`);
+
+      ToastTopEnd.fire({
+        icon: 'success',
+        title: response.data.message
       });
     } catch (error) {
       const errorText = axios.isAxiosError(error)
@@ -166,6 +209,12 @@ function Profile() {
     sessionStorage.setItem('tab', selectedTab);
   }, [selectedTab]);
 
+  useEffect(() => {
+    if (userId) {
+      findFollower(userId);
+    }
+  }, [findFollower, userId]);
+
   if (!user) {
     return <></>;
   }
@@ -185,22 +234,40 @@ function Profile() {
             </h3>
             <h6 className="text-gray-300 text-xl">{user?.email}</h6>
             <h6 className="text-gray-300">{user?.birthDate}</h6>
-            {user.id === authUser.id && (
-              <div className="flex md:flex-row flex-col gap-4 my-3">
+            <div className="flex md:flex-row flex-col gap-4 my-3">
+              {user.id === authUser.id && (
                 <Link
                   to="/profileEdit"
                   className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
                 >
                   Editar perfil
                 </Link>
-                <Link
-                  to="/profileEdit"
-                  className="text-gray-300 bg-purple-800 hover:bg-purple-900 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+              )}
+              {user.id !== authUser.id && !isFollowingUser && (
+                <button
+                  className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+                  onClick={async () => {
+                    await createFollowing(userId);
+                    await findFollower(userId);
+                    await fetchFollowers(followersPage);
+                  }}
                 >
-                  Cambiar contraseña
-                </Link>
-              </div>
-            )}
+                  Seguir a este usuario
+                </button>
+              )}
+              {user.id !== authUser.id && isFollowingUser && (
+                <button
+                  className="text-gray-300 bg-purple-800 hover:bg-purple-90 focus:outline-none font-bold rounded-lg py-2 px-4 shadow-none cursor-pointer transition duration-150 ease-out hover:ease-in"
+                  onClick={async () => {
+                    await unfollowUser(userId);
+                    await findFollower(userId);
+                    await fetchFollowers(followersPage);
+                  }}
+                >
+                  Dejar de seguir a este usuario
+                </button>
+              )}
+            </div>
           </div>
         </header>
 

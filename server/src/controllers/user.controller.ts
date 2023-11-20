@@ -615,6 +615,47 @@ class UserController {
         }
     }
 
+    /**
+     * Busca si sigues a un usuario en particular
+     */
+    async findFollower(req: AuthRequest, res: Response): Promise<Response> {
+        try {
+            const userId = Number.parseInt(req.params.userId) || -1;
+            const idResult = validateId(userId);
+            if (!idResult.status) {
+                return res.status(422).json({
+                    message: 'El identificador seleccionado no es válido',
+                });
+            }
+
+            const user = await User.findOneBy({ id: userId });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'El usuario solicitado no fue encontrado',
+                });
+            }
+
+            const authUser = req.user;
+            // Validar si es que ya lo sigue
+            const existingFollower = await Follower.findOne({
+                where: {
+                    followedUser: { id: user.id },
+                    followerUser: { id: authUser.id },
+                },
+            });
+            if (!existingFollower) {
+                return res.json(false);
+            }
+
+            return res.json(true);
+        } catch (error) {
+            logger.error(`${error as string}`);
+            return res.status(500).json({
+                message: 'Ocurrio un error en el servidor',
+            });
+        }
+    }
+
     // TODO: Validar
     async getFollowersByUser(
         req: AuthRequest,
