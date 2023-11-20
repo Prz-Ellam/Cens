@@ -31,6 +31,8 @@ Devuelve un mensaje exitoso si el comentario se creó con éxito.
 | 404     | No se encontró la encuesta solicitada    |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar Comentario
 
 Endpoint: `/api/v1/comments/:commentId`
@@ -63,6 +65,8 @@ Devuelve un mensaje exitoso si el comentario se actualizó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Eliminar Comentario
 
 Endpoint: `/api/v1/comments/:commentId`
@@ -86,6 +90,8 @@ Devuelve un mensaje exitoso si el comentario se eliminó con éxito.
 | 404     | No se encontró el comentario solicitado |
 | 422     | El identificador del comentario proporcionado no es válido |
 | 500     | Error interno del servidor               |
+
+<div style="page-break-after: always;"></div>
 
 ## Encontrar Todos los Comentarios por Encuesta
 

@@ -33,6 +33,8 @@ Devuelve un mensaje exitoso si la reacción se creó con éxito.
 | 409     | Ya se ha emitido una reacción en esta encuesta |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar reacción
 
 Endpoint: `/api/v1/reactions/:reactionId`
@@ -65,6 +67,8 @@ Devuelve un mensaje exitoso si la reacción se actualizó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Eliminar reacción
 
 Endpoint: `/api/v1/reactions/:reactionId`
@@ -89,6 +93,10 @@ Devuelve un mensaje exitoso si la reacción se eliminó con éxito.
 | 422     | El identificador de la reacción proporcionado no es válido |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
+<div style="page-break-after: always;"></div>
+
 ## Buscar reacciones por encuesta
 
 Endpoint: `/api/v1/polls/:pollId/reactions`
@@ -110,3 +118,5 @@ Devuelve la cantidad de reacciones positivas y negativas de una encuesta
 | 200     | Éxito, devuelve la lista de reacciones |
 | 422     | El identificador de la encuesta proporcionado no es válido |
 | 500     | Error interno del servidor               |
+
+<div style="page-break-after: always;"></div>

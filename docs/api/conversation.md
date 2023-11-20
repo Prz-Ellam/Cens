@@ -27,6 +27,8 @@ Devuelve un mensaje exitoso si la conversación se creó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Encontrar Todas las Conversaciones de un Usuario
 
 Endpoint: `/api/v1/conversations/user/:userId`
@@ -51,3 +53,5 @@ Devuelve una lista de conversaciones relacionadas con el usuario especificado.
 | 422     | El identificador del usuario proporcionado no es válido |
 | 500     | Error interno del servidor               |
 
+
+<div style="page-break-after: always;"></div>

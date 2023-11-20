@@ -30,6 +30,8 @@ Retorna un token de acceso del usuario registrado
 | 422     | El cuerpo de la petición esta incompleto |
 | 500     | Error interno del servidor |
 
+<div style="page-break-after: always;"></div>
+
 ## Iniciar sesión
 
 Endpoint: `/api/v1/auth`
@@ -56,6 +58,8 @@ Retorna un token de acceso del usuario que inicio sesión
 | 415     | El formato de la petición es incorrecto. Debe ser application/json                                                                                                        |
 | 422     | El cuerpo de la petición esta incompleto |
 | 500     | Error interno del servidor |
+
+<div style="page-break-after: always;"></div>
 
 ## Actualizar usuario
 
@@ -97,6 +101,8 @@ Retorna mensaje exitoso si el usuario fue actualizado
 | 422     | El cuerpo de la petición esta incompleto |
 | 500     | Error interno del servidor |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar contraseña
 
 Endpoint: `/api/v1/users/:id/password`
@@ -132,6 +138,8 @@ Retorna mensaje exitoso si la contraseña del usuario fue actualizada
 | 422     | El cuerpo de la petición esta incompleto |
 | 500     | Error interno del servidor |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar avatar
 
 Endpoint: `/api/v1/users/:id/avatar`
@@ -164,6 +172,8 @@ Retorna mensaje exitoso si el avatar fue actualizado
 | 422     | El cuerpo de la petición esta incompleto |
 | 500     | Error interno del servidor |
 
+<div style="page-break-after: always;"></div>
+
 ## Eliminar usuario
 
 Endpoint: `/api/v1/users/:id`
@@ -187,6 +197,8 @@ Retorna mensaje exitoso si el usuario fue eliminado
 | 404     | No se encontró el usuario solicitado
 | 422     | El identificador del usuario proporcionado no es válido |
 | 500     | Error interno del servidor |
+
+<div style="page-break-after: always;"></div>
 
 ## Seguir usuario
 
@@ -212,6 +224,8 @@ Retorna mensaje exitoso si el usuario empezó a ser seguido
 | 422     | El identificador del usuario proporcionado no es válido |
 | 500     | Error interno del servidor |
 
+<div style="page-break-after: always;"></div>
+
 ## Dejar de seguir usuario
 
 Endpoint: `/api/v1/users/:id/followers`
@@ -235,3 +249,5 @@ Retorna mensaje exitoso si el usuario dejo de ser seguido
 | 404     | No se encontró el usuario o el follow solicitado
 | 422     | El identificador del usuario proporcionado no es válido |
 | 500     | Error interno del servidor |
+
+<div style="page-break-after: always;"></div>

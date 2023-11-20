@@ -27,6 +27,8 @@ Devuelve un mensaje exitoso si el mensaje se creó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar Mensaje
 
 Endpoint: `/api/v1/messages/:messageId`
@@ -50,6 +52,8 @@ Devuelve un mensaje exitoso si el mensaje se actualizó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Eliminar Mensaje
 
 Endpoint: `/api/v1/messages/:messageId`
@@ -72,6 +76,8 @@ Devuelve un mensaje exitoso si el mensaje se eliminó con éxito.
 | 404     | Mensaje no encontrado                    |
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
+
+<div style="page-break-after: always;"></div>
 
 ## Encontrar Todos los Mensajes de una Conversación
 
@@ -97,3 +103,5 @@ Devuelve una lista de mensajes relacionados con la conversación especificada.
 | 422     | El identificador de la conversación proporcionado no es válido |
 | 500     | Error interno del servidor               |
 
+
+<div style="page-break-after: always;"></div>

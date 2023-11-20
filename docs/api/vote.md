@@ -33,6 +33,8 @@ Devuelve un mensaje exitoso si el voto se creó con éxito.
 | 409     | El voto ya existe |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar voto
 
 Endpoint: `/api/v1/votes/:voteId`
@@ -65,6 +67,8 @@ Devuelve un mensaje exitoso si el voto se actualizó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Eliminar voto
 
 Endpoint: `/api/v1/votes/:voteId`
@@ -89,6 +93,8 @@ Devuelve un mensaje exitoso si el voto se eliminó con éxito.
 | 422     | El identificador del voto proporcionado no es válido |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Buscar votos por encuesta
 
 Endpoint: `/api/v1/polls/:pollId/votes`
@@ -110,3 +116,5 @@ Devuelve una lista de los votos por opción de una encuesta
 | 200     | Éxito, devuelve la lista de votos |
 | 422     | El identificador de la encuesta proporcionado no es válido |
 | 500     | Error interno del servidor               |
+
+<div style="page-break-after: always;"></div>

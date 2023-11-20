@@ -1,18 +1,21 @@
 # Cens
 
-### Colaboradores:
+## Colaboradores:
 Eliam Rodríguez Pérez (<a href="https://github.com/Prz-Ellam">@Prz-Ellam</a>) - <b>Back-End</b> <br>
 Jan Anthony Ochoa Retta (<a href="https://github.com/JanOchoa10">@JanOchoa10</a>) - <b>Front-End</b> <br>
 Ian Brandon Palacios (<a href="https://github.com/IanPalace">@IanPalace</a>) - <b>DBA</b> <br>
 Josue Alonso Moncada Balderas (<a href="https://github.com/CochueAMB">@CochueAMB</a>) - <b>Front-End</b> <br>
 Gerardo Octavio Arias Hernández (<a href="https://github.com/geohwnd">@geohwnd</a>) - <b>Front-End</b> <br>
 
-### Cens
+## Cens
 
-Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la aplicación podrán crear encuestas, votar en encuestas y dar su opinión de las mismas.<br>
+Cens es una aplicacion web enfocada en la creacion de encuestas, los usuarios de la aplicación podrán crear y compartir sus encuestas de una amplia variedad de temas, votar en encuestas y dar su opinión de las mismas.<br>
+Todos los usuarios tienen un perfil y pueden seguir o ser seguidos por otros usuarios para poder ver las últimas encuestas que publiquen.<br>
+Se cuenta con un chat donde los usuarios podrán mantener contacto directo.
 
-### Tecnologías
+## Tecnologías utilizadas
 
+### Frontend:
 <img 
   src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
   width="64"
@@ -25,6 +28,20 @@ Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la apli
   alt="Vite"
   style="margin-right: 4px"
 />
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg"
+  width="64"
+  alt="THREE"
+  style="margin-right: 4px"
+/>
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg"
+  width="64"
+  alt="Tailwind"
+  style="margin-right: 4px" 
+/>
+
+### Backend:
 <img
   src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
   width="64"
@@ -37,6 +54,28 @@ Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la apli
   alt="Express"
   style="margin-right: 4px"
 />
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"
+  width="64"
+  alt="Typescript"
+  style="margin-right: 4px"
+/>
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg"
+  width="64"
+  alt="Nginx"
+  style="margin-right: 4px" 
+/>
+      
+### Base de datos:
+<img
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+  width="64"
+  alt="MySQL"
+  style="margin-right: 4px"
+/>
+
+### Otros:
 <img
   src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"
   width="64"
@@ -50,31 +89,41 @@ Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la apli
   style="margin-right: 4px"
 />
 <img 
-  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg"
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
   width="64"
-  alt="THREE"
+  alt="git"
   style="margin-right: 4px"
 />
-<img
-  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
   width="64"
-  alt="MySQL"
+  alt="Github"
   style="margin-right: 4px"
 />
-          
+<img 
+  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+  width="64"
+  alt="Docker"
+  style="margin-right: 4px" 
+/>
+                 
+<div style="page-break-after: always;"></div>      
         
-### Carpetas
+## Carpetas
 
 - `client`: Esta carpeta la aplicación frontend utilizando React + Vite
-  - `public`: Contiene archivos y recursos que se deben servir directamente al navegador sin procesamiento por parte de React o el servidor de desarrollo.
+  - `dist`: Se utiliza para almacenar los archivos generados después de la transpilación y construcción del código fuente. Este directorio contiene la versión optimizada y lista para producción de la aplicación.
+  - `node_modules`: Contiene todas las dependencias necesarias para ejecutar la aplicación. Estas dependencias incluyen bibliotecas y módulos de terceros que son utilizados por el código fuente.
   - `src`: Contiene el código fuente principal de la aplicación
     - `assets`: Contiene archivos estáticos como imágenes, fuentes, archivos CSS, y otros recursos necesarios para la interfaz de usuario.
     - `components`: Es donde se almacenan los componentes reutilizables de la aplicación. Estos componentes pueden ser elementos de interfaz de usuario como botones, encabezados, formularios, etc.
+    - `context`: Se utiliza para organizar y gestionar los contextos de la aplicación. Los contextos en React son una forma de compartir información entre componentes sin necesidad de pasar props a través de múltiples niveles de la jerarquía de componentes.
     - `hooks`: Se utiliza para almacenar custom hooks. Los custom hooks son funciones que encapsulan la lógica compartida entre componentes, lo que permite una reutilización efectiva del código.
     - `layouts`: Se ubican los diseños de página o componentes de alto nivel que estructuran la disposición de otros componentes.
     - `pages`: Contiene componentes que representan páginas individuales de la aplicación.
     - `services`: Se usa para almacenar módulos que interactúan con servicios externos o API, como llamadas a backend, autenticación, o cualquier otra comunicación con el servidor.
     - `utils`: Se ubican funciones y utilidades compartidas que se utilizan en varios lugares de la aplicación. Esto puede incluir funciones de ayuda, formateo de datos, validación, etc.
+    - `validators`: Contiene reglas de validación para los formularios de la aplicación.
 - `docs`: Contiene documentación técnica del uso de la aplicación
   - `api`: Contiene la documentación de la REST API incluyendo los endpoints, cuerpos de solicitud, respuesta y códigos de respuesta
 - `server`: Contiene la aplicación de NodeJS + Typescript
@@ -95,3 +144,6 @@ Una aplicacion web enfocada en la creacion de encuestas, los usuarios de la apli
   - `tests`: Se encuentra el código fuente de los tests
     - `feature`: Se encuentran tests de tipo feature
     - `unit`: Se encuentran tests de tipo unit
+- `web`: Contiene la información necesaria para levantar el servidor web (Nginx)
+  - `certs`: Contiene los certificados SSL
+  - `conf`: Contiene el archivo de configuración de Nginx

@@ -26,6 +26,8 @@ Devuelve un mensaje exitoso si la encuesta se creó con éxito.
 | 422     | La información está incompleta o es incorrecta. Regresa un objeto con un mensaje (message) y un objeto de errores (errors) que especifica la fuente y el mensaje de error |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Actualizar Encuesta
 
 Endpoint: `/api/v1/polls/:pollId`
@@ -45,6 +47,8 @@ Devuelve un mensaje que indica que las encuestas no pueden ser modificadas para 
 | Estatus | Descripción                              |
 | ------- | ---------------------------------------- |
 | 405     | Las encuestas no pueden ser modificadas para garantizar la integridad de los datos recopilados |
+
+<div style="page-break-after: always;"></div>
 
 ## Eliminar Encuesta
 
@@ -70,6 +74,8 @@ Devuelve un mensaje exitoso si la encuesta se eliminó con éxito.
 | 422     | El identificador seleccionado no es válido |
 | 500     | Error interno del servidor               |
 
+<div style="page-break-after: always;"></div>
+
 ## Encontrar Encuesta por ID
 
 Endpoint: `/api/v1/polls/:id`
@@ -93,3 +99,5 @@ Devuelve los detalles de la encuesta solicitada.
 | 404     | No se encontró la encuesta solicitada   |
 | 500     | Error interno del servidor               |
 
+
+<div style="page-break-after: always;"></div>
