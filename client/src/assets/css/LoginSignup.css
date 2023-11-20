@@ -98,14 +98,10 @@
 }
 
 /* Media query para centrar horizontalmente en pantallas más anchas */
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 768px) {
     .main {
         left: 50%;
         /* transform: translateX(-50%); */
-    }
-
-    #scene-container {
-        display: none;
     }
 
     .row {
