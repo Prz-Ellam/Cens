@@ -98,7 +98,7 @@
 }
 
 /* Media query para centrar horizontalmente en pantallas más anchas */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
     .main {
         left: 50%;
         /* transform: translateX(-50%); */

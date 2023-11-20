@@ -149,7 +149,7 @@ function MoonAnimation() {
       window.removeEventListener('resize', onWindowResize);
     };
   }, []);
-  return <div ref={sceneContainer} className="md:block hidden"></div>;
+  return <div ref={sceneContainer} className="lg:block hidden"></div>;
 }
 
 export default MoonAnimation;
