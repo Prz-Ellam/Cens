@@ -141,6 +141,7 @@ function Chat() {
           contacts={contacts}
           onSelect={async (contact) => {
             setIsChatDrawerFocus(false);
+            setFirst(true);
             await fetchMessages(contact.chatId);
             setChatId(contact.chatId);
             setSelectedContact(contact);
