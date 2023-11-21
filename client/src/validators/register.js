@@ -13,8 +13,8 @@ const registerValidator = z
       })
       .trim()
       .min(3, 'Es requerido al menos 3 caracteres.')
-      .max(8, 'Maximo de 8 caracteres permitidos.')
-      .regex(/^(?=.{3,8}$)(?![.])(?!.*[.]{2})[a-zA-Z0-9.]+(?<![.])$/, 'Nombre de usuario no valido'),
+      .max(16, 'Maximo de 16 caracteres permitidos.')
+      .regex(/^(?=.{3,16}$)(?![.])(?!.*[.]{2})[a-zA-Z0-9.]+(?<![.])$/, 'Nombre de usuario no valido'),
     password: z
       .string({
         invalid_type_error: 'La contraseña debe ser una cadena de texto.'
