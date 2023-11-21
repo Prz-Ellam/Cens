@@ -12,8 +12,9 @@ const registerValidator = z
         invalid_type_error: 'El nombre de usuario debe ser una cadena de texto'
       })
       .trim()
-      .min(2, 'Es requerido al menos 2 caracteres.')
-      .max(16, 'Maximo de 16 caracteres permitidos.'),
+      .min(3, 'Es requerido al menos 3 caracteres.')
+      .max(8, 'Maximo de 8 caracteres permitidos.')
+      .regex(/^(?=.{3,8}$)(?![.])(?!.*[.]{2})[a-zA-Z0-9.]+(?<![.])$/, 'Nombre de usuario no valido'),
     password: z
       .string({
         invalid_type_error: 'La contraseña debe ser una cadena de texto.'

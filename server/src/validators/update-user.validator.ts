@@ -34,8 +34,12 @@ const updateUserValidator = z.object({
                 'El nombre de usuario debe ser una cadena de texto.',
         })
         .trim()
-        .min(1, 'Es requerido al menos 1 caracter.')
-        .max(255, 'Maximo de 255 caracteres permitidos.')
+        .min(3, 'Es requerido al menos 3 caracteres.')
+        .max(8, 'Maximo de 8 caracteres permitidos.')
+        .regex(
+            /^(?=.{3,8}$)(?![.])(?!.*[.]{2})[a-zA-Z0-9.]+(?<![.])$/,
+            'Nombre de usuario no valido',
+        )
         .optional(),
     birthDate: z.coerce
         .date()

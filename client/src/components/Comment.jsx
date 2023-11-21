@@ -190,7 +190,7 @@ function Comment({ comment, userId, username, avatar, isAuthUser, onChange }) {
       </footer>
       {!isUpdate ? (
         <>
-          <p className="text-gray-300">{comment.text}</p>
+          <p className="text-gray-300 truncate">{comment.text}</p>
         </>
       ) : (
         <>
