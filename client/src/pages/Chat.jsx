@@ -19,6 +19,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [chatId, setChatId] = useState(-1);
+  const [first, setFirst] = useState(true);
 
   const [selectedContact, setSelectedContact] = useState(null);
   const messageBox = useRef();
@@ -28,12 +29,15 @@ function Chat() {
       const response = await axios.get(`/conversations/${chatId}/messages`);
 
       setMessages(response.data);
-      setTimeout(() => {
-        messageBox.current.scrollTo({
-          left: 0,
-          top: messageBox.current.scrollHeight
-        });
-      }, 0);
+      if (first) {
+        setTimeout(() => {
+          messageBox.current.scrollTo({
+            left: 0,
+            top: messageBox.current.scrollHeight
+          });
+        }, 0);
+        setFirst(false);
+      }
     } catch (error) {
       const errorText = axios.isAxiosError(error)
         ? error.response.data.message
