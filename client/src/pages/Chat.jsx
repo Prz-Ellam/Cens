@@ -4,9 +4,9 @@ import ChatList from '@/components/ChatList';
 import ChatMessage from '@/components/ChatMessage';
 import axios from 'axios';
 import { ToastTopEnd } from '@/utils/toast';
-import z from 'zod';
 import Swal from 'sweetalert2';
 import className from 'classnames';
+import createMessageValidator from '@/validators/create-message';
 
 /**
  * Página principal del chat.
@@ -22,16 +22,6 @@ function Chat() {
 
   const [selectedContact, setSelectedContact] = useState(null);
   const messageBox = useRef();
-
-  const formValidator = z.object({
-    text: z
-      .string({
-        invalid_type_error: 'El texto debe ser una cadena de texto'
-      })
-      .trim()
-      .min(1, 'Es requerido al menos 1 caracter')
-      .max(255, 'Maximo de 255 caracteres permitidos')
-  });
 
   const fetchMessages = useCallback(async (chatId) => {
     try {
@@ -75,7 +65,7 @@ function Chat() {
   }, [user.id]);
 
   const handleMessage = async (chatId) => {
-    const result = formValidator.safeParse({
+    const result = createMessageValidator.safeParse({
       text: message
     });
     if (!result.success) {

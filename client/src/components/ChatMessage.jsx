@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import axios from '@/services/api';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
+import { ToastTopEnd } from '@/utils/toast';
+import createMessageValidator from '../validators/create-message';
 
 /**
  * Componente que representa un mensaje en la caja de conversación
@@ -67,6 +69,17 @@ function ChatMessage({ id, avatar, message, own, onUpdate }) {
   };
 
   const updateMessageFunc = async () => {
+    const result = createMessageValidator.safeParse({
+      text: updateMessage
+    });
+    if (!result.success) {
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
+      return;
+    }
+
     try {
       await axios.put(`/messages/${id}`, { text: updateMessage });
       setIsUpdate(false);

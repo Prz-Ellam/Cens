@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { ToastTopEnd } from '@/utils/toast';
 import { Link } from 'react-router-dom';
 import { formatDate } from '@/utils/format-date';
+import createCommentValidator from '../validators/create-comment';
 
 /**
  * Componente que representa un comentario, se encarga de actualizar o eliminar dicho comentario.
@@ -45,6 +46,17 @@ function Comment({ comment, userId, username, avatar, isAuthUser, onChange }) {
   }, []);
 
   const handleUpdateComment = async (commentId, text) => {
+    const result = createCommentValidator.safeParse({
+      text
+    });
+    if (!result.success) {
+      ToastTopEnd.fire({
+        title: 'Formulario no válido',
+        icon: 'error'
+      });
+      return;
+    }
+
     try {
       const response = await axios.put(`/comments/${commentId}`, { text });
 
