@@ -49,7 +49,7 @@ function Chat() {
       });
       setChatId(-1);
     }
-  }, []);
+  }, [first, setFirst]);
 
   const fetchContacts = useCallback(async () => {
     try {
